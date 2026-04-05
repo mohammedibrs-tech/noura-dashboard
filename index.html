@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة النشرة اليومية | نورة لتعليم القيادة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0F1923;
+  --bg2:#141F2E;
+  --card:#1A2840;
+  --card2:#1E2F47;
+  --border:rgba(255,255,255,0.07);
+  --accent:#1DA9BD;
+  --accent2:#0D7A8A;
+  --gold:#F4C430;
+  --green:#27AE60;
+  --red:#E74C3C;
+  --purple:#8E44AD;
+  --text:#F0F4F8;
+  --text2:rgba(240,244,248,0.65);
+  --text3:rgba(240,244,248,0.35);
+}
+body{
+  font-family:'Cairo',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── شريط العنوان ── */
+.topbar{
+  background:linear-gradient(135deg,#0A1520,#0D1F2D);
+  border-bottom:2px solid var(--accent);
+  padding:0 28px;
+  height:62px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.topbar-logo{display:flex;align-items:center;gap:12px;}
+.topbar-logo .icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;}
+.topbar-logo .title{font-size:17px;font-weight:900;color:#fff;}
+.topbar-logo .sub{font-size:10px;color:var(--accent);letter-spacing:1px;}
+.topbar-right{display:flex;align-items:center;gap:20px;}
+.topbar-date{text-align:left;direction:ltr;}
+.topbar-date .day{font-size:22px;font-weight:900;color:var(--accent);}
+.topbar-date .full{font-size:11px;color:var(--text2);}
+#live-clock{font-size:26px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;direction:ltr;}
+
+/* ── الشبكة الرئيسية ── */
+.grid-main{
+  display:grid;
+  grid-template-columns:1fr 380px;
+  grid-template-rows:auto;
+  gap:16px;
+  padding:16px 20px;
+  max-width:1920px;
+  margin:0 auto;
+}
+
+/* ── الكارد الأساسي ── */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  position:relative;
+}
+.card-header{
+  padding:14px 18px 10px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.card-header .ch-icon{font-size:18px;}
+.card-header .ch-title{font-size:14px;font-weight:900;color:#fff;}
+.card-header .ch-badge{font-size:9px;font-weight:700;background:var(--accent);color:#fff;padding:2px 8px;border-radius:20px;margin-right:auto;}
+.card-body{padding:16px 18px;}
+
+/* ── العمود الأيسر ── */
+.left-col{display:flex;flex-direction:column;gap:14px;}
+
+/* ── فخر وطن ── */
+.pride-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pride-item{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  border-right:3px solid var(--accent);
+  transition:transform .2s;
+}
+.pride-item:hover{transform:translateY(-2px);}
+.pride-icon{font-size:24px;margin-bottom:8px;}
+.pride-title{font-size:12px;font-weight:900;color:var(--accent);margin-bottom:4px;}
+.pride-fact{font-size:11px;color:var(--text2);line-height:1.6;}
+
+/* ── تراث وثقافة ── */
+.heritage-item{
+  display:flex;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.heritage-item:last-child{border-bottom:none;}
+.heritage-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px;}
+.heritage-title{font-size:12px;font-weight:900;color:var(--gold);margin-bottom:3px;}
+.heritage-text{font-size:11px;color:var(--text2);line-height:1.6;}
+
+/* ── صور المدن ── */
+.cities-row{display:flex;gap:10px;}
+.city-card{
+  flex:1;
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+  height:130px;
+  cursor:pointer;
+}
+.city-card img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.city-card:hover img{transform:scale(1.06);}
+.city-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 60%);
+  display:flex;align-items:flex-end;padding:10px;
+}
+.city-name{font-size:12px;font-weight:900;color:#fff;}
+
+/* ── معلومة اليوم ── */
+.didyouknow{
+  background:linear-gradient(135deg,rgba(29,169,189,0.1),rgba(13,122,138,0.05));
+  border:1px solid rgba(29,169,189,0.2);
+  border-right:4px solid var(--accent);
+  border-radius:14px;
+  padding:16px;
+}
+.dyk-label{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px;margin-bottom:8px;}
+.dyk-text{font-size:13px;color:var(--text);line-height:1.8;font-weight:600;}
+
+/* ── حدث اليوم ── */
+.today-event{
+  background:linear-gradient(135deg,rgba(142,68,173,0.12),rgba(142,68,173,0.04));
+  border:1px solid rgba(142,68,173,0.2);
+  border-right:4px solid var(--purple);
+  border-radius:14px;
+  padding:16px;
+}
+.te-title{font-size:13px;font-weight:900;color:var(--purple);margin-bottom:6px;}
+.te-desc{font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:8px;}
+.te-saudi{font-size:11px;color:rgba(29,169,189,0.8);font-style:italic;border-right:2px solid var(--accent);padding-right:10px;}
+
+/* ── العمود الأيمن (الكاردات التفاعلية) ── */
+.right-col{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  position:sticky;
+  top:78px;
+  height:calc(100vh - 94px);
+  overflow-y:auto;
+}
+.right-col::-webkit-scrollbar{width:3px;}
+.right-col::-webkit-scrollbar-track{background:transparent;}
+.right-col::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+
+/* ── موظف الشهر ── */
+.emp-card{
+  background:linear-gradient(135deg,#1A2840,#1E3050);
+  border:1px solid rgba(244,196,48,0.2);
+  border-radius:18px;
+  overflow:hidden;
+}
+.emp-header{
+  background:linear-gradient(135deg,rgba(244,196,48,0.15),rgba(244,196,48,0.05));
+  padding:14px 18px;
+  border-bottom:1px solid rgba(244,196,48,0.15);
+  display:flex;align-items:center;gap:10px;
+}
+.emp-header-icon{font-size:20px;}
+.emp-header-title{font-size:13px;font-weight:900;color:var(--gold);}
+.emp-body{padding:18px;}
+.emp-avatar{
+  width:68px;height:68px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#E8A800);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin:0 auto 12px;
+  box-shadow:0 4px 20px rgba(244,196,48,0.3);
+}
+.emp-name{font-size:16px;font-weight:900;color:#fff;text-align:center;margin-bottom:4px;}
+.emp-dept{font-size:11px;color:var(--gold);text-align:center;margin-bottom:12px;font-weight:700;}
+.emp-reason{font-size:11px;color:var(--text2);text-align:center;line-height:1.7;background:rgba(255,255,255,0.04);border-radius:10px;padding:10px;}
+.emp-quote{
+  font-size:12px;font-weight:700;color:var(--accent);
+  text-align:center;margin-top:12px;
+  padding:10px;border-radius:10px;
+  background:rgba(29,169,189,0.08);
+  border-right:3px solid var(--accent);
+}
+
+/* ── إنجازات الموظفين ── */
+.achievement-card{
+  background:linear-gradient(135deg,rgba(39,174,96,0.1),rgba(39,174,96,0.03));
+  border:1px solid rgba(39,174,96,0.2);
+  border-radius:16px;
+  padding:16px;
+}
+.ach-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.ach-icon{font-size:18px;}
+.ach-title{font-size:13px;font-weight:900;color:var(--green);}
+.ach-name{font-size:15px;font-weight:900;color:#fff;margin-bottom:3px;}
+.ach-dept{font-size:10px;color:var(--text3);margin-bottom:10px;}
+.ach-msg{font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:10px;}
+.ach-quote{
+  font-size:12px;color:var(--green);font-weight:700;
+  padding:8px 12px;border-radius:8px;
+  background:rgba(39,174,96,0.08);
+  border-right:3px solid var(--green);
+}
+
+/* ── المثل اليومي ── */
+.proverb-card{
+  background:linear-gradient(135deg,rgba(244,196,48,0.08),rgba(244,196,48,0.02));
+  border:1px solid rgba(244,196,48,0.15);
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+}
+.proverb-label{font-size:9px;letter-spacing:2px;color:var(--text3);font-weight:700;margin-bottom:10px;}
+.proverb-text{font-size:15px;font-weight:900;color:var(--gold);margin-bottom:8px;line-height:1.6;}
+.proverb-meaning{font-size:11px;color:var(--text2);line-height:1.6;}
+
+/* ── شريط التمرير السفلي ── */
+.ticker{
+  position:fixed;bottom:0;right:0;left:0;
+  height:38px;
+  background:linear-gradient(135deg,#0A1520,#0D1F2D);
+  border-top:1px solid var(--accent);
+  display:flex;align-items:center;overflow:hidden;z-index:100;
+}
+.ticker-label{
+  background:var(--accent);
+  color:#fff;font-size:11px;font-weight:900;
+  padding:0 16px;height:100%;display:flex;align-items:center;
+  white-space:nowrap;flex-shrink:0;letter-spacing:1px;
+}
+.ticker-track{
+  display:flex;align-items:center;
+  animation:ticker-move 40s linear infinite;
+  white-space:nowrap;
+  padding-right:60px;
+}
+.ticker-track:hover{animation-play-state:paused;}
+@keyframes ticker-move{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
+.ticker-item{
+  font-size:12px;color:var(--text2);
+  padding:0 30px;
+  border-right:1px solid var(--border);
+}
+.ticker-item span{color:var(--accent);font-weight:700;margin-left:6px;}
+
+/* ── متحرك ── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.card,.pride-item,.emp-card,.achievement-card,.proverb-card{animation:fadeInUp .5s ease both;}
+.pride-item:nth-child(1){animation-delay:.05s;}
+.pride-item:nth-child(2){animation-delay:.1s;}
+.pride-item:nth-child(3){animation-delay:.15s;}
+.pride-item:nth-child(4){animation-delay:.2s;}
+
+@keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.3;}}
+.live-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--green);
+  animation:pulse-dot 1.5s infinite;
+  display:inline-block;margin-left:6px;
+}
+
+/* ── Responsive للشاشات الكبيرة ── */
+@media(min-width:1400px){
+  .grid-main{grid-template-columns:1fr 420px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ شريط العنوان ═══ -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="icon">📋</div>
+    <div>
+      <div class="title">لوحة النشرة اليومية</div>
+      <div class="sub">DAILY BULLETIN — نورة لتعليم القيادة</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-date">
+      <div class="day" id="clock-day">—</div>
+      <div class="full" id="clock-date">—</div>
+    </div>
+    <div id="live-clock">--:--:--</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);">
+      <span class="live-dot"></span>مباشر
+    </div>
+  </div>
+</div>
+
+<!-- ═══ الشبكة الرئيسية ═══ -->
+<div class="grid-main" style="padding-bottom:54px;">
+
+  <!-- ═══ العمود الأيسر ═══ -->
+  <div class="left-col">
+
+    <!-- ١. فخر وطن -->
+    <div class="card">
+      <div class="card-header">
+        <span class="ch-icon">🇸🇦</span>
+        <span class="ch-title">فخر وطن</span>
+        <span class="ch-badge">إنجازات ومشاريع</span>
+      </div>
+      <div class="card-body">
+        <div class="pride-grid" id="pride-grid">
+          <div class="pride-item"><div class="pride-icon">⏳</div><div class="pride-title">جارٍ التحميل...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ٢. تراث وثقافة -->
+    <div class="card">
+      <div class="card-header">
+        <span class="ch-icon">🏺</span>
+        <span class="ch-title">تراث وثقافة</span>
+        <span class="ch-badge">أمثال وموروث</span>
+      </div>
+      <div class="card-body">
+        <div id="heritage-list"></div>
+      </div>
+    </div>
+
+    <!-- ٣. صور المدن -->
+    <div class="card">
+      <div class="card-header">
+        <span class="ch-icon">📸</span>
+        <span class="ch-title">من أجمل مدننا</span>
+        <span class="ch-badge">صور يومية</span>
+      </div>
+      <div class="card-body" style="padding-top:10px;">
+        <div class="cities-row" id="cities-row">
+        </div>
+      </div>
+    </div>
+
+    <!-- صفان سفلي -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+      <!-- ٤. معلومة اليوم -->
+      <div class="card">
+        <div class="card-header">
+          <span class="ch-icon">💡</span>
+          <span class="ch-title">هل تعلم؟</span>
+        </div>
+        <div class="card-body" style="padding-top:12px;">
+          <div class="didyouknow">
+            <div class="dyk-label">معلومة اليوم</div>
+            <div class="dyk-text" id="dyk-text">جارٍ التحميل...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ٥. حدث اليوم -->
+      <div class="card">
+        <div class="card-header">
+          <span class="ch-icon">📅</span>
+          <span class="ch-title">حدث اليوم</span>
+        </div>
+        <div class="card-body" style="padding-top:12px;">
+          <div class="today-event">
+            <div class="te-title" id="te-title">—</div>
+            <div class="te-desc" id="te-desc">—</div>
+            <div class="te-saudi" id="te-saudi">—</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ العمود الأيمن ═══ -->
+  <div class="right-col">
+
+    <!-- موظف الشهر -->
+    <div class="emp-card">
+      <div class="emp-header">
+        <span class="emp-header-icon">🏆</span>
+        <span class="emp-header-title">موظف / موظفة الشهر</span>
+      </div>
+      <div class="emp-body">
+        <div class="emp-avatar">👑</div>
+        <div class="emp-name" id="emp-name">—</div>
+        <div class="emp-dept" id="emp-dept">—</div>
+        <div class="emp-reason" id="emp-reason">—</div>
+        <div class="emp-quote" id="emp-quote">—</div>
+      </div>
+    </div>
+
+    <!-- إنجازات الموظفين -->
+    <div class="achievement-card">
+      <div class="ach-header">
+        <span class="ach-icon">🎉</span>
+        <span class="ach-title" id="ach-title">إنجازات الموظفين</span>
+      </div>
+      <div class="ach-name" id="ach-name">—</div>
+      <div class="ach-dept" id="ach-dept">—</div>
+      <div class="ach-msg" id="ach-msg">—</div>
+      <div class="ach-quote" id="ach-quote">—</div>
+    </div>
+
+    <!-- المثل اليومي -->
+    <div class="proverb-card">
+      <div class="proverb-label">✦ المثل الشعبي اليوم ✦</div>
+      <div class="proverb-text" id="proverb-text">—</div>
+      <div class="proverb-meaning" id="proverb-meaning">—</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ شريط التمرير ═══ -->
+<div class="ticker">
+  <div class="ticker-label">⚡ نورة</div>
+  <div class="ticker-track" id="ticker-track">
+    <div class="ticker-item"><span>رؤية 2030</span> المملكة تمضي بخطى ثابتة نحو مستقبل مزدهر</div>
+    <div class="ticker-item"><span>القيادة</span> أول مدرسة قيادة نسائية في المنطقة</div>
+    <div class="ticker-item"><span>الجودة</span> معدل رضا العملاء 96% في الربع الأول 2026</div>
+    <div class="ticker-item"><span>الإنجاز</span> نورة لتعليم القيادة — نحو مستقبل أكثر أماناً</div>
+    <div class="ticker-item"><span>رؤية 2030</span> المملكة تمضي بخطى ثابتة نحو مستقبل مزدهر</div>
+    <div class="ticker-item"><span>القيادة</span> أول مدرسة قيادة نسائية في المنطقة</div>
+    <div class="ticker-item"><span>الجودة</span> معدل رضا العملاء 96% في الربع الأول 2026</div>
+    <div class="ticker-item"><span>الإنجاز</span> نورة لتعليم القيادة — نحو مستقبل أكثر أماناً</div>
+  </div>
+</div>
+
+<script>
+const DATA_URL = 'https://raw.githubusercontent.com/mohammedibrs-tech/noura-dashboard/main/data.json';
+
+// ── الساعة ──
+function updateClock(){
+  const now = new Date();
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  document.getElementById('live-clock').textContent =
+    now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('clock-day').textContent = days[now.getDay()];
+  document.getElementById('clock-date').textContent =
+    now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── جلب البيانات ──
+async function loadData(){
+  try{
+    const r = await fetch(DATA_URL + '?t=' + Date.now());
+    if(!r.ok) throw new Error('fetch failed');
+    const d = await r.json();
+    renderAll(d);
+  } catch(e){
+    console.error('Data load error:', e);
+    setTimeout(loadData, 5000);
+  }
+}
+
+function renderAll(d){
+  // فخر وطن
+  if(d.national_pride && d.national_pride.length){
+    document.getElementById('pride-grid').innerHTML = d.national_pride.map(p=>`
+      <div class="pride-item">
+        <div class="pride-icon">${p.icon||'🇸🇦'}</div>
+        <div class="pride-title">${p.title}</div>
+        <div class="pride-fact">${p.fact}</div>
+      </div>`).join('');
+  }
+
+  // تراث
+  if(d.heritage && d.heritage.length){
+    document.getElementById('heritage-list').innerHTML = d.heritage.map(h=>`
+      <div class="heritage-item">
+        <div class="heritage-dot"></div>
+        <div>
+          <div class="heritage-title">${h.title}</div>
+          <div class="heritage-text">${h.text}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // مدن
+  if(d.cities && d.cities.length){
+    document.getElementById('cities-row').innerHTML = d.cities.map(c=>`
+      <div class="city-card">
+        <img src="${c.url}" alt="${c.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=400&q=80'">
+        <div class="city-overlay"><div class="city-name">${c.name}</div></div>
+      </div>`).join('');
+  }
+
+  // هل تعلم
+  if(d.did_you_know) document.getElementById('dyk-text').textContent = d.did_you_know;
+
+  // حدث اليوم
+  if(d.today_event){
+    document.getElementById('te-title').textContent = d.today_event.title||'';
+    document.getElementById('te-desc').textContent = d.today_event.description||'';
+    document.getElementById('te-saudi').textContent = d.today_event.saudi_link||'';
+  }
+
+  // موظف الشهر
+  if(d.employee_of_month){
+    const e = d.employee_of_month;
+    document.getElementById('emp-name').textContent = e.name||'—';
+    document.getElementById('emp-dept').textContent = (e.department||'') + (e.role?' — '+e.role:'');
+    document.getElementById('emp-reason').textContent = e.reason||'—';
+    document.getElementById('emp-quote').textContent = '❝ ' + (e.quote||'') + ' ❞';
+  }
+
+  // إنجازات
+  if(d.achievement){
+    const a = d.achievement;
+    document.getElementById('ach-title').textContent = a.title||'إنجازات الموظفين';
+    document.getElementById('ach-name').textContent = a.name||'—';
+    document.getElementById('ach-dept').textContent = a.department||'';
+    document.getElementById('ach-msg').textContent = a.message||'—';
+    document.getElementById('ach-quote').textContent = '❝ ' + (a.quote||'') + ' ❞';
+  }
+
+  // المثل
+  if(d.proverb){
+    document.getElementById('proverb-text').textContent = '❝ ' + d.proverb + ' ❞';
+    document.getElementById('proverb-meaning').textContent = d.proverb_meaning||'';
+  }
+}
+
+// تحديث كل 5 دقائق
+loadData();
+setInterval(loadData, 5 * 60 * 1000);
+</script>
+</body>
+</html>
