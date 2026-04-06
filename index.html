@@ -179,7 +179,7 @@ body.light .tabs{background:rgba(0,0,0,0.06);}
 .emp-panel{
   min-width:100%;height:100%;flex-shrink:0;
   display:flex;flex-direction:row;align-items:center;
-  padding:20px 20px;gap:20px;
+  padding:16px 20px;gap:22px;
 }
 .emp-av-big{
   width:90px;height:90px;border-radius:50%;flex-shrink:0;
@@ -209,8 +209,9 @@ body.light .tabs{background:rgba(0,0,0,0.06);}
   inset:0;
   z-index:100;
   pointer-events:none;
-  align-items:center;
+  align-items:flex-start;
   justify-content:center;
+  padding-top:18px;
 }
 #mm-overlay.active{display:flex;pointer-events:auto;}
 
@@ -228,7 +229,7 @@ body.light .tabs{background:rgba(0,0,0,0.06);}
   box-shadow:0 0 60px rgba(29,169,189,0.3),0 20px 60px rgba(0,0,0,0.5);
   animation:mm-center-in .5s cubic-bezier(.34,1.56,.64,1) both;
 }
-@keyframes mm-center-in{from{opacity:0;transform:scale(.6);}to{opacity:1;transform:scale(1);}}
+@keyframes mm-center-in{from{opacity:0;transform:translateY(-60px) scale(.8);}to{opacity:1;transform:translateY(0) scale(1);}}
 .mm-av{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;margin:0 auto 12px;box-shadow:0 0 30px rgba(29,169,189,0.4);}
 .mm-name{font-size:16px;font-weight:900;color:#fff;margin-bottom:3px;}
 .mm-dept{font-size:10px;color:rgba(29,169,189,0.9);font-weight:700;margin-bottom:2px;}
@@ -268,7 +269,7 @@ body.light .tabs{background:rgba(0,0,0,0.06);}
   border-radius:18px;flex:1;overflow:hidden;display:flex;flex-direction:column;
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
 }
-.pi2{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);flex:1;}
+.pi2{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);}
 .pi2:last-child{border-bottom:none;}
 .pi2-num{font-size:9px;font-weight:900;color:var(--accent);background:rgba(29,169,189,0.1);width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;border:1px solid rgba(29,169,189,0.15);}
 .pi2-title{font-size:11px;font-weight:700;color:var(--text);margin-bottom:3px;letter-spacing:.2px;}
@@ -295,34 +296,34 @@ body.light .ticker{background:rgba(242,242,247,0.9);}
 .titem b{color:var(--text);font-weight:700;}
 
 /* ══ ADMIN ══ */
-#pga{display:none;flex:1;overflow-y:auto;padding:16px 24px;}
-.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:100%;margin:0 auto;}
-.acard{background:var(--card-solid);border:1px solid var(--border);border-radius:16px;padding:14px;}
+#pga{display:none;flex:1;overflow-y:auto;padding:14px 20px;background:var(--bg);}
+.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:100%;margin:0 auto;align-content:start;}
+.acard{background:var(--card-solid);border:1px solid var(--border);border-radius:14px;padding:12px 14px;}
 .acard.full{grid-column:1/4;}
 .acard.span2{grid-column:span 2;}
-.atitle{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);letter-spacing:.3px;}
-.albl{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;margin-top:8px;}
+.atitle{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);letter-spacing:.3px;}
+.albl{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;margin-top:7px;}
 .albl:first-of-type{margin-top:0;}
-.ainp{width:100%;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;transition:border-color .2s;box-sizing:border-box;}
+.ainp{width:100%;padding:7px 11px;border-radius:9px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;transition:border-color .2s;box-sizing:border-box;}
 .ainp:focus{border-color:var(--accent);}
-.ata{width:100%;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;resize:vertical;min-height:55px;transition:border-color .2s;box-sizing:border-box;}
+.ata{width:100%;padding:7px 11px;border-radius:9px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;resize:vertical;min-height:50px;transition:border-color .2s;box-sizing:border-box;}
 .ata:focus{border-color:var(--accent);}
 .abtn{padding:9px 18px;border:none;border-radius:11px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;letter-spacing:.3px;}
 .abtn:hover{opacity:.82;}
 .abtn-p{background:linear-gradient(135deg,#1DA9BD,#0D7A8A);color:#fff;}
 .abtn-g{background:rgba(29,169,189,0.1);border:1px solid rgba(29,169,189,0.2);color:var(--accent);}
 .asuc{display:none;color:var(--accent2);font-size:11px;font-weight:700;margin-top:8px;}
-.ee{background:var(--card2);border-radius:12px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border);position:relative;}
+.ee{background:var(--card2);border-radius:10px;padding:9px 12px;margin-bottom:7px;border:1px solid var(--border);position:relative;}
 .ee-del{position:absolute;top:10px;left:10px;background:rgba(255,55,95,0.1);border:1px solid rgba(255,55,95,0.2);color:var(--pink);border-radius:8px;padding:3px 10px;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer;}
-.ee-hdr{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:.3px;}
+.ee-hdr{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:7px;letter-spacing:.3px;}
 .ee-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .thbtns{display:flex;gap:8px;margin-top:6px;}
 .thbtn{flex:1;padding:9px;border:1px solid var(--border);border-radius:11px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--text);}
 .thbtn.on{border-color:var(--accent);background:rgba(29,169,189,0.1);color:var(--accent);}
 .pride-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.pride-block{background:var(--card2);border-radius:12px;padding:13px;border:1px solid var(--border);}
+.pride-block{background:var(--card2);border-radius:10px;padding:10px;border:1px solid var(--border);}
 .pride-block-num{font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.5px;}
-.h-block{background:var(--card2);border-radius:12px;padding:13px;border:1px solid var(--border);}
+.h-block{background:var(--card2);border-radius:10px;padding:10px;border:1px solid var(--border);}
 .h-block-num{font-size:10px;font-weight:700;color:var(--gold);margin-bottom:8px;letter-spacing:.5px;}
 </style>
 </head>
@@ -380,9 +381,10 @@ body.light .ticker{background:rgba(242,242,247,0.9);}
 
       <div class="card" id="card-img" style="grid-column:1;grid-row:2;">
         <div class="orb" style="width:100px;height:100px;background:var(--glow-g);bottom:-20px;left:-20px;animation-delay:1.2s;"></div>
-        <div class="ch"><span class="cht">الصورة المميزة</span></div>
-        <div class="img-wrap">
-          <img id="cimg" src="https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80" alt="">
+        <div class="ch"><span class="cht">الفيديو / الصورة المميزة</span></div>
+        <div class="img-wrap" id="media-wrap">
+          <iframe id="yt-frame" style="display:none;width:100%;height:100%;border:none;" allow="autoplay;loop" allowfullscreen></iframe>
+          <img id="cimg" src="https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80" alt="" style="width:100%;height:100%;object-fit:cover;">
           <div class="img-ov"><div class="img-cap" id="icap">الرياض</div></div>
         </div>
       </div>
@@ -407,19 +409,19 @@ body.light .ticker{background:rgba(242,242,247,0.9);}
             <div class="mm-name" id="mm-name">—</div>
             <div class="mm-dept" id="mm-dept">—</div>
           </div>
-          <div class="mm-bubble" id="mm-b1" style="top:12%;right:10%;">
+          <div class="mm-bubble" id="mm-b1" style="bottom:20%;right:6%;">
             <div class="mm-bubble-label">سبب الاختيار</div>
             <div class="mm-bubble-val" id="mm-reason">—</div>
           </div>
-          <div class="mm-bubble" id="mm-b2" style="bottom:12%;right:10%;">
+          <div class="mm-bubble" id="mm-b2" style="bottom:5%;right:18%;">
             <div class="mm-bubble-label">القسم</div>
             <div class="mm-bubble-val" id="mm-deptb">—</div>
           </div>
-          <div class="mm-bubble" id="mm-b3" style="top:12%;left:10%;">
+          <div class="mm-bubble" id="mm-b3" style="bottom:20%;left:6%;">
             <div class="mm-bubble-label">اقتباس مميز</div>
             <div class="mm-bubble-val" id="mm-quote">—</div>
           </div>
-          <div class="mm-bubble" id="mm-b4" style="bottom:12%;left:10%;">
+          <div class="mm-bubble" id="mm-b4" style="bottom:5%;left:18%;">
             <div class="mm-bubble-label">المسمى الوظيفي</div>
             <div class="mm-bubble-val" id="mm-role">—</div>
           </div>
@@ -471,6 +473,10 @@ body.light .ticker{background:rgba(242,242,247,0.9);}
         <div id="emp-admin-list"></div>
         <div style="display:flex;gap:10px;margin-top:8px;align-items:center;flex-wrap:wrap;">
           <button class="abtn abtn-g" onclick="addEE()">+ اضافة موظف</button>
+          <div style="display:flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;">
+            <label style="font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;">وقت الانبثاق (ثانية)</label>
+            <input class="ainp" id="mmInterval" type="number" min="10" max="300" value="30" style="width:70px;text-align:center;padding:5px 8px;">
+          </div>
           <button class="abtn abtn-p" onclick="saveEmps()">حفظ وتطبيق على الداشبورد</button>
           <span class="asuc" id="esuc">تم الحفظ وظهر على الداشبورد</span>
         </div>
@@ -510,9 +516,11 @@ body.light .ticker{background:rgba(242,242,247,0.9);}
       </div>
 
       <div class="acard">
-        <div class="atitle">الصورة المميزة</div>
-        <label class="albl">رابط الصورة</label><input class="ainp" id="aCI" placeholder="https://...">
-        <label class="albl">وصف الصورة</label><input class="ainp" id="aCC" style="margin-top:6px;">
+        <div class="atitle">الفيديو / الصورة المميزة</div>
+        <label class="albl">رابط يوتيوب او رابط صورة مباشر</label>
+        <input class="ainp" id="aCI" placeholder="https://youtube.com/watch?v=... او https://...jpg">
+        <div style="font-size:10px;color:var(--text3);margin-top:4px;margin-bottom:2px;">يوتيوب: الصق رابط الفيديو مباشرة — سيظهر مضمناً بشعار يوتيوب</div>
+        <label class="albl">وصف / عنوان</label><input class="ainp" id="aCC" style="margin-top:4px;">
         <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
           <button class="abtn abtn-p" onclick="saveCImg()">حفظ وتطبيق</button>
           <span class="asuc" id="cisuc">تم الحفظ</span>
@@ -719,9 +727,10 @@ function buildEmp(list){
 
   function startMmTimer(){
     clearInterval(mmTimer);
+    const sec=parseInt(document.getElementById('mmInterval')?.value||'30')*1000;
     mmTimer=setInterval(()=>{
       if(!mmShowing) showMindMap(eList[eIdx]);
-    },30000);
+    },sec);
   }
   startMmTimer();
 }
@@ -744,7 +753,20 @@ function renderAll({s,e,c}){
   document.getElementById('hlist').innerHTML=['1','2','3'].map(n=>{const h=get('heritage_'+n);return h.title?`<div class="hi"><div class="hd2"></div><div><div class="ht2">${h.title}</div><div class="hx2">${h.body||''}</div></div></div>`:''}).join('');
   document.getElementById('pride-seq').innerHTML=['1','2','3','4'].map((n,i)=>{const p=get('pride_'+n);return p.title?`<div class="pi2"><div class="pi2-num">${i+1}</div><div><div class="pi2-title">${p.title}</div><div class="pi2-body">${p.body||''}</div></div></div>`:''}).join('');
   const ci=get('custom_image');
-  if(ci?.body){document.getElementById('cimg').src=ci.body;document.getElementById('icap').textContent=ci.title||'';}
+  if(ci?.body){
+    const ytMatch=ci.body.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+    if(ytMatch){
+      const vid=ytMatch[1];
+      document.getElementById('yt-frame').src=`https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&loop=1&playlist=${vid}&controls=0&modestbranding=1`;
+      document.getElementById('yt-frame').style.display='block';
+      document.getElementById('cimg').style.display='none';
+    }else{
+      document.getElementById('cimg').src=ci.body;
+      document.getElementById('cimg').style.display='block';
+      document.getElementById('yt-frame').style.display='none';
+    }
+    document.getElementById('icap').textContent=ci.title||'';
+  }
 }
 
 // ══ upsert + admin ══
@@ -810,10 +832,10 @@ async function loadAdmin(){
   eeIds=[];document.getElementById('emp-admin-list').innerHTML='';
   (e.data||[]).forEach(emp=>addEE(emp));
   const get=t=>(c.data||[]).find(x=>x.content_type===t)||{};
-  document.getElementById('prideF').innerHTML=['1','2','3','4'].map(n=>{const p=get('pride_'+n);return`<div class="pride-block"><div class="pride-block-num">انجاز ${n}</div><label class="albl" style="margin-top:0;">العنوان</label><input class="ainp" id="ap${n}t" value="${(p.title||'').replace(/"/g,'&quot;')}" placeholder="مثال: رؤية 2030"><label class="albl">النص</label><textarea class="ata" id="ap${n}b" style="min-height:55px;">${p.body||''}</textarea></div>`;}).join('');
+  document.getElementById('prideF').innerHTML=['1','2','3','4'].map(n=>{const p=get('pride_'+n);return`<div class="pride-block"><div class="pride-block-num">انجاز ${n}</div><label class="albl" style="margin-top:0;">العنوان</label><input class="ainp" id="ap${n}t" value="${(p.title||'').replace(/"/g,'&quot;')}" placeholder="مثال: رؤية 2030"><label class="albl">النص</label><textarea class="ata" id="ap${n}b" style="min-height:44px;">${p.body||''}</textarea></div>`;}).join('');
   document.getElementById('aPrv').value=get('proverb').title||'';
   document.getElementById('aPrvM').value=get('proverb').body||'';
-  document.getElementById('heritageF').innerHTML=['1','2','3'].map(n=>{const h=get('heritage_'+n);return`<div class="h-block"><div class="h-block-num">فقرة ${n}</div><label class="albl" style="margin-top:0;">العنوان</label><input class="ainp" id="ah${n}t" value="${(h.title||'').replace(/"/g,'&quot;')}" placeholder="مثال: قهوة السادة"><label class="albl">النص</label><textarea class="ata" id="ah${n}b" style="min-height:55px;">${h.body||''}</textarea></div>`;}).join('');
+  document.getElementById('heritageF').innerHTML=['1','2','3'].map(n=>{const h=get('heritage_'+n);return`<div class="h-block"><div class="h-block-num">فقرة ${n}</div><label class="albl" style="margin-top:0;">العنوان</label><input class="ainp" id="ah${n}t" value="${(h.title||'').replace(/"/g,'&quot;')}" placeholder="مثال: قهوة السادة"><label class="albl">النص</label><textarea class="ata" id="ah${n}b" style="min-height:44px;">${h.body||''}</textarea></div>`;}).join('');
   document.getElementById('aDyk').value=get('did_you_know').body||'';
   const ev=get('today_event');document.getElementById('aEt').value=ev.title||'';document.getElementById('aEd').value=ev.body||'';document.getElementById('aEs').value=ev.subtitle||'';
   const ci=get('custom_image');document.getElementById('aCI').value=ci.body||'';document.getElementById('aCC').value=ci.title||'';
