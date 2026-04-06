@@ -9,18 +9,37 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;}
-body.dark{--bg:#0A1520;--card:#132030;--card2:#1A2C40;--border:rgba(255,255,255,0.07);--accent:#1DA9BD;--gold:#F4C430;--green:#27AE60;--purple:#8E44AD;--text:#F0F4F8;--text2:rgba(240,244,248,0.65);--text3:rgba(240,244,248,0.32);--topbar:linear-gradient(135deg,#071018,#0D1F2D);--admbg:#0D1F2D;--admcard:#132030;--inpbg:rgba(255,255,255,0.06);--inpborder:rgba(29,169,189,0.25);}
-body.light{--bg:#F0F4F8;--card:#FFFFFF;--card2:#EDF2F7;--border:rgba(0,0,0,0.08);--accent:#1DA9BD;--gold:#C8960A;--green:#1E8449;--purple:#6C3483;--text:#1A202C;--text2:rgba(26,32,44,0.65);--text3:rgba(26,32,44,0.35);--topbar:linear-gradient(135deg,#1DA9BD,#0D7A8A);--admbg:#EDF2F7;--admcard:#FFFFFF;--inpbg:rgba(0,0,0,0.04);--inpborder:rgba(29,169,189,0.35);}
-body{background:var(--bg);color:var(--text);transition:background .4s,color .4s;}
+
+body.dark{
+  --bg:#080F18;--card:#0F1E2E;--card2:#162435;
+  --border:rgba(255,255,255,0.06);
+  --accent:#1DA9BD;--gold:#F4C430;--green:#27AE60;--purple:#8E44AD;
+  --text:#EEF2F7;--text2:rgba(238,242,247,0.62);--text3:rgba(238,242,247,0.3);
+  --topbar:linear-gradient(135deg,#060E18,#0B1A28);
+  --glow1:rgba(29,169,189,0.12);--glow2:rgba(244,196,48,0.08);--glow3:rgba(142,68,173,0.09);--glow4:rgba(39,174,96,0.08);
+}
+body.light{
+  --bg:#E8EFF6;--card:#FFFFFF;--card2:#F0F4F9;
+  --border:rgba(0,0,0,0.07);
+  --accent:#1DA9BD;--gold:#B8860A;--green:#1A7040;--purple:#6C3483;
+  --text:#18202C;--text2:rgba(24,32,44,0.63);--text3:rgba(24,32,44,0.33);
+  --topbar:linear-gradient(135deg,#1DA9BD,#0D7A8A);
+  --glow1:rgba(29,169,189,0.07);--glow2:rgba(244,196,48,0.05);--glow3:rgba(142,68,173,0.06);--glow4:rgba(39,174,96,0.05);
+}
+body{background:var(--bg);color:var(--text);transition:background .5s,color .5s;}
+
+/* انارة متموجة خلف الكروت */
+@keyframes glow-pulse{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.08);}}
+.glow-orb{position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none;animation:glow-pulse 4s ease-in-out infinite;}
 
 /* LOGIN */
-#ls{display:flex;position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 50% 30%,#0D2E3A,#061520 60%,#030D14);align-items:center;justify-content:center;}
-.lbox{background:rgba(255,255,255,0.05);border:1px solid rgba(29,169,189,0.2);border-radius:24px;padding:44px 40px;width:100%;max-width:380px;backdrop-filter:blur(20px);}
-.lico{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px;color:#fff;font-weight:900;}
+#ls{display:flex;position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 50% 30%,#0D2E3A,#040D14 70%);align-items:center;justify-content:center;}
+.lbox{background:rgba(255,255,255,0.04);border:1px solid rgba(29,169,189,0.18);border-radius:24px;padding:44px 40px;width:100%;max-width:380px;backdrop-filter:blur(20px);}
+.lico{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;margin:0 auto 13px;font-size:22px;font-weight:900;color:#fff;}
 .ltitle{text-align:center;font-size:20px;font-weight:900;color:#fff;margin-bottom:3px;}
 .lsub{text-align:center;font-size:10px;color:rgba(29,169,189,0.8);letter-spacing:1px;margin-bottom:26px;}
-.llbl{font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);display:block;margin-bottom:7px;}
-.linp{width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(29,169,189,0.2);background:rgba(255,255,255,0.06);color:#fff;font-family:Cairo,sans-serif;font-size:14px;outline:none;margin-bottom:13px;transition:border-color .2s;}
+.llbl{font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px;}
+.linp{width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(29,169,189,0.2);background:rgba(255,255,255,0.06);color:#fff;font-family:Cairo,sans-serif;font-size:14px;outline:none;margin-bottom:12px;transition:border-color .2s;}
 .linp:focus{border-color:rgba(29,169,189,0.6);}
 .lbtn{width:100%;padding:13px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);color:#fff;border:none;border-radius:12px;font-family:Cairo,sans-serif;font-size:14px;font-weight:900;cursor:pointer;}
 .lerr{display:none;color:#E74C3C;font-size:12px;text-align:center;background:rgba(231,76,60,0.1);padding:7px;border-radius:8px;margin-bottom:11px;}
@@ -30,102 +49,184 @@ body{background:var(--bg);color:var(--text);transition:background .4s,color .4s;
 
 /* TOPBAR */
 .topbar{background:var(--topbar);border-bottom:2px solid var(--accent);padding:0 20px;height:50px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.tb-brand{display:flex;align-items:center;gap:9px;}
-.tb-ico2{width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:900;}
+.tb-brand{display:flex;align-items:center;gap:10px;}
+.tb-ico{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;}
 .tb-nm{font-size:13px;font-weight:900;color:#fff;}
-.tb-sb{font-size:8px;color:rgba(255,255,255,0.7);letter-spacing:1px;}
+.tb-sb{font-size:8px;color:rgba(255,255,255,0.65);letter-spacing:1px;}
 .tabs{display:flex;gap:4px;}
-.tab{padding:6px 15px;border:none;border-radius:8px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);transition:all .2s;}
+.tab{padding:6px 16px;border:none;border-radius:8px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);transition:all .2s;}
 .tab.active{background:rgba(255,255,255,0.25);color:#fff;}
 .tb-r{display:flex;align-items:center;gap:13px;}
 .tb-d{font-size:15px;font-weight:900;color:#fff;}
-.tb-dt{font-size:8px;color:rgba(255,255,255,0.7);}
+.tb-dt{font-size:8px;color:rgba(255,255,255,0.65);}
 #clk{font-size:19px;font-weight:900;color:#fff;direction:ltr;font-variant-numeric:tabular-nums;}
-.ldot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:p 1.5s infinite;display:inline-block;}
-@keyframes p{0%,100%{opacity:1;}50%{opacity:.2;}}
+.ldot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pp 1.5s infinite;display:inline-block;}
+@keyframes pp{0%,100%{opacity:1;}50%{opacity:.2;}}
 .out-btn{background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.25);color:#E74C3C;padding:5px 11px;border-radius:8px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;}
 
-/* DASHBOARD */
+/* ══ DASHBOARD ══ */
 #pgd{display:none;flex-direction:column;flex:1;overflow:hidden;}
-.dgrid{display:grid;grid-template-columns:1fr 1fr 285px;grid-template-rows:1fr 1fr;gap:8px;padding:8px 12px;flex:1;overflow:hidden;}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:background .4s,border-color .4s;}
-.ch{padding:7px 12px 5px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;flex-shrink:0;}
+
+/*
+  الشبكة الجديدة:
+  عمود 1: تراث+ثقافة (فوق) | صورة مخصصة (تحت)
+  عمود 2: موظف الشهر (وسط - يمتد صفين)
+  عمود 3: معلومة+فخر وطن (فوق) | حدث اليوم (تحت)
+  -- كارد الانجازات جنب موظف الشهر تحته --
+*/
+.dgrid{
+  display:grid;
+  grid-template-columns:1fr 340px 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:9px;
+  padding:9px 13px;
+  flex:1;
+  overflow:hidden;
+}
+
+/* كارد عام */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  transition:background .4s,border-color .4s;
+}
+.ch{padding:8px 13px 6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;flex-shrink:0;position:relative;z-index:1;}
 .cht{font-size:11px;font-weight:900;color:var(--text);}
-.chb{font-size:8px;font-weight:700;background:var(--accent);color:#fff;padding:2px 7px;border-radius:20px;margin-right:auto;}
-.cb{padding:8px 12px;overflow:hidden;flex:1;display:flex;flex-direction:column;}
+.chb{font-size:8px;font-weight:700;background:var(--accent);color:#fff;padding:2px 8px;border-radius:20px;margin-right:auto;}
+.cb{padding:9px 13px;overflow:hidden;flex:1;display:flex;flex-direction:column;position:relative;z-index:1;}
 
-.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex:1;}
-.pi{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:9px 11px;border-right:3px solid var(--accent);display:flex;flex-direction:column;overflow:hidden;transition:background .4s;}
-.pt{font-size:10px;font-weight:900;color:var(--accent);margin-bottom:2px;}
-.pf{font-size:9.5px;color:var(--text2);line-height:1.5;overflow:hidden;}
-
-.hi{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);flex-shrink:0;}
+/* ── تراث وثقافة (عمود 1، صف 1) ── */
+#card-heritage{grid-column:1;grid-row:1;}
+.hi{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);flex-shrink:0;}
 .hi:last-child{border-bottom:none;}
-.hd2{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px;}
-.ht2{font-size:10px;font-weight:900;color:var(--gold);margin-bottom:2px;}
-.hx2{font-size:9.5px;color:var(--text2);line-height:1.5;}
+.hd2{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px;}
+.ht2{font-size:11px;font-weight:900;color:var(--gold);margin-bottom:3px;}
+.hx2{font-size:10.5px;color:var(--text2);line-height:1.6;}
 
-.crow{display:flex;gap:7px;flex:1;min-height:0;}
-.ccard{flex:1;border-radius:10px;overflow:hidden;position:relative;min-height:0;}
-.ccard img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
-.ccard:hover img{transform:scale(1.06);}
-.cover{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.78) 0%,transparent 55%);display:flex;align-items:flex-end;padding:8px;}
-.cname{font-size:12px;font-weight:900;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.9);}
+/* ── صورة مخصصة (عمود 1، صف 2) ── */
+#card-custom-img{grid-column:1;grid-row:2;}
+.custom-img-wrap{flex:1;position:relative;overflow:hidden;border-radius:0 0 14px 14px;min-height:0;}
+.custom-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+.custom-img-wrap:hover img{transform:scale(1.04);}
+.custom-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%);display:flex;align-items:flex-end;padding:12px 14px;}
+.custom-img-caption{font-size:13px;font-weight:900;color:#fff;text-shadow:0 1px 5px rgba(0,0,0,.9);}
 
-#cinfo{grid-column:2;grid-row:2;display:flex;flex-direction:column;gap:7px;}
-.dyk2{background:linear-gradient(135deg,rgba(29,169,189,0.1),rgba(13,122,138,0.04));border:1px solid rgba(29,169,189,0.25);border-right:4px solid var(--accent);border-radius:10px;padding:10px 13px;flex:1;display:flex;flex-direction:column;justify-content:center;}
-.dlbl{font-size:9px;font-weight:700;color:var(--accent);letter-spacing:1px;margin-bottom:5px;}
-.dtxt{font-size:11.5px;color:var(--text);line-height:1.7;font-weight:600;}
-.evt2{background:linear-gradient(135deg,rgba(142,68,173,0.1),rgba(142,68,173,0.03));border:1px solid rgba(142,68,173,0.25);border-right:4px solid var(--purple);border-radius:10px;padding:10px 13px;flex:1;display:flex;flex-direction:column;justify-content:center;}
-.etitle{font-size:11px;font-weight:900;color:var(--purple);margin-bottom:3px;}
-.edesc{font-size:9.5px;color:var(--text2);line-height:1.6;margin-bottom:4px;}
-.esaudi{font-size:9.5px;color:var(--accent);border-right:2px solid var(--accent);padding-right:7px;font-style:italic;}
+/* ── موظف الشهر — وسط يمتد صفين ── */
+#card-emp{
+  grid-column:2;
+  grid-row:1/3;
+  background:linear-gradient(160deg,#0F1E2E 0%,#132535 60%,#0D1A28 100%);
+  border:1px solid rgba(244,196,48,0.2);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  border-radius:14px;
+}
+.emp-glow1{position:absolute;width:220px;height:220px;background:rgba(244,196,48,0.07);border-radius:50%;filter:blur(50px);top:-40px;right:-40px;animation:glow-pulse 5s ease-in-out infinite;}
+.emp-glow2{position:absolute;width:180px;height:180px;background:rgba(29,169,189,0.06);border-radius:50%;filter:blur(40px);bottom:-30px;left:-30px;animation:glow-pulse 6s ease-in-out infinite 1s;}
+.emp-hdr{background:linear-gradient(135deg,rgba(244,196,48,0.14),rgba(244,196,48,0.04));padding:10px 14px;border-bottom:1px solid rgba(244,196,48,0.12);flex-shrink:0;position:relative;z-index:1;}
+.emp-hdr-ttl{font-size:12px;font-weight:900;color:var(--gold);}
+.emp-hdr-sub{font-size:9px;color:rgba(244,196,48,0.6);margin-top:1px;}
+.emp-slide-wrap{flex:1;position:relative;overflow:hidden;z-index:1;}
+.emp-slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;opacity:0;transition:opacity .8s ease,transform .8s ease;transform:translateY(20px);}
+.emp-slide.active{opacity:1;transform:translateY(0);}
+.emp-slide.exit{opacity:0;transform:translateY(-20px);}
+.emp-rank{font-size:9px;font-weight:700;color:rgba(244,196,48,0.5);letter-spacing:2px;margin-bottom:10px;}
+.emp-av{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#C8960A);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;color:#fff;
+  box-shadow:0 0 0 4px rgba(244,196,48,0.15),0 6px 20px rgba(244,196,48,0.25);
+  margin-bottom:12px;flex-shrink:0;
+}
+.emp-name{font-size:16px;font-weight:900;color:#fff;text-align:center;margin-bottom:3px;}
+.emp-dept{font-size:10px;color:var(--gold);font-weight:700;text-align:center;margin-bottom:10px;}
+.emp-reason{font-size:10px;color:var(--text2);text-align:center;line-height:1.65;background:rgba(255,255,255,0.04);border-radius:10px;padding:9px 11px;width:100%;}
+.emp-quote{font-size:10px;font-weight:700;color:var(--accent);text-align:center;margin-top:9px;padding:8px;border-radius:9px;background:rgba(29,169,189,0.08);border-bottom:2px solid var(--accent);width:100%;}
+/* نقاط التنقل */
+.emp-dots{display:flex;justify-content:center;gap:6px;padding:10px 0 12px;flex-shrink:0;position:relative;z-index:1;}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(244,196,48,0.2);transition:all .4s;cursor:pointer;}
+.dot.on{background:var(--gold);width:20px;border-radius:4px;}
 
-#rcol{grid-column:3;grid-row:1/3;display:flex;flex-direction:column;gap:7px;}
-.ecard{background:var(--card);border:1px solid rgba(244,196,48,0.25);border-radius:12px;overflow:hidden;flex-shrink:0;}
-.ehdr{background:linear-gradient(135deg,rgba(244,196,48,0.15),rgba(244,196,48,0.04));padding:8px 12px;border-bottom:1px solid rgba(244,196,48,0.15);}
-.ettl{font-size:11px;font-weight:900;color:var(--gold);}
-.ebody{padding:11px;display:flex;gap:11px;align-items:flex-start;}
-.eav{width:48px;height:48px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--gold),#E8A800);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;box-shadow:0 3px 12px rgba(244,196,48,0.3);}
-.einfo{flex:1;min-width:0;}
-.ename{font-size:13px;font-weight:900;color:var(--text);margin-bottom:1px;}
-.edept{font-size:9px;color:var(--gold);font-weight:700;margin-bottom:5px;}
-.ereason{font-size:9.5px;color:var(--text2);line-height:1.55;background:rgba(0,0,0,0.05);border-radius:7px;padding:6px;}
-.equote{font-size:9.5px;font-weight:700;color:var(--accent);margin-top:7px;padding:6px;border-radius:7px;background:rgba(29,169,189,0.08);border-right:3px solid var(--accent);}
-.acard{background:linear-gradient(135deg,rgba(39,174,96,0.08),rgba(39,174,96,0.02));border:1px solid rgba(39,174,96,0.2);border-radius:12px;padding:12px;flex-shrink:0;}
-.attl{font-size:11px;font-weight:900;color:var(--green);}
-.aname{font-size:12px;font-weight:900;color:var(--text);margin-bottom:1px;margin-top:8px;}
-.adept{font-size:9px;color:var(--text3);margin-bottom:5px;}
-.amsg{font-size:9.5px;color:var(--text2);line-height:1.6;margin-bottom:7px;}
-.aquote{font-size:9.5px;color:var(--green);font-weight:700;padding:6px 9px;border-radius:7px;background:rgba(39,174,96,0.08);border-right:3px solid var(--green);}
-.pcard{background:linear-gradient(135deg,rgba(244,196,48,0.07),rgba(244,196,48,0.02));border:1px solid rgba(244,196,48,0.15);border-radius:12px;padding:14px;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;}
-.plbl{font-size:8px;letter-spacing:2px;color:var(--text3);font-weight:700;margin-bottom:8px;}
-.ptxt{font-size:14px;font-weight:900;color:var(--gold);margin-bottom:7px;line-height:1.55;}
-.pmeaning{font-size:10px;color:var(--text2);line-height:1.6;}
+/* ── المعلومة + فخر وطن + حدث (عمود 3) ── */
+#card-right-top{grid-column:3;grid-row:1;display:flex;flex-direction:column;gap:0;}
+#card-right-top .card{flex:1;border-radius:14px;}
 
+/* معلومة اليوم */
+.dyk2{
+  background:linear-gradient(135deg,rgba(29,169,189,0.1),rgba(13,122,138,0.04));
+  border:1px solid rgba(29,169,189,0.22);border-right:4px solid var(--accent);
+  border-radius:14px;padding:12px 14px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.dyk2-glow{position:absolute;width:120px;height:120px;background:rgba(29,169,189,0.1);border-radius:50%;filter:blur(30px);top:-20px;left:-20px;animation:glow-pulse 4s ease-in-out infinite;}
+.dlbl{font-size:9px;font-weight:700;color:var(--accent);letter-spacing:1px;margin-bottom:6px;position:relative;z-index:1;}
+.dtxt{font-size:12px;color:var(--text);line-height:1.75;font-weight:600;position:relative;z-index:1;}
+
+/* فخر وطن متسلسل */
+.pride-seq{flex:1;overflow:hidden;position:relative;}
+.pride-seq-inner{display:flex;flex-direction:column;gap:0;}
+.pi2{padding:7px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;}
+.pi2:last-child{border-bottom:none;}
+.pi2-num{font-size:9px;font-weight:900;color:var(--accent);background:rgba(29,169,189,0.1);width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.pi2-title{font-size:10px;font-weight:900;color:var(--text);margin-bottom:2px;}
+.pi2-body{font-size:9.5px;color:var(--text2);line-height:1.5;}
+
+/* حدث اليوم */
+#card-right-bot{grid-column:3;grid-row:2;}
+.evt2{
+  background:linear-gradient(135deg,rgba(142,68,173,0.1),rgba(142,68,173,0.03));
+  border:1px solid rgba(142,68,173,0.22);border-right:4px solid var(--purple);
+  border-radius:14px;padding:12px 14px;flex:1;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.evt2-glow{position:absolute;width:100px;height:100px;background:rgba(142,68,173,0.1);border-radius:50%;filter:blur(28px);bottom:-10px;right:-10px;animation:glow-pulse 5s ease-in-out infinite 0.5s;}
+.etitle{font-size:12px;font-weight:900;color:var(--purple);margin-bottom:5px;position:relative;z-index:1;}
+.edesc{font-size:10.5px;color:var(--text2);line-height:1.65;margin-bottom:7px;position:relative;z-index:1;}
+.esaudi{font-size:10.5px;color:var(--accent);border-right:2px solid var(--accent);padding-right:8px;font-style:italic;position:relative;z-index:1;line-height:1.6;}
+
+/* مثل الشهر تحت كارد الصورة */
+.prv-strip{
+  background:linear-gradient(135deg,rgba(244,196,48,0.08),rgba(244,196,48,0.02));
+  border-top:1px solid rgba(244,196,48,0.1);
+  padding:10px 14px;flex-shrink:0;position:relative;z-index:1;
+}
+.prv-lbl2{font-size:8px;letter-spacing:1.5px;color:var(--text3);font-weight:700;margin-bottom:4px;}
+.prv-txt2{font-size:11px;font-weight:900;color:var(--gold);margin-bottom:3px;}
+.prv-mean2{font-size:9.5px;color:var(--text2);}
+
+/* شريط التمرير */
+.ticker{background:linear-gradient(135deg,#060E18,#0B1A28);border-top:1px solid var(--accent);height:30px;display:flex;align-items:center;overflow:hidden;flex-shrink:0;}
+body.light .ticker{background:linear-gradient(135deg,#0D7A8A,#1DA9BD);}
+.tlbl{background:var(--accent);color:#fff;font-size:9px;font-weight:900;padding:0 12px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;letter-spacing:1px;}
+.ttrack{display:flex;align-items:center;animation:tk 55s linear infinite;white-space:nowrap;}
+.ttrack:hover{animation-play-state:paused;}
+@keyframes tk{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.titem{font-size:10px;color:rgba(255,255,255,0.85);padding:0 22px;border-right:1px solid rgba(255,255,255,0.12);}
+.titem b{color:#fff;font-weight:900;}
+
+/* موشن */
 @keyframes fi{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .fa{animation:fi .55s ease both;}
 
-.ticker{background:linear-gradient(135deg,#071018,#0D1F2D);border-top:1px solid var(--accent);height:30px;display:flex;align-items:center;overflow:hidden;flex-shrink:0;}
-body.light .ticker{background:linear-gradient(135deg,#0D7A8A,#1DA9BD);}
-.tlbl{background:var(--accent);color:#fff;font-size:9px;font-weight:900;padding:0 12px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;letter-spacing:1px;}
-.ttrack{display:flex;align-items:center;animation:tk 50s linear infinite;white-space:nowrap;}
-.ttrack:hover{animation-play-state:paused;}
-@keyframes tk{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.titem{font-size:10px;color:rgba(255,255,255,0.85);padding:0 22px;border-right:1px solid rgba(255,255,255,0.15);}
-.titem b{color:#fff;font-weight:900;}
-
-/* ADMIN */
+/* ══ ADMIN ══ */
 #pga{display:none;flex:1;overflow-y:auto;padding:18px;}
 .agrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:1100px;margin:0 auto;}
-.acard2{background:var(--admcard);border:1px solid var(--border);border-radius:16px;padding:18px;}
-.acard2.full{grid-column:1/3;}
+.acard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;}
+.acard.full{grid-column:1/3;}
 .atitle{font-size:13px;font-weight:900;color:var(--accent);margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--border);}
 .albl{font-size:11px;font-weight:700;color:var(--text2);display:block;margin-bottom:5px;margin-top:10px;}
 .albl:first-of-type{margin-top:0;}
-.ainp{width:100%;padding:9px 13px;border-radius:10px;border:1.5px solid var(--inpborder);background:var(--inpbg);color:var(--text);font-family:Cairo,sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.ainp{width:100%;padding:9px 13px;border-radius:10px;border:1.5px solid rgba(29,169,189,0.2);background:rgba(29,169,189,0.04);color:var(--text);font-family:Cairo,sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
 .ainp:focus{border-color:var(--accent);}
-.ata{width:100%;padding:9px 13px;border-radius:10px;border:1.5px solid var(--inpborder);background:var(--inpbg);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;resize:vertical;min-height:68px;transition:border-color .2s;}
+.ata{width:100%;padding:9px 13px;border-radius:10px;border:1.5px solid rgba(29,169,189,0.2);background:rgba(29,169,189,0.04);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;resize:vertical;min-height:66px;transition:border-color .2s;}
 .ata:focus{border-color:var(--accent);}
 .abtn{padding:9px 18px;border:none;border-radius:10px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;}
 .abtn:hover{opacity:.85;}
@@ -138,10 +239,13 @@ body.light .ticker{background:linear-gradient(135deg,#0D7A8A,#1DA9BD);}
 .thbtns{display:flex;gap:8px;margin-top:6px;}
 .thbtn{flex:1;padding:9px;border:2px solid var(--border);border-radius:10px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--text);}
 .thbtn.on{border-color:var(--accent);background:rgba(29,169,189,0.1);color:var(--accent);}
+.emp-entry{background:var(--card2);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:6px;position:relative;}
+.emp-entry-del{position:absolute;top:8px;left:8px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);color:#E74C3C;border-radius:6px;padding:3px 9px;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer;}
 </style>
 </head>
 <body class="dark">
 
+<!-- LOGIN -->
 <div id="ls">
   <div class="lbox">
     <div class="lico">N</div>
@@ -156,9 +260,14 @@ body.light .ticker{background:linear-gradient(135deg,#0D7A8A,#1DA9BD);}
   </div>
 </div>
 
+<!-- APP -->
 <div id="app" style="display:none;flex-direction:column;height:100vh;">
+
   <div class="topbar">
-    <div class="tb-brand"><div class="tb-ico2">N</div><div><div class="tb-nm">نورة لتعليم القيادة</div><div class="tb-sb">NOURA DRIVING ACADEMY</div></div></div>
+    <div class="tb-brand">
+      <div class="tb-ico">N</div>
+      <div><div class="tb-nm">نورة لتعليم القيادة</div><div class="tb-sb">NOURA DRIVING ACADEMY</div></div>
+    </div>
     <div class="tabs">
       <button class="tab active" id="tdash" onclick="sw('d')">لوحة العرض</button>
       <button class="tab" id="tadm" onclick="sw('a')">لوحة التحكم</button>
@@ -174,49 +283,68 @@ body.light .ticker{background:linear-gradient(135deg,#0D7A8A,#1DA9BD);}
   <!-- DASHBOARD -->
   <div id="pgd" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
     <div class="dgrid">
-      <div class="card fa" style="grid-column:1;grid-row:1;">
-        <div class="ch"><span class="cht">فخر وطن</span><span class="chb">انجازات ومشاريع</span></div>
-        <div class="cb"><div class="pgrid" id="pgrid"></div></div>
-      </div>
-      <div class="card fa" style="grid-column:2;grid-row:1;animation-delay:.08s">
+
+      <!-- عمود 1 صف 1: تراث وثقافة -->
+      <div class="card fa" id="card-heritage" style="grid-column:1;grid-row:1;">
+        <div class="glow-orb" style="width:150px;height:150px;background:var(--glow2);top:-40px;right:-30px;animation-delay:.5s;"></div>
         <div class="ch"><span class="cht">تراث وثقافة</span><span class="chb">امثال وموروث</span></div>
-        <div class="cb" id="hlist" style="justify-content:center;"></div>
-      </div>
-      <div class="card fa" style="grid-column:1;grid-row:2;animation-delay:.14s">
-        <div class="ch"><span class="cht">من اجمل مدننا</span><span class="chb">صور يومية</span></div>
-        <div class="cb" style="padding:7px 10px;"><div class="crow" id="crow"></div></div>
-      </div>
-      <div id="cinfo" class="fa" style="animation-delay:.18s">
-        <div class="dyk2"><div class="dlbl">معلومة اليوم</div><div class="dtxt" id="dtxt">جار التحميل...</div></div>
-        <div class="evt2"><div class="etitle" id="etitle">—</div><div class="edesc" id="edesc">—</div><div class="esaudi" id="esaudi">—</div></div>
-      </div>
-      <div id="rcol">
-        <div class="ecard fa" style="animation-delay:.22s">
-          <div class="ehdr"><div class="ettl">موظف / موظفة الشهر</div></div>
-          <div class="ebody">
-            <div class="eav" id="eav">*</div>
-            <div class="einfo">
-              <div class="ename" id="ename">—</div>
-              <div class="edept" id="edept">—</div>
-              <div class="ereason" id="ereason">—</div>
-              <div class="equote" id="equote">—</div>
-            </div>
-          </div>
-        </div>
-        <div class="acard fa" style="animation-delay:.26s">
-          <div class="attl" id="attl">انجازات الموظفين</div>
-          <div class="aname" id="aname">—</div>
-          <div class="adept" id="adept">—</div>
-          <div class="amsg" id="amsg">—</div>
-          <div class="aquote" id="aquote">—</div>
-        </div>
-        <div class="pcard fa" style="animation-delay:.3s">
-          <div class="plbl">المثل الشعبي اليوم</div>
-          <div class="ptxt" id="ptxt">—</div>
-          <div class="pmeaning" id="pmean">—</div>
+        <div class="cb" id="hlist" style="justify-content:center;gap:0;padding:0;"></div>
+        <!-- مثل الشهر في الأسفل -->
+        <div class="prv-strip">
+          <div class="prv-lbl2">المثل الشعبي اليوم</div>
+          <div class="prv-txt2" id="ptxt">—</div>
+          <div class="prv-mean2" id="pmean">—</div>
         </div>
       </div>
+
+      <!-- عمود 1 صف 2: صورة مخصصة -->
+      <div class="card fa" id="card-custom-img" style="grid-column:1;grid-row:2;animation-delay:.1s;">
+        <div class="glow-orb" style="width:120px;height:120px;background:var(--glow4);bottom:-20px;left:-20px;animation-delay:1s;"></div>
+        <div class="ch"><span class="cht">الصورة المميزة</span><span class="chb">يومية</span></div>
+        <div class="custom-img-wrap" id="custom-img-wrap">
+          <img id="custom-img" src="https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80" alt="">
+          <div class="custom-img-overlay"><div class="custom-img-caption" id="custom-img-cap">الرياض</div></div>
+        </div>
+      </div>
+
+      <!-- عمود 2: موظف الشهر — يمتد صفين -->
+      <div id="card-emp" class="fa" style="animation-delay:.05s;">
+        <div class="emp-glow1"></div>
+        <div class="emp-glow2"></div>
+        <div class="emp-hdr">
+          <div class="emp-hdr-ttl">موظف / موظفة الشهر</div>
+          <div class="emp-hdr-sub">يتجدد كل 20 ثانية</div>
+        </div>
+        <div class="emp-slide-wrap" id="emp-slide-wrap"></div>
+        <div class="emp-dots" id="emp-dots"></div>
+      </div>
+
+      <!-- عمود 3 صف 1: معلومة + فخر وطن -->
+      <div class="fa" style="grid-column:3;grid-row:1;display:flex;flex-direction:column;gap:8px;animation-delay:.12s;">
+        <div class="dyk2">
+          <div class="dyk2-glow"></div>
+          <div class="dlbl">معلومة اليوم</div>
+          <div class="dtxt" id="dtxt">جار التحميل...</div>
+        </div>
+        <div class="card" style="flex:1;border:1px solid rgba(29,169,189,0.15);">
+          <div class="glow-orb" style="width:100px;height:100px;background:var(--glow1);top:-10px;right:-10px;animation-delay:2s;"></div>
+          <div class="ch"><span class="cht">فخر وطن</span><span class="chb">انجازات ومشاريع</span></div>
+          <div class="cb" style="padding:0;gap:0;" id="pride-seq"></div>
+        </div>
+      </div>
+
+      <!-- عمود 3 صف 2: حدث اليوم -->
+      <div class="fa" style="grid-column:3;grid-row:2;animation-delay:.18s;">
+        <div class="evt2">
+          <div class="evt2-glow"></div>
+          <div class="etitle" id="etitle">—</div>
+          <div class="edesc" id="edesc">—</div>
+          <div class="esaudi" id="esaudi">—</div>
+        </div>
+      </div>
+
     </div>
+
     <div class="ticker">
       <div class="tlbl">نورة</div>
       <div class="ttrack" id="ttrack">
@@ -236,48 +364,54 @@ body.light .ticker{background:linear-gradient(135deg,#0D7A8A,#1DA9BD);}
   <div id="pga" style="display:none;flex:1;overflow-y:auto;padding:18px;">
     <div class="agrid">
 
-      <div class="acard2">
-        <div class="atitle">موظف / موظفة الشهر</div>
-        <label class="albl">الاسم الكامل</label><input class="ainp" id="aen" placeholder="مثال: سارة العمري">
-        <label class="albl">القسم</label><input class="ainp" id="aed">
-        <label class="albl">المسمى الوظيفي</label><input class="ainp" id="aer">
-        <label class="albl">سبب الاختيار</label><textarea class="ata" id="aeReason"></textarea>
-        <label class="albl">اقتباس مميز</label><input class="ainp" id="aeq">
+      <!-- موظفو الشهر — حتى 7 -->
+      <div class="acard full">
+        <div class="atitle">موظفو الشهر — حتى 7 موظفين (يتناوبون كل 20 ثانية)</div>
+        <div id="emp-admin-list"></div>
+        <button class="abtn abtn-p" style="margin-top:6px;" onclick="addEmpEntry()">اضافة موظف</button>
         <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
-          <button class="abtn abtn-p" onclick="saveEmp()">حفظ وتطبيق</button>
+          <button class="abtn abtn-p" onclick="saveEmps()">حفظ وتطبيق الجميع</button>
           <span class="asuc" id="esuc">تم الحفظ</span>
         </div>
       </div>
 
-      <div class="acard2">
-        <div class="atitle">كارد الانجازات</div>
-        <label class="albl">عنوان الانجاز</label><input class="ainp" id="aAt">
-        <label class="albl">اسم الموظف / الفريق</label><input class="ainp" id="aAn">
-        <label class="albl">القسم</label><input class="ainp" id="aAd">
-        <label class="albl">رسالة التهنئة</label><textarea class="ata" id="aAm"></textarea>
-        <label class="albl">اقتباس</label><input class="ainp" id="aAq">
+      <!-- صورة مخصصة -->
+      <div class="acard">
+        <div class="atitle">الصورة المميزة (العمود الايسر تحت)</div>
+        <label class="albl">رابط الصورة</label>
+        <input class="ainp" id="aCustomImg" placeholder="https://...">
+        <label class="albl">وصف الصورة</label>
+        <input class="ainp" id="aCustomCap" placeholder="مثال: الرياض في الصباح">
         <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
-          <button class="abtn abtn-p" onclick="saveAch()">حفظ وتطبيق</button>
-          <span class="asuc" id="asuc">تم الحفظ</span>
+          <button class="abtn abtn-p" onclick="saveCustomImg()">حفظ وتطبيق</button>
+          <span class="asuc" id="cimgsuc">تم الحفظ</span>
         </div>
       </div>
 
-      <div class="acard2">
+      <!-- المحتوى اليومي -->
+      <div class="acard">
         <div class="atitle">المحتوى اليومي</div>
-        <label class="albl">معلومة اليوم</label><textarea class="ata" id="aDyk"></textarea>
-        <label class="albl">عنوان حدث اليوم</label><input class="ainp" id="aEt">
-        <label class="albl">وصف الحدث</label><textarea class="ata" id="aEd"></textarea>
-        <label class="albl">الربط بالسعودية</label><input class="ainp" id="aEs">
+        <label class="albl">معلومة اليوم</label>
+        <textarea class="ata" id="aDyk"></textarea>
+        <label class="albl">عنوان حدث اليوم</label>
+        <input class="ainp" id="aEt">
+        <label class="albl">وصف الحدث</label>
+        <textarea class="ata" id="aEd"></textarea>
+        <label class="albl">الربط بالسعودية</label>
+        <input class="ainp" id="aEs">
         <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
           <button class="abtn abtn-p" onclick="saveDaily()">حفظ وتطبيق</button>
           <span class="asuc" id="dsuc">تم الحفظ</span>
         </div>
       </div>
 
-      <div class="acard2">
+      <!-- المثل والتراث -->
+      <div class="acard">
         <div class="atitle">المثل والتراث</div>
-        <label class="albl">المثل الشعبي</label><input class="ainp" id="aPrv">
-        <label class="albl">معنى المثل</label><input class="ainp" id="aPrvM">
+        <label class="albl">المثل الشعبي</label>
+        <input class="ainp" id="aPrv">
+        <label class="albl">معنى المثل</label>
+        <input class="ainp" id="aPrvM">
         <label class="albl">تراث 1 — العنوان</label><input class="ainp" id="ah1t">
         <label class="albl">تراث 1 — النص</label><input class="ainp" id="ah1b">
         <label class="albl">تراث 2 — العنوان</label><input class="ainp" id="ah2t">
@@ -290,8 +424,9 @@ body.light .ticker{background:linear-gradient(135deg,#0D7A8A,#1DA9BD);}
         </div>
       </div>
 
-      <div class="acard2">
-        <div class="atitle">فخر وطن — الكروت الاربعة</div>
+      <!-- فخر وطن -->
+      <div class="acard">
+        <div class="atitle">فخر وطن — 4 انجازات متسلسلة</div>
         <div id="prideFields"></div>
         <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
           <button class="abtn abtn-p" onclick="savePride()">حفظ وتطبيق</button>
@@ -299,33 +434,20 @@ body.light .ticker{background:linear-gradient(135deg,#0D7A8A,#1DA9BD);}
         </div>
       </div>
 
-      <div class="acard2">
-        <div class="atitle">صور المدن</div>
-        <div id="imgList"></div>
-        <label class="albl" style="margin-top:12px;">رابط الصورة الجديدة</label>
-        <input class="ainp" id="imgUrl" placeholder="https://...">
-        <label class="albl">الوصف</label>
-        <input class="ainp" id="imgCap" style="margin-top:5px;">
-        <button class="abtn abtn-p" style="margin-top:10px;" onclick="addImg()">اضافة صورة</button>
-      </div>
-
-      <div class="acard2 full">
+      <!-- الاعدادات -->
+      <div class="acard">
         <div class="atitle">الاعدادات العامة</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-          <div>
-            <label class="albl">الثيم</label>
-            <div class="thbtns">
-              <button class="thbtn on" id="thd" onclick="setTheme('dark')">داكن</button>
-              <button class="thbtn" id="thl" onclick="setTheme('light')">فاتح</button>
-            </div>
-          </div>
-          <div>
-            <label class="albl">نص شريط التمرير</label>
-            <input class="ainp" id="aTicker" placeholder="نص الشريط...">
-            <button class="abtn abtn-p" style="margin-top:9px;" onclick="saveTicker()">حفظ الشريط</button>
-          </div>
+        <label class="albl">الثيم</label>
+        <div class="thbtns">
+          <button class="thbtn on" id="thd" onclick="setTheme('dark')">داكن</button>
+          <button class="thbtn" id="thl" onclick="setTheme('light')">فاتح</button>
         </div>
-        <div style="margin-top:10px;"><span class="asuc" id="ssuc" style="display:none;">تم الحفظ</span></div>
+        <label class="albl">نص شريط التمرير</label>
+        <input class="ainp" id="aTicker">
+        <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
+          <button class="abtn abtn-p" onclick="saveTicker()">حفظ الشريط</button>
+          <span class="asuc" id="ssuc">تم الحفظ</span>
+        </div>
       </div>
 
     </div>
@@ -335,46 +457,54 @@ body.light .ticker{background:linear-gradient(135deg,#0D7A8A,#1DA9BD);}
 <script>
 const SB_URL='https://ljgctajxnqzkwxxhyrqi.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqZ2N0YWp4bnF6a3d4eGh5cnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzY5MTEsImV4cCI6MjA4ODc1MjkxMX0.0QUy4hmqpjfIKmK0XOPWElfqEzhp1ILr9xjUtt_K6EM';
-const {createClient}=supabase;
+const{createClient}=supabase;
 const db=createClient(SB_URL,SB_KEY);
 const HASH='00eef6545e71068cf7874ff31a08ccab21e3dcb0da1685bc131317f9504ad357';
-let curTheme='dark';let lastSnap='';let timer=null;
 
+let curTheme='dark';
+let lastSnap='';
+let timer=null;
+let empSlideTimer=null;
+let empList=[];
+let curEmpIdx=0;
+
+// ── صوت ──
 function ping(){
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();
     const o=ctx.createOscillator(),g=ctx.createGain();
     o.connect(g);g.connect(ctx.destination);
-    o.type='sine';o.frequency.setValueAtTime(880,ctx.currentTime);
+    o.type='sine';
+    o.frequency.setValueAtTime(880,ctx.currentTime);
     o.frequency.exponentialRampToValueAtTime(440,ctx.currentTime+0.25);
-    g.gain.setValueAtTime(0.25,ctx.currentTime);
+    g.gain.setValueAtTime(0.2,ctx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.4);
     o.start();o.stop(ctx.currentTime+0.4);
   }catch(e){}
 }
 
+// ── Auth ──
 async function hp(p){
   const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));
   return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
 }
-
 async function doLogin(){
   const u=document.getElementById('lu').value.trim().toLowerCase();
   const p=document.getElementById('lp').value;
   if(u==='admin'&&await hp(p)===HASH){
     document.getElementById('ls').style.display='none';
-    const app=document.getElementById('app');app.style.display='flex';
+    document.getElementById('app').style.display='flex';
     init();
   }else{document.getElementById('lerr').style.display='block';}
 }
-
 function doLogout(){
   document.getElementById('app').style.display='none';
   document.getElementById('ls').style.display='flex';
   document.getElementById('lp').value='';
-  clearInterval(timer);
+  clearInterval(timer);clearInterval(empSlideTimer);
 }
 
+// ── التبويبات ──
 function sw(t){
   document.getElementById('pgd').style.display=t==='d'?'flex':'none';
   document.getElementById('pga').style.display=t==='a'?'flex':'none';
@@ -383,6 +513,7 @@ function sw(t){
   if(t==='a') loadAdmin();
 }
 
+// ── ساعة ──
 function tick(){
   const n=new Date();
   const D=['الاحد','الاثنين','الثلاثاء','الاربعاء','الخميس','الجمعة','السبت'];
@@ -393,79 +524,172 @@ function tick(){
 }
 setInterval(tick,1000);tick();
 
+// ── جلب البيانات ──
 async function snap(){
-  const [s,e,c,i]=await Promise.all([
+  const[s,e,c,ci]=await Promise.all([
     db.from('dashboard_settings').select('*').single(),
-    db.from('employee_of_month').select('*').eq('active',true).order('updated_at',{ascending:false}).limit(1).single(),
+    db.from('employee_of_month').select('*').eq('active',true).order('created_at',{ascending:true}),
     db.from('dashboard_content').select('*').eq('active',true),
-    db.from('dashboard_images').select('*').eq('active',true).order('sort_order'),
+    db.from('dashboard_content').select('*').eq('content_type','custom_image').single(),
   ]);
-  return JSON.stringify({s:s.data,e:e.data,c:c.data,i:i.data});
+  return JSON.stringify({s:s.data,e:e.data,c:c.data,ci:ci.data});
 }
 
 async function init(){
   const sn=await snap();lastSnap=sn;render(JSON.parse(sn));loadAdmin();
   timer=setInterval(async()=>{
     const sn=await snap();
-    if(sn!==lastSnap){lastSnap=sn;render(JSON.parse(sn));ping();anim();}
+    if(sn!==lastSnap){lastSnap=sn;render(JSON.parse(sn));ping();}
   },25000);
 }
 
-function anim(){
-  document.querySelectorAll('.card,.ecard,.acard,.pcard').forEach((c,i)=>{
-    c.style.animation='none';
-    setTimeout(()=>{c.style.animation=`fi .55s ease ${i*0.06}s both`;},10);
-  });
-}
+// ── عرض الموظفين بالتناوب ──
+function buildEmpSlides(emps){
+  clearInterval(empSlideTimer);
+  empList=emps||[];
+  if(!empList.length) return;
+  curEmpIdx=0;
+  const wrap=document.getElementById('emp-slide-wrap');
+  const dotsEl=document.getElementById('emp-dots');
 
-function render({s,e,c,i}){
-  if(s?.theme){curTheme=s.theme;document.body.className=s.theme;document.getElementById('thd').className='thbtn'+(s.theme==='dark'?' on':'');document.getElementById('thl').className='thbtn'+(s.theme==='light'?' on':'');}
-  if(s?.ticker_text){const t=`<div class="titem">${s.ticker_text}</div>`;document.getElementById('ttrack').innerHTML=t.repeat(8);}
-  if(e){
-    document.getElementById('ename').textContent=e.name||'—';
-    document.getElementById('edept').textContent=(e.department||'')+(e.role?' — '+e.role:'');
-    document.getElementById('ereason').textContent=e.reason||'—';
-    document.getElementById('equote').textContent=e.quote||'';
-    document.getElementById('eav').textContent=e.name?e.name.charAt(0):'*';
+  function render_slides(){
+    wrap.innerHTML=empList.map((e,i)=>`
+      <div class="emp-slide${i===curEmpIdx?' active':''}" id="emp-s${i}">
+        <div class="emp-rank">${i+1} / ${empList.length}</div>
+        <div class="emp-av">${e.name?e.name.trim().charAt(0):'*'}</div>
+        <div class="emp-name">${e.name||'—'}</div>
+        <div class="emp-dept">${(e.department||'')+(e.role?' — '+e.role:'')}</div>
+        ${e.reason?`<div class="emp-reason">${e.reason}</div>`:''}
+        ${e.quote?`<div class="emp-quote">${e.quote}</div>`:''}
+      </div>`).join('');
+    dotsEl.innerHTML=empList.map((_,i)=>`<div class="dot${i===curEmpIdx?' on':''}" onclick="goEmp(${i})"></div>`).join('');
   }
-  const get=t=>(c||[]).find(x=>x.content_type===t)||{};
-  const ach=get('achievement');
-  document.getElementById('attl').textContent=ach.title||'انجازات الموظفين';
-  document.getElementById('aname').textContent=ach.subtitle||'—';
-  document.getElementById('adept').textContent='';
-  document.getElementById('amsg').textContent=ach.body||'—';
-  document.getElementById('aquote').textContent='';
-  const dyk=get('did_you_know');document.getElementById('dtxt').textContent=dyk.body||'—';
-  const evt=get('today_event');
-  document.getElementById('etitle').textContent=evt.title||'—';
-  document.getElementById('edesc').textContent=evt.body||'';
-  document.getElementById('esaudi').textContent=evt.subtitle||'';
-  const prv=get('proverb');
-  document.getElementById('ptxt').textContent=prv.title||'—';
-  document.getElementById('pmean').textContent=prv.body||'';
-  document.getElementById('hlist').innerHTML=['1','2','3'].map(n=>{const h=get('heritage_'+n);return h.title?`<div class="hi"><div class="hd2"></div><div><div class="ht2">${h.title}</div><div class="hx2">${h.body||''}</div></div></div>`:''}).join('');
-  document.getElementById('pgrid').innerHTML=['1','2','3','4'].map(n=>{const p=get('pride_'+n);return p.title?`<div class="pi"><div class="pt">${p.title}</div><div class="pf">${p.body||''}</div></div>`:''}).join('');
-  document.getElementById('crow').innerHTML=(i||[]).map(x=>`<div class="ccard"><img src="${x.url}" alt="${x.caption||''}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80'"><div class="cover"><div class="cname">${x.caption||''}</div></div></div>`).join('');
+  render_slides();
+
+  if(empList.length>1){
+    empSlideTimer=setInterval(()=>{
+      const prev=curEmpIdx;
+      curEmpIdx=(curEmpIdx+1)%empList.length;
+      const slides=document.querySelectorAll('.emp-slide');
+      const dots=document.querySelectorAll('.dot');
+      slides.forEach((s,i)=>{
+        s.className='emp-slide'+(i===curEmpIdx?' active':(i===prev?' exit':''));
+      });
+      dots.forEach((d,i)=>d.className='dot'+(i===curEmpIdx?' on':''));
+      setTimeout(()=>{
+        document.querySelectorAll('.emp-slide.exit').forEach(s=>s.classList.remove('exit'));
+      },900);
+    },20000);
+  }
 }
 
+function goEmp(idx){
+  clearInterval(empSlideTimer);
+  const prev=curEmpIdx;
+  curEmpIdx=idx;
+  document.querySelectorAll('.emp-slide').forEach((s,i)=>{
+    s.className='emp-slide'+(i===curEmpIdx?' active':(i===prev?' exit':''));
+  });
+  document.querySelectorAll('.dot').forEach((d,i)=>d.className='dot'+(i===curEmpIdx?' on':''));
+  setTimeout(()=>document.querySelectorAll('.emp-slide.exit').forEach(s=>s.classList.remove('exit')),900);
+}
+
+// ── render الداشبورد ──
+function render({s,e,c,ci}){
+  // ثيم
+  if(s?.theme){curTheme=s.theme;document.body.className=s.theme;document.getElementById('thd').className='thbtn'+(s.theme==='dark'?' on':'');document.getElementById('thl').className='thbtn'+(s.theme==='light'?' on':'');}
+
+  // شريط التمرير
+  if(s?.ticker_text){const t=`<div class="titem">${s.ticker_text}</div>`;document.getElementById('ttrack').innerHTML=t.repeat(8);}
+
+  // موظفو الشهر
+  buildEmpSlides(e||[]);
+
+  const get=t=>(c||[]).find(x=>x.content_type===t)||{};
+
+  // معلومة اليوم
+  document.getElementById('dtxt').textContent=get('did_you_know').body||'—';
+
+  // حدث اليوم
+  const ev=get('today_event');
+  document.getElementById('etitle').textContent=ev.title||'—';
+  document.getElementById('edesc').textContent=ev.body||'';
+  document.getElementById('esaudi').textContent=ev.subtitle||'';
+
+  // مثل
+  const pr=get('proverb');
+  document.getElementById('ptxt').textContent=pr.title||'—';
+  document.getElementById('pmean').textContent=pr.body||'';
+
+  // تراث
+  document.getElementById('hlist').innerHTML=['1','2','3'].map(n=>{
+    const h=get('heritage_'+n);
+    return h.title?`<div class="hi" style="padding:8px 13px;"><div class="hd2"></div><div><div class="ht2">${h.title}</div><div class="hx2">${h.body||''}</div></div></div>`:'';
+  }).join('');
+
+  // فخر وطن متسلسل
+  document.getElementById('pride-seq').innerHTML=['1','2','3','4'].map((n,i)=>{
+    const p=get('pride_'+n);
+    return p.title?`<div class="pi2"><div class="pi2-num">${i+1}</div><div><div class="pi2-title">${p.title}</div><div class="pi2-body">${p.body||''}</div></div></div>`:'';
+  }).join('');
+
+  // صورة مخصصة
+  if(ci){
+    document.getElementById('custom-img').src=ci.body||'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80';
+    document.getElementById('custom-img-cap').textContent=ci.title||'';
+  }
+}
+
+// ══ ADMIN ══
 async function upsert(type,data){
   const{data:ex}=await db.from('dashboard_content').select('id').eq('content_type',type).single();
   if(ex?.id) await db.from('dashboard_content').update({...data,updated_at:new Date().toISOString()}).eq('id',ex.id);
   else await db.from('dashboard_content').insert({content_type:type,...data,active:true});
 }
-
 function suc(id){const el=document.getElementById(id);el.style.display='block';setTimeout(()=>el.style.display='none',2500);}
+async function refresh(){const sn=await snap();lastSnap=sn;render(JSON.parse(sn));ping();}
 
-async function refresh(){const sn=await snap();lastSnap=sn;render(JSON.parse(sn));ping();anim();}
-
-async function saveEmp(){
+// موظفو الشهر
+let empEntries=[];
+function addEmpEntry(data={}){
+  if(empEntries.length>=7)return;
+  const id='ee_'+Date.now();
+  empEntries.push(id);
+  const div=document.createElement('div');
+  div.className='emp-entry';div.id=id;
+  div.innerHTML=`
+    <button class="emp-entry-del" onclick="removeEmpEntry('${id}')">حذف</button>
+    <label class="albl" style="margin-top:0;">الاسم</label><input class="ainp" id="${id}_n" value="${data.name||''}">
+    <label class="albl">القسم</label><input class="ainp" id="${id}_d" value="${data.department||''}">
+    <label class="albl">المسمى</label><input class="ainp" id="${id}_r" value="${data.role||''}">
+    <label class="albl">سبب الاختيار</label><textarea class="ata" id="${id}_rs">${data.reason||''}</textarea>
+    <label class="albl">اقتباس</label><input class="ainp" id="${id}_q" value="${data.quote||''}">
+  `;
+  document.getElementById('emp-admin-list').appendChild(div);
+}
+function removeEmpEntry(id){
+  document.getElementById(id)?.remove();
+  empEntries=empEntries.filter(x=>x!==id);
+}
+async function saveEmps(){
+  // احذف القديم
   await db.from('employee_of_month').update({active:false}).eq('active',true).catch(()=>{});
-  await db.from('employee_of_month').insert({name:document.getElementById('aen').value,department:document.getElementById('aed').value,role:document.getElementById('aer').value,reason:document.getElementById('aeReason').value,quote:document.getElementById('aeq').value,active:true,updated_at:new Date().toISOString()});
+  // أضف الجديد
+  const rows=empEntries.map(id=>({
+    name:document.getElementById(id+'_n')?.value||'',
+    department:document.getElementById(id+'_d')?.value||'',
+    role:document.getElementById(id+'_r')?.value||'',
+    reason:document.getElementById(id+'_rs')?.value||'',
+    quote:document.getElementById(id+'_q')?.value||'',
+    active:true,updated_at:new Date().toISOString()
+  })).filter(r=>r.name);
+  if(rows.length) await db.from('employee_of_month').insert(rows);
   suc('esuc');await refresh();
 }
-async function saveAch(){
-  await upsert('achievement',{title:document.getElementById('aAt').value,body:document.getElementById('aAm').value,subtitle:document.getElementById('aAn').value});
-  suc('asuc');await refresh();
+
+async function saveCustomImg(){
+  await upsert('custom_image',{title:document.getElementById('aCustomCap').value,body:document.getElementById('aCustomImg').value});
+  suc('cimgsuc');await refresh();
 }
 async function saveDaily(){
   await Promise.all([
@@ -482,18 +706,6 @@ async function saveHer(){
 async function savePride(){
   const tasks=['1','2','3','4'].map(n=>upsert('pride_'+n,{title:document.getElementById('ap'+n+'t').value,body:document.getElementById('ap'+n+'b').value}));
   await Promise.all(tasks);suc('psuc');await refresh();
-}
-async function addImg(){
-  const url=document.getElementById('imgUrl').value.trim();if(!url)return;
-  const cap=document.getElementById('imgCap').value.trim();
-  const{data:last}=await db.from('dashboard_images').select('sort_order').eq('active',true).order('sort_order',{ascending:false}).limit(1).single();
-  await db.from('dashboard_images').insert({url,caption:cap,sort_order:(last?.sort_order||0)+1,active:true});
-  document.getElementById('imgUrl').value='';document.getElementById('imgCap').value='';
-  await loadAdmin();await refresh();
-}
-async function delImg(id){
-  await db.from('dashboard_images').update({active:false}).eq('id',id);
-  await loadAdmin();await refresh();
 }
 async function setTheme(t){
   curTheme=t;document.body.className=t;
@@ -513,34 +725,43 @@ async function saveTicker(){
 }
 
 async function loadAdmin(){
-  const[e,c,i,s]=await Promise.all([
-    db.from('employee_of_month').select('*').eq('active',true).order('updated_at',{ascending:false}).limit(1).single(),
+  const[e,c,s]=await Promise.all([
+    db.from('employee_of_month').select('*').eq('active',true).order('created_at',{ascending:true}),
     db.from('dashboard_content').select('*').eq('active',true),
-    db.from('dashboard_images').select('*').eq('active',true).order('sort_order'),
     db.from('dashboard_settings').select('*').single(),
   ]);
-  const em=e.data||{};
-  document.getElementById('aen').value=em.name||'';
-  document.getElementById('aed').value=em.department||'';
-  document.getElementById('aer').value=em.role||'';
-  document.getElementById('aeReason').value=em.reason||'';
-  document.getElementById('aeq').value=em.quote||'';
+  // موظفو الشهر
+  empEntries=[];
+  document.getElementById('emp-admin-list').innerHTML='';
+  (e.data||[]).forEach(emp=>addEmpEntry(emp));
+
   const get=t=>(c.data||[]).find(x=>x.content_type===t)||{};
-  const ach=get('achievement');
-  document.getElementById('aAt').value=ach.title||'';
-  document.getElementById('aAn').value=ach.subtitle||'';
-  document.getElementById('aAm').value=ach.body||'';
+
+  // صورة مخصصة
+  const ci=get('custom_image');
+  document.getElementById('aCustomImg').value=ci.body||'';
+  document.getElementById('aCustomCap').value=ci.title||'';
+
+  // محتوى يومي
   document.getElementById('aDyk').value=get('did_you_know').body||'';
   const ev=get('today_event');
   document.getElementById('aEt').value=ev.title||'';
   document.getElementById('aEd').value=ev.body||'';
   document.getElementById('aEs').value=ev.subtitle||'';
+
+  // مثل وتراث
   const pr=get('proverb');
   document.getElementById('aPrv').value=pr.title||'';
   document.getElementById('aPrvM').value=pr.body||'';
   ['1','2','3'].forEach(n=>{const h=get('heritage_'+n);document.getElementById('ah'+n+'t').value=h.title||'';document.getElementById('ah'+n+'b').value=h.body||'';});
-  document.getElementById('prideFields').innerHTML=['1','2','3','4'].map(n=>{const p=get('pride_'+n);return`<div style="margin-bottom:9px;"><label class="albl">كارد ${n} — العنوان</label><input class="ainp" id="ap${n}t" value="${p.title||''}"><label class="albl">كارد ${n} — النص</label><input class="ainp" id="ap${n}b" value="${p.body||''}" style="margin-top:4px;"></div>`;}).join('');
-  document.getElementById('imgList').innerHTML=(i.data||[]).map(x=>`<div class="imgrow"><img src="${x.url}" onerror="this.style.display='none'"><div class="imgcap">${x.caption||'—'}</div><button class="imgdel" onclick="delImg('${x.id}')">حذف</button></div>`).join('');
+
+  // فخر وطن
+  document.getElementById('prideFields').innerHTML=['1','2','3','4'].map(n=>{
+    const p=get('pride_'+n);
+    return`<div style="margin-bottom:9px;"><label class="albl">انجاز ${n} — العنوان</label><input class="ainp" id="ap${n}t" value="${(p.title||'').replace(/"/g,'&quot;')}"><label class="albl">انجاز ${n} — النص</label><textarea class="ata" id="ap${n}b" style="min-height:50px;">${p.body||''}</textarea></div>`;
+  }).join('');
+
+  // اعدادات
   const st=s.data||{};
   document.getElementById('aTicker').value=st.ticker_text||'';
   document.getElementById('thd').className='thbtn'+(st.theme==='dark'?' on':'');
