@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم | نورة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{font-family:'Cairo',sans-serif;min-height:100vh;}
+body.dark{--bg:#07111C;--card:#0D1B2A;--card2:#132435;--border:rgba(255,255,255,0.07);--accent:#1DA9BD;--gold:#F4C430;--green:#27AE60;--red:#E74C3C;--text:#EEF2F7;--text2:rgba(238,242,247,0.6);--text3:rgba(238,242,247,0.3);}
+body.light{--bg:#F0F4F8;--card:#FFFFFF;--card2:#EDF2F7;--border:rgba(0,0,0,0.07);--accent:#1DA9BD;--gold:#B8860A;--green:#1E8449;--red:#C0392B;--text:#1A202C;--text2:rgba(26,32,44,0.6);--text3:rgba(26,32,44,0.3);}
+body{background:var(--bg);color:var(--text);transition:background .4s;}
+
+/* LOGIN */
+#ls{display:flex;position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 50% 30%,#0D2E3A,#040D14 70%);align-items:center;justify-content:center;}
+.lbox{background:rgba(255,255,255,0.04);border:1px solid rgba(29,169,189,0.2);border-radius:24px;padding:44px 40px;width:100%;max-width:380px;backdrop-filter:blur(20px);}
+.lico{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:11px;font-weight:900;color:#fff;letter-spacing:.5px;}
+.ltitle{text-align:center;font-size:19px;font-weight:900;color:#fff;margin-bottom:3px;}
+.lsub{text-align:center;font-size:10px;color:rgba(29,169,189,0.8);letter-spacing:1px;margin-bottom:26px;}
+.llbl{font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px;}
+.linp{width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(29,169,189,0.2);background:rgba(255,255,255,0.06);color:#fff;font-family:Cairo,sans-serif;font-size:14px;outline:none;margin-bottom:12px;transition:border .2s;}
+.linp:focus{border-color:rgba(29,169,189,0.6);}
+.lbtn{width:100%;padding:13px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);color:#fff;border:none;border-radius:12px;font-family:Cairo,sans-serif;font-size:14px;font-weight:900;cursor:pointer;}
+.lerr{display:none;color:#E74C3C;font-size:12px;text-align:center;background:rgba(231,76,60,0.1);padding:7px;border-radius:8px;margin-bottom:11px;}
+
+/* APP */
+#app{display:none;}
+.topbar{background:var(--card);border-bottom:2px solid var(--accent);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.tb-brand{display:flex;align-items:center;gap:10px;}
+.tb-ico{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;}
+.tb-nm{font-size:13px;font-weight:900;color:var(--text);}
+.tb-sb{font-size:8px;color:var(--text3);letter-spacing:1px;}
+.tb-actions{display:flex;gap:8px;align-items:center;}
+.dash-link{background:rgba(29,169,189,0.1);border:1px solid rgba(29,169,189,0.25);color:var(--accent);padding:6px 14px;border-radius:9px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;}
+.out-btn{background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);color:var(--red);padding:6px 12px;border-radius:9px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;}
+.thm-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:9px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;}
+
+/* ADMIN GRID */
+.admin-wrap{padding:18px 20px;max-width:1400px;margin:0 auto;}
+.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.acard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;}
+.acard.full{grid-column:1/4;}
+.acard.span2{grid-column:span 2;}
+.atitle{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.albl{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;margin-top:8px;}
+.albl:first-of-type{margin-top:0;}
+.ainp{width:100%;padding:8px 12px;border-radius:9px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;transition:border .2s;box-sizing:border-box;}
+.ainp:focus{border-color:var(--accent);}
+.ata{width:100%;padding:8px 12px;border-radius:9px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;resize:vertical;min-height:50px;transition:border .2s;box-sizing:border-box;}
+.ata:focus{border-color:var(--accent);}
+.abtn{padding:8px 16px;border:none;border-radius:9px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+.abtn:hover{opacity:.85;}
+.abtn-p{background:linear-gradient(135deg,#1DA9BD,#0D7A8A);color:#fff;}
+.abtn-g{background:rgba(29,169,189,0.1);border:1px solid rgba(29,169,189,0.2);color:var(--accent);}
+.asuc{display:none;color:var(--green);font-size:11px;font-weight:700;margin-top:7px;}
+.ee{background:var(--card2);border-radius:10px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border);position:relative;}
+.ee-del{position:absolute;top:9px;left:9px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);color:var(--red);border-radius:7px;padding:3px 9px;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer;}
+.ee-hdr{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;}
+.ee-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+.thbtns{display:flex;gap:7px;margin-top:5px;}
+.thbtn{flex:1;padding:8px;border:1px solid var(--border);border-radius:9px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--text);}
+.thbtn.on{border-color:var(--accent);background:rgba(29,169,189,0.1);color:var(--accent);}
+.pride-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.pride-block{background:var(--card2);border-radius:10px;padding:11px;border:1px solid var(--border);}
+.pride-block-num{font-size:10px;font-weight:700;color:var(--accent);margin-bottom:7px;}
+.h-block{background:var(--card2);border-radius:10px;padding:11px;border:1px solid var(--border);}
+.h-block-num{font-size:10px;font-weight:700;color:var(--gold);margin-bottom:7px;}
+</style>
+</head>
+<body class="dark">
+
+<div id="ls">
+  <div class="lbox">
+    <div class="lico">ADMIN</div>
+    <div class="ltitle">لوحة التحكم</div>
+    <div class="lsub">NOURA DASHBOARD CONTROL</div>
+    <div class="lerr" id="lerr">اسم المستخدم او كلمة المرور غير صحيحة</div>
+    <label class="llbl">اسم المستخدم</label>
+    <input class="linp" id="lu" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')document.getElementById('lp').focus()">
+    <label class="llbl">كلمة المرور</label>
+    <input class="linp" id="lp" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="lbtn" onclick="doLogin()">دخول</button>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="tb-brand"><div class="tb-ico">N</div><div><div class="tb-nm">لوحة التحكم — نورة</div><div class="tb-sb">DASHBOARD CONTROL PANEL</div></div></div>
+    <div class="tb-actions">
+      <a class="dash-link" href="dashboard.html" target="_blank">عرض الداشبورد</a>
+      <button class="thm-btn" onclick="toggleTheme()">داكن / فاتح</button>
+      <button class="out-btn" onclick="doLogout()">خروج</button>
+    </div>
+  </div>
+
+  <div class="admin-wrap">
+    <div class="agrid">
+
+      <!-- موظفو الشهر -->
+      <div class="acard full">
+        <div class="atitle">موظفو الشهر — حتى 7 أشخاص</div>
+        <div id="emp-admin-list"></div>
+        <div style="display:flex;gap:9px;margin-top:8px;align-items:center;flex-wrap:wrap;">
+          <button class="abtn abtn-g" onclick="addEE()">+ اضافة موظف</button>
+          <div style="display:flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:5px 11px;">
+            <label style="font-size:10px;font-weight:600;color:var(--text2);white-space:nowrap;">وقت الانتقال (ثانية)</label>
+            <input class="ainp" id="empInterval" type="number" min="5" max="300" value="20" style="width:65px;text-align:center;padding:5px 8px;">
+          </div>
+          <button class="abtn abtn-p" onclick="saveEmps()">حفظ وتطبيق على الداشبورد</button>
+          <span class="asuc" id="esuc">تم الحفظ</span>
+        </div>
+      </div>
+
+      <!-- تراث وثقافة -->
+      <div class="acard">
+        <div class="atitle">تراث وثقافة + المثل</div>
+        <label class="albl">المثل الشعبي</label><input class="ainp" id="aPrv">
+        <label class="albl">معنى المثل</label><input class="ainp" id="aPrvM">
+        <div id="heritageF" style="margin-top:8px;display:flex;flex-direction:column;gap:7px;"></div>
+        <div style="margin-top:11px;display:flex;gap:8px;align-items:center;">
+          <button class="abtn abtn-p" onclick="saveHer()">حفظ وتطبيق</button>
+          <span class="asuc" id="hsuc">تم الحفظ</span>
+        </div>
+      </div>
+
+      <!-- المحتوى اليومي -->
+      <div class="acard">
+        <div class="atitle">المحتوى اليومي</div>
+        <label class="albl">معلومة اليوم</label><textarea class="ata" id="aDyk" style="min-height:72px;"></textarea>
+        <label class="albl">عنوان حدث اليوم</label><input class="ainp" id="aEt">
+        <label class="albl">وصف الحدث</label><textarea class="ata" id="aEd"></textarea>
+        <label class="albl">الربط بالسعودية</label><input class="ainp" id="aEs">
+        <div style="margin-top:11px;display:flex;gap:8px;align-items:center;">
+          <button class="abtn abtn-p" onclick="saveDaily()">حفظ وتطبيق</button>
+          <span class="asuc" id="dsuc">تم الحفظ</span>
+        </div>
+      </div>
+
+      <!-- الصورة / الفيديو -->
+      <div class="acard">
+        <div class="atitle">الفيديو / الصورة المميزة</div>
+        <label class="albl">رابط يوتيوب او رابط صورة</label>
+        <input class="ainp" id="aCI" placeholder="https://youtube.com/watch?v=... او https://...jpg">
+        <div style="font-size:10px;color:var(--text3);margin-top:3px;margin-bottom:4px;">يوتيوب: الصق رابط الفيديو — يظهر مضمناً تلقائياً</div>
+        <label class="albl">وصف</label><input class="ainp" id="aCC" style="margin-top:4px;">
+        <div style="margin-top:11px;display:flex;gap:8px;align-items:center;">
+          <button class="abtn abtn-p" onclick="saveCImg()">حفظ وتطبيق</button>
+          <span class="asuc" id="cisuc">تم الحفظ</span>
+        </div>
+      </div>
+
+      <!-- الاعدادات -->
+      <div class="acard">
+        <div class="atitle">الاعدادات العامة</div>
+        <label class="albl">ثيم الداشبورد</label>
+        <div class="thbtns">
+          <button class="thbtn on" id="thd" onclick="setTheme('dark')">داكن</button>
+          <button class="thbtn" id="thl" onclick="setTheme('light')">فاتح</button>
+        </div>
+        <label class="albl">نص شريط التمرير</label>
+        <input class="ainp" id="aTicker" style="margin-top:5px;">
+        <div style="margin-top:11px;display:flex;gap:8px;align-items:center;">
+          <button class="abtn abtn-p" onclick="saveTicker()">حفظ الشريط</button>
+          <span class="asuc" id="ssuc">تم الحفظ</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL= + SB_URL + ;
+const SB_KEY= + SB_KEY + ;
+const HASH= + HASH + ;
+const{createClient}=supabase;
+const db=createClient(SB_URL,SB_KEY);
+
+function toggleTheme(){document.body.className=document.body.className==='dark'?'light':'dark';}
+
+async function hp(p){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function doLogin(){
+  const u=document.getElementById('lu').value.trim().toLowerCase();
+  const p=document.getElementById('lp').value;
+  if(u==='admin'&&await hp(p)===HASH){
+    document.getElementById('ls').style.display='none';
+    document.getElementById('app').style.display='block';
+    loadAdmin();
+  }else{document.getElementById('lerr').style.display='block';}
+}
+function doLogout(){document.getElementById('app').style.display='none';document.getElementById('ls').style.display='flex';document.getElementById('lp').value='';}
+
+function suc(id){const el=document.getElementById(id);el.style.display='block';setTimeout(()=>el.style.display='none',2500);}
+
+async function upsert(type,data){
+  const{data:ex}=await db.from('dashboard_content').select('id').eq('content_type',type).single();
+  if(ex?.id) await db.from('dashboard_content').update({...data,updated_at:new Date().toISOString()}).eq('id',ex.id);
+  else await db.from('dashboard_content').insert({content_type:type,...data,active:true});
+}
+
+let eeIds=[];
+function addEE(data={}){
+  if(eeIds.length>=7){alert('الحد الاقصى 7');return;}
+  const id='ee_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  eeIds.push(id);
+  const div=document.createElement('div');
+  div.className='ee';div.id=id;
+  div.innerHTML=`
+    <button class="ee-del" onclick="removeEE('${id}')">حذف</button>
+    <div class="ee-hdr">موظف ${eeIds.length}</div>
+    <div class="ee-grid">
+      <div><label class="albl" style="margin-top:0;">الاسم الكامل *</label><input class="ainp" id="${id}_n" value="${(data.name||'').replace(/"/g,'&quot;')}" placeholder="الاسم"></div>
+      <div><label class="albl" style="margin-top:0;">المسمى</label><input class="ainp" id="${id}_r" value="${(data.role||'').replace(/"/g,'&quot;')}" placeholder="المسمى"></div>
+      <div><label class="albl" style="margin-top:0;">القسم</label><input class="ainp" id="${id}_d" value="${(data.department||'').replace(/"/g,'&quot;')}" placeholder="القسم"></div>
+    </div>
+    <label class="albl">اقتباس</label>
+    <input class="ainp" id="${id}_q" value="${(data.quote||'').replace(/"/g,'&quot;')}" placeholder="جملة مميزة...">
+  `;
+  document.getElementById('emp-admin-list').appendChild(div);
+}
+function removeEE(id){document.getElementById(id)?.remove();eeIds=eeIds.filter(x=>x!==id);}
+
+async function saveEmps(){
+  await db.from('employee_of_month').update({active:false}).eq('active',true);
+  await new Promise(r=>setTimeout(r,400));
+  const rows=eeIds.map(id=>({
+    name:(document.getElementById(id+'_n')?.value||'').trim(),
+    role:(document.getElementById(id+'_r')?.value||'').trim(),
+    department:(document.getElementById(id+'_d')?.value||'').trim(),
+    quote:(document.getElementById(id+'_q')?.value||'').trim(),
+    active:true,updated_at:new Date().toISOString()
+  })).filter(r=>r.name.length>0);
+  /* احفظ وقت الانتقال في الاعدادات */
+  const interval=document.getElementById('empInterval').value;
+  const{data:st}=await db.from('dashboard_settings').select('id').single();
+  if(st?.id) await db.from('dashboard_settings').update({emp_interval:interval,updated_at:new Date().toISOString()}).eq('id',st.id);
+  if(rows.length){const{error}=await db.from('employee_of_month').insert(rows);if(error){alert('خطأ: '+error.message);return;}}
+  suc('esuc');
+}
+async function saveHer(){
+  await Promise.all([
+    upsert('proverb',{title:document.getElementById('aPrv').value.trim(),body:document.getElementById('aPrvM').value.trim()}),
+    upsert('heritage_1',{title:(document.getElementById('ah1t')?.value||'').trim(),body:(document.getElementById('ah1b')?.value||'').trim()}),
+    upsert('heritage_2',{title:(document.getElementById('ah2t')?.value||'').trim(),body:(document.getElementById('ah2b')?.value||'').trim()}),
+    upsert('heritage_3',{title:(document.getElementById('ah3t')?.value||'').trim(),body:(document.getElementById('ah3b')?.value||'').trim()}),
+  ]);suc('hsuc');
+}
+async function saveDaily(){
+  await Promise.all([
+    upsert('did_you_know',{title:'هل تعلم',body:document.getElementById('aDyk').value.trim()}),
+    upsert('today_event',{title:document.getElementById('aEt').value.trim(),body:document.getElementById('aEd').value.trim(),subtitle:document.getElementById('aEs').value.trim()}),
+  ]);suc('dsuc');
+}
+async function saveCImg(){await upsert('custom_image',{title:document.getElementById('aCC').value.trim(),body:document.getElementById('aCI').value.trim()});suc('cisuc');}
+async function setTheme(t){
+  document.getElementById('thd').className='thbtn'+(t==='dark'?' on':'');
+  document.getElementById('thl').className='thbtn'+(t==='light'?' on':'');
+  const{data}=await db.from('dashboard_settings').select('id').single();
+  if(data?.id) await db.from('dashboard_settings').update({theme:t,updated_at:new Date().toISOString()}).eq('id',data.id);
+  else await db.from('dashboard_settings').insert({theme:t,ticker_text:'نورة لتعليم القيادة'});
+  suc('ssuc');
+}
+async function saveTicker(){
+  const tk=document.getElementById('aTicker').value.trim();
+  const{data}=await db.from('dashboard_settings').select('id').single();
+  if(data?.id) await db.from('dashboard_settings').update({ticker_text:tk,updated_at:new Date().toISOString()}).eq('id',data.id);
+  else await db.from('dashboard_settings').insert({theme:'dark',ticker_text:tk});
+  suc('ssuc');
+}
+
+async function loadAdmin(){
+  const[e,c,s]=await Promise.all([
+    db.from('employee_of_month').select('*').eq('active',true).order('updated_at',{ascending:true}),
+    db.from('dashboard_content').select('*').eq('active',true),
+    db.from('dashboard_settings').select('*').single(),
+  ]);
+  eeIds=[];document.getElementById('emp-admin-list').innerHTML='';
+  (e.data||[]).forEach(emp=>addEE(emp));
+  if(s.data?.emp_interval) document.getElementById('empInterval').value=s.data.emp_interval;
+  const get=t=>(c.data||[]).find(x=>x.content_type===t)||{};
+  document.getElementById('aPrv').value=get('proverb').title||'';
+  document.getElementById('aPrvM').value=get('proverb').body||'';
+  document.getElementById('heritageF').innerHTML=['1','2','3'].map(n=>{
+    const h=get('heritage_'+n);
+    return`<div class="h-block"><div class="h-block-num">فقرة ${n}</div><label class="albl" style="margin-top:0;">العنوان</label><input class="ainp" id="ah${n}t" value="${(h.title||'').replace(/"/g,'&quot;')}"><label class="albl">النص</label><textarea class="ata" id="ah${n}b" style="min-height:44px;">${h.body||''}</textarea></div>`;}).join('');
+  document.getElementById('aDyk').value=get('did_you_know').body||'';
+  const ev=get('today_event');
+  document.getElementById('aEt').value=ev.title||'';document.getElementById('aEd').value=ev.body||'';document.getElementById('aEs').value=ev.subtitle||'';
+  const ci=get('custom_image');document.getElementById('aCI').value=ci.body||'';document.getElementById('aCC').value=ci.title||'';
+  const st=s.data||{};document.getElementById('aTicker').value=st.ticker_text||'';
+  document.getElementById('thd').className='thbtn'+(st.theme==='dark'?' on':'');
+  document.getElementById('thl').className='thbtn'+(st.theme==='light'?' on':'');
+}
+/* إضافة emp_interval للجدول — تأكد أنه موجود */
+db.from('dashboard_settings').select('emp_interval').limit(1).then(({error})=>{
+  if(error && error.message.includes('emp_interval')) console.log('emp_interval column may not exist');
+});
+</script>
+</body>
+</html>
