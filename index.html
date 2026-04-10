@@ -104,7 +104,7 @@ body.light .tabs{background:rgba(0,0,0,0.06);}
 #pgd{display:none;flex-direction:column;flex:1;overflow:hidden;}
 .dgrid{
   display:grid;
-  grid-template-columns:1fr 360px 1fr;
+  grid-template-columns:1fr 320px 1fr 1fr;
   grid-template-rows:1fr 1fr;
   gap:10px;padding:10px 14px;
   flex:1;overflow:hidden;
@@ -410,23 +410,28 @@ body.light .ticker{background:rgba(242,242,247,0.9);}
         </div>
       </div>
 
-      <!-- عمود 3 يسار صف 2: معلومة + حدث + صورة -->
+      <!-- عمود 3 يسار صف 2: معلومة + حدث -->
       <div id="col-right" style="grid-column:3;grid-row:2;display:flex;flex-direction:column;gap:7px;overflow:hidden;">
-        <div class="dyk2" style="flex-shrink:0;">
+        <div class="dyk2" style="flex:1;">
           <div class="orb" style="width:80px;height:80px;background:var(--glow-a);top:-15px;left:-15px;animation-delay:.3s;"></div>
           <div class="dlbl">معلومة اليوم</div>
           <div class="dtxt" id="dtxt">جار التحميل...</div>
         </div>
-        <div class="evt2" style="flex-shrink:0;">
+        <div class="evt2" style="flex:1;">
           <div class="orb" style="width:70px;height:70px;background:var(--glow-p);bottom:-8px;right:-8px;animation-delay:.7s;"></div>
           <div class="etitle" id="etitle">—</div>
           <div class="edesc" id="edesc">—</div>
           <div class="esaudi" id="esaudi">—</div>
         </div>
-        <div style="flex:1;min-height:0;border-radius:14px;overflow:hidden;position:relative;">
-          <iframe id="yt-frame" style="display:none;width:100%;height:100%;border:none;" allow="autoplay;loop" allowfullscreen></iframe>
-          <img id="cimg" src="https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80" alt="" style="width:100%;height:100%;object-fit:cover;">
-          <div class="img-ov"><div class="img-cap" id="icap">الرياض</div></div>
+      </div>
+
+      <!-- عمود 4: الفيديو / الصورة — نصف الشاشة (صفين) -->
+      <div id="card-media" style="grid-column:4;grid-row:1/3;border-radius:18px;overflow:hidden;position:relative;border:1px solid var(--border);">
+        <div class="orb" style="width:200px;height:200px;background:var(--glow-g);top:-40px;right:-40px;animation-delay:1s;"></div>
+        <iframe id="yt-frame" style="display:none;width:100%;height:100%;border:none;" allow="autoplay;mute;loop" allowfullscreen></iframe>
+        <img id="cimg" src="https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80" alt="" style="width:100%;height:100%;object-fit:cover;">
+        <div class="img-ov" style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 40%);display:flex;align-items:flex-end;padding:16px 18px;">
+          <div class="img-cap" id="icap" style="font-size:16px;">الرياض</div>
         </div>
       </div>
 
@@ -598,7 +603,7 @@ function showMindMap(emp){
   mmShowing=true;
 
   // blur باقي الكروت
-  ['card-heritage','card-img','col-right'].forEach(id=>{
+  ['card-heritage','card-media','col-right'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.classList.add('blurred');
   });
@@ -634,7 +639,7 @@ function hideMindMap(){
   setTimeout(()=>{
     document.getElementById('mm-overlay').classList.remove('active');
     document.getElementById('mm-svg').innerHTML='';
-    ['card-heritage','card-img','col-right'].forEach(id=>{
+    ['card-heritage','card-media','col-right'].forEach(id=>{
       const el=document.getElementById(id);
       if(el) el.classList.remove('blurred');
     });
