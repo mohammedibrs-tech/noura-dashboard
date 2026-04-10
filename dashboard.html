@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة النشرة اليومية | نورة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;}
+body.dark{--bg:#06090F;--card:rgba(255,255,255,0.05);--card2:rgba(255,255,255,0.07);--border:rgba(255,255,255,0.08);--border-hi:rgba(255,255,255,0.14);--accent:#1DA9BD;--accent2:#0D7A8A;--gold:#FFD60A;--purple:#BF5AF2;--text:#F5F5F7;--text2:rgba(245,245,247,0.55);--text3:rgba(245,245,247,0.28);--glow-a:rgba(29,169,189,0.14);--glow-g:rgba(48,209,88,0.1);--glow-p:rgba(191,90,242,0.1);--glow-y:rgba(255,214,10,0.1);}
+body.light{--bg:#F2F2F7;--card:rgba(255,255,255,0.75);--card2:rgba(255,255,255,0.9);--border:rgba(0,0,0,0.07);--border-hi:rgba(0,0,0,0.12);--accent:#1DA9BD;--accent2:#0D7A8A;--gold:#B8860A;--purple:#7B2FBE;--text:#1C1C1E;--text2:rgba(28,28,30,0.55);--text3:rgba(28,28,30,0.28);--glow-a:rgba(29,169,189,0.07);--glow-g:rgba(48,209,88,0.06);--glow-p:rgba(123,47,190,0.07);--glow-y:rgba(184,134,10,0.07);}
+body{background:var(--bg);color:var(--text);transition:background .5s,color .5s;}
+@keyframes gp{0%,100%{opacity:.45;transform:scale(1);}50%{opacity:.9;transform:scale(1.1);}}
+.orb{position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none;animation:gp 5s ease-in-out infinite;}
+
+/* SHELL */
+.shell{display:grid;grid-template-rows:50px 1fr 30px;height:100vh;width:100vw;}
+
+/* TOPBAR */
+.topbar{background:rgba(6,9,15,0.75);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;}
+body.light .topbar{background:rgba(242,242,247,0.85);}
+.tb-brand{display:flex;align-items:center;gap:10px;}
+.tb-ico{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;}
+.tb-nm{font-size:13px;font-weight:700;color:var(--text);}
+.tb-sb{font-size:8px;color:var(--text3);letter-spacing:1px;}
+.tb-r{display:flex;align-items:center;gap:14px;}
+.tb-d{font-size:14px;font-weight:700;color:var(--text);}
+.tb-dt{font-size:8px;color:var(--text3);}
+#clk{font-size:18px;font-weight:700;color:var(--text);direction:ltr;font-variant-numeric:tabular-nums;}
+.ldot{width:6px;height:6px;border-radius:50%;background:#30D158;animation:pp 2s infinite;display:inline-block;}
+@keyframes pp{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+/* GRID
+   عمود 1: موظف الشهر (صفين)
+   عمود 2: تراث (صف1) + معلومة+حدث (صف2)
+   عمود 3+4: الفيديو (نصف الشاشة، صفين)
+*/
+.dgrid{
+  display:grid;
+  grid-template-columns:280px 1fr 1fr 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:8px;padding:8px 12px;
+  overflow:hidden;
+}
+
+/* Glass Card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;position:relative;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:filter .5s;}
+.card.blurred{filter:blur(2px) brightness(.7);pointer-events:none;}
+.ch{padding:8px 13px 6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;flex-shrink:0;z-index:1;position:relative;}
+.cht{font-size:11px;font-weight:700;color:var(--text);}
+.chb{font-size:8px;font-weight:700;background:var(--accent);color:#fff;padding:2px 8px;border-radius:20px;margin-right:auto;}
+
+/* ── موظف الشهر ── */
+#card-emp{
+  grid-column:1;grid-row:1/3;
+  background:linear-gradient(160deg,rgba(29,169,189,0.08),rgba(13,122,138,0.05),rgba(191,90,242,0.05));
+  border:1px solid rgba(29,169,189,0.2);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;border-radius:14px;
+}
+.eg1{position:absolute;width:200px;height:200px;background:rgba(29,169,189,0.1);border-radius:50%;filter:blur(50px);top:-50px;right:-50px;animation:gp 5s ease-in-out infinite;}
+.eg2{position:absolute;width:160px;height:160px;background:rgba(191,90,242,0.07);border-radius:50%;filter:blur(40px);bottom:-40px;left:-40px;animation:gp 6.5s ease-in-out infinite 1.5s;}
+.emp-hdr{background:linear-gradient(135deg,rgba(29,169,189,0.12),transparent);padding:10px 14px;border-bottom:1px solid rgba(29,169,189,0.15);flex-shrink:0;position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;}
+.emp-hdr-ttl{font-size:11px;font-weight:700;color:var(--accent);}
+.emp-counter{font-size:9px;color:var(--text3);}
+
+/* كروت الوميض */
+.emp-cards-wrap{flex:1;position:relative;overflow:hidden;z-index:1;display:flex;align-items:center;justify-content:center;padding:12px;}
+.emp-flash-card{
+  position:absolute;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(29,169,189,0.25);
+  border-radius:14px;
+  padding:20px 18px;
+  text-align:center;
+  width:90%;
+  opacity:0;
+  transform:scale(.88) translateY(10px);
+  transition:opacity .6s ease, transform .6s ease;
+  box-shadow:0 8px 32px rgba(29,169,189,0.15);
+}
+.emp-flash-card.active{opacity:1;transform:scale(1) translateY(0);}
+body.light .emp-flash-card{background:rgba(255,255,255,0.85);}
+.efc-av{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,#1DA9BD,#0D7A8A);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:900;color:#fff;
+  margin:0 auto 12px;
+  box-shadow:0 0 0 4px rgba(29,169,189,0.15),0 6px 20px rgba(29,169,189,0.25);
+}
+.efc-name{font-size:16px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.efc-role{font-size:10px;color:var(--accent);font-weight:700;margin-bottom:10px;}
+.efc-quote{font-size:10px;color:var(--text2);line-height:1.6;background:rgba(29,169,189,0.06);border-radius:10px;padding:8px 10px;border:1px solid rgba(29,169,189,0.12);}
+
+/* نقاط */
+.emp-dots{display:flex;justify-content:center;gap:6px;padding:8px 0 10px;flex-shrink:0;z-index:1;position:relative;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(29,169,189,0.2);transition:all .4s;cursor:pointer;}
+.dot.on{background:var(--accent);width:18px;border-radius:3px;}
+
+/* ── تراث ── */
+#card-heritage{grid-column:2;grid-row:1;}
+.hlist-inner{display:flex;flex-direction:column;}
+.hi{display:flex;gap:8px;padding:7px 13px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.hi:last-child{border-bottom:none;}
+.hd2{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px;}
+.ht2{font-size:10.5px;font-weight:700;color:var(--gold);margin-bottom:2px;}
+.hx2{font-size:10px;color:var(--text2);line-height:1.6;}
+.prv-strip{background:linear-gradient(135deg,rgba(255,214,10,0.07),transparent);border-top:1px solid rgba(255,214,10,0.1);padding:9px 13px;flex-shrink:0;}
+.prv-lbl2{font-size:8px;letter-spacing:1.5px;color:var(--text3);font-weight:600;margin-bottom:4px;}
+.prv-txt2{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:3px;}
+.prv-mean2{font-size:10px;color:var(--text2);}
+
+/* ── معلومة + حدث ── */
+#col-info{grid-column:2;grid-row:2;display:flex;flex-direction:column;gap:7px;overflow:hidden;}
+.dyk2{background:linear-gradient(135deg,rgba(29,169,189,0.08),transparent);border:1px solid rgba(29,169,189,0.2);border-right:3px solid var(--accent);border-radius:13px;padding:12px 14px;flex:1;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
+.dlbl{font-size:8px;font-weight:700;color:var(--accent);letter-spacing:1px;margin-bottom:5px;z-index:1;position:relative;}
+.dtxt{font-size:11px;color:var(--text);line-height:1.7;font-weight:600;z-index:1;position:relative;}
+.evt2{background:linear-gradient(135deg,rgba(191,90,242,0.08),transparent);border:1px solid rgba(191,90,242,0.2);border-right:3px solid var(--purple);border-radius:13px;padding:12px 14px;flex:1;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
+.etitle{font-size:11px;font-weight:700;color:var(--purple);margin-bottom:4px;}
+.edesc{font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:5px;}
+.esaudi{font-size:10px;color:var(--accent);border-right:2px solid var(--accent);padding-right:7px;font-style:italic;line-height:1.55;}
+
+/* ── الفيديو / الصورة — نصف الشاشة ── */
+#card-media{
+  grid-column:3/5;grid-row:1/3;
+  border-radius:14px;overflow:hidden;
+  position:relative;
+  background:#000;
+}
+#card-media iframe,#card-media img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  border:none;
+  object-fit:cover;
+}
+#card-media .img-cap{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:14px 18px;
+  background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,transparent 100%);
+  font-size:15px;font-weight:700;color:#fff;
+  text-shadow:0 1px 6px rgba(0,0,0,.8);
+}
+
+/* شريط التمرير */
+.ticker{background:rgba(6,9,15,0.85);backdrop-filter:blur(10px);border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden;}
+body.light .ticker{background:rgba(242,242,247,0.9);}
+.tlbl{background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:0 12px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;letter-spacing:1px;}
+.ttrack{display:flex;align-items:center;animation:tk 55s linear infinite;white-space:nowrap;}
+.ttrack:hover{animation-play-state:paused;}
+@keyframes tk{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.titem{font-size:10px;color:var(--text2);padding:0 22px;border-right:1px solid var(--border);}
+.titem b{color:var(--text);font-weight:700;}
+</style>
+</head>
+<body class="dark">
+<div class="shell">
+
+  <div class="topbar">
+    <div class="tb-brand">
+      <div class="tb-ico">N</div>
+      <div><div class="tb-nm">نورة لتعليم القيادة</div><div class="tb-sb">NOURA DRIVING ACADEMY</div></div>
+    </div>
+    <div class="tb-r">
+      <div><div class="tb-d" id="cday">—</div><div class="tb-dt" id="cdate">—</div></div>
+      <div id="clk">--:--:--</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text3);"><span class="ldot"></span>LIVE</div>
+    </div>
+  </div>
+
+  <div class="dgrid">
+
+    <!-- موظف الشهر -->
+    <div id="card-emp">
+      <div class="eg1"></div><div class="eg2"></div>
+      <div class="emp-hdr">
+        <div class="emp-hdr-ttl">موظف / موظفة الشهر</div>
+        <div class="emp-counter" id="emp-counter">—</div>
+      </div>
+      <div class="emp-cards-wrap" id="emp-cards-wrap"></div>
+      <div class="emp-dots" id="emp-dots"></div>
+    </div>
+
+    <!-- تراث -->
+    <div class="card" id="card-heritage">
+      <div class="orb" style="width:100px;height:100px;background:var(--glow-y);top:-25px;right:-15px;animation-delay:.5s;"></div>
+      <div class="ch"><span class="cht">تراث وثقافة</span><span class="chb" style="background:var(--gold);color:#000;">موروث</span></div>
+      <div class="hlist-inner" id="hlist"></div>
+      <div class="prv-strip">
+        <div class="prv-lbl2">المثل اليوم</div>
+        <div class="prv-txt2" id="ptxt">—</div>
+        <div class="prv-mean2" id="pmean">—</div>
+      </div>
+    </div>
+
+    <!-- معلومة + حدث -->
+    <div id="col-info">
+      <div class="dyk2">
+        <div class="orb" style="width:80px;height:80px;background:var(--glow-a);top:-15px;left:-15px;animation-delay:.3s;"></div>
+        <div class="dlbl">معلومة اليوم</div>
+        <div class="dtxt" id="dtxt">جار التحميل...</div>
+      </div>
+      <div class="evt2">
+        <div class="orb" style="width:70px;height:70px;background:var(--glow-p);bottom:-10px;right:-10px;animation-delay:.7s;"></div>
+        <div class="etitle" id="etitle">—</div>
+        <div class="edesc" id="edesc">—</div>
+        <div class="esaudi" id="esaudi">—</div>
+      </div>
+    </div>
+
+    <!-- الفيديو / الصورة — نصف الشاشة -->
+    <div id="card-media">
+      <iframe id="yt-frame" style="display:none;" allow="autoplay;mute;loop" allowfullscreen></iframe>
+      <img id="cimg" src="https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=1200&q=85" alt="">
+      <div class="img-cap" id="icap">الرياض</div>
+    </div>
+
+  </div>
+
+  <div class="ticker">
+    <div class="tlbl">نورة</div>
+    <div class="ttrack" id="ttrack">
+      <div class="titem"><b>رؤية 2030</b> — المملكة تمضي بخطى ثابتة نحو مستقبل مزدهر</div>
+      <div class="titem"><b>الجودة</b> — معدل رضا العملاء 96٪ في الربع الاول 2026</div>
+      <div class="titem"><b>نورة</b> — نحو قيادة آمنة لكل سعودية وسعودي</div>
+      <div class="titem"><b>الانجاز</b> — فخورون بفريقنا المتميز</div>
+      <div class="titem"><b>رؤية 2030</b> — المملكة تمضي بخطى ثابتة نحو مستقبل مزدهر</div>
+      <div class="titem"><b>الجودة</b> — معدل رضا العملاء 96٪ في الربع الاول 2026</div>
+      <div class="titem"><b>نورة</b> — نحو قيادة آمنة لكل سعودية وسعودي</div>
+      <div class="titem"><b>الانجاز</b> — فخورون بفريقنا المتميز</div>
+    </div>
+  </div>
+
+</div>
+<script>
+const SB_URL= + SB_URL + ;
+const SB_KEY= + SB_KEY + ;
+const{createClient}=supabase;
+const db=createClient(SB_URL,SB_KEY);
+let lastSnap='',gTimer=null,eTimer=null,eList=[],eIdx=0;
+
+function tick(){
+  const n=new Date();
+  const D=['الاحد','الاثنين','الثلاثاء','الاربعاء','الخميس','الجمعة','السبت'];
+  const M=['يناير','فبراير','مارس','ابريل','مايو','يونيو','يوليو','اغسطس','سبتمبر','اكتوبر','نوفمبر','ديسمبر'];
+  document.getElementById('clk').textContent=n.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('cday').textContent=D[n.getDay()];
+  document.getElementById('cdate').textContent=n.getDate()+' '+M[n.getMonth()]+' '+n.getFullYear();
+}
+setInterval(tick,1000);tick();
+
+async function fetchAll(){
+  const[s,e,c]=await Promise.all([
+    db.from('dashboard_settings').select('*').single(),
+    db.from('employee_of_month').select('*').eq('active',true).order('updated_at',{ascending:true}),
+    db.from('dashboard_content').select('*').eq('active',true),
+  ]);
+  return JSON.stringify({s:s.data,e:e.data||[],c:c.data||[]});
+}
+
+async function init(){
+  const sn=await fetchAll();lastSnap=sn;renderAll(JSON.parse(sn));
+  gTimer=setInterval(async()=>{
+    const sn=await fetchAll();
+    if(sn!==lastSnap){lastSnap=sn;renderAll(JSON.parse(sn));}
+  },30000);
+}
+
+/* ── كروت وميض الموظفين ── */
+function buildEmp(list){
+  clearInterval(eTimer);
+  eList=list||[];eIdx=0;
+  const wrap=document.getElementById('emp-cards-wrap');
+  const dots=document.getElementById('emp-dots');
+  const counter=document.getElementById('emp-counter');
+  if(!eList.length){
+    wrap.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;">لا يوجد موظفون</div>';
+    dots.innerHTML='';counter.textContent='';return;
+  }
+  /* أنشئ كروت */
+  wrap.innerHTML=eList.map((e,i)=>`
+    <div class="emp-flash-card${i===0?' active':''}" id="efc-${i}">
+      <div class="efc-av">${(e.name||'?').trim().charAt(0)}</div>
+      <div class="efc-name">${e.name||'—'}</div>
+      <div class="efc-role">${[e.role,e.department].filter(Boolean).join(' | ')}</div>
+      ${e.quote?`<div class="efc-quote">${e.quote}</div>`:''}
+    </div>`).join('');
+  
+  function renderDots(){
+    dots.innerHTML=eList.map((_,i)=>`<div class="dot${i===eIdx?' on':''}" onclick="goE(${i})"></div>`).join('');
+    counter.textContent=`${eIdx+1} / ${eList.length}`;
+  }
+  renderDots();
+  
+  function switchCard(next){
+    const cards=wrap.querySelectorAll('.emp-flash-card');
+    cards[eIdx]?.classList.remove('active');
+    eIdx=next;
+    cards[eIdx]?.classList.add('active');
+    renderDots();
+  }
+  
+  if(eList.length>1){
+    const interval=parseInt(document.body.dataset.empInterval||'20')*1000;
+    eTimer=setInterval(()=>{switchCard((eIdx+1)%eList.length);},interval);
+  }
+  window.goE=(i)=>{
+    clearInterval(eTimer);
+    const cards=wrap.querySelectorAll('.emp-flash-card');
+    cards[eIdx]?.classList.remove('active');
+    eIdx=i;
+    cards[eIdx]?.classList.add('active');
+    renderDots();
+    if(eList.length>1){
+      const interval=parseInt(document.body.dataset.empInterval||'20')*1000;
+      eTimer=setInterval(()=>{
+        const cs=wrap.querySelectorAll('.emp-flash-card');
+        cs[eIdx]?.classList.remove('active');
+        eIdx=(eIdx+1)%eList.length;
+        cs[eIdx]?.classList.add('active');
+        renderDots();
+      },interval);
+    }
+  };
+}
+
+function renderAll({s,e,c}){
+  if(s?.theme) document.body.className=s.theme;
+  if(s?.ticker_text) document.getElementById('ttrack').innerHTML=`<div class="titem">${s.ticker_text}</div>`.repeat(8);
+  if(s?.emp_interval) document.body.dataset.empInterval=s.emp_interval;
+  buildEmp(e||[]);
+  const get=t=>(c||[]).find(x=>x.content_type===t)||{};
+  document.getElementById('dtxt').textContent=get('did_you_know').body||'—';
+  const ev=get('today_event');
+  document.getElementById('etitle').textContent=ev.title||'—';
+  document.getElementById('edesc').textContent=ev.body||'';
+  document.getElementById('esaudi').textContent=ev.subtitle||'';
+  const pr=get('proverb');
+  document.getElementById('ptxt').textContent=pr.title||'—';
+  document.getElementById('pmean').textContent=pr.body||'';
+  document.getElementById('hlist').innerHTML=['1','2','3'].map(n=>{
+    const h=get('heritage_'+n);
+    return h.title?`<div class="hi"><div class="hd2"></div><div><div class="ht2">${h.title}</div><div class="hx2">${h.body||''}</div></div></div>`:'';
+  }).join('');
+  const ci=get('custom_image');
+  if(ci?.body){
+    const ytMatch=ci.body.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+    if(ytMatch){
+      document.getElementById('yt-frame').src=`https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&mute=1&loop=1&playlist=${ytMatch[1]}&controls=0&modestbranding=1`;
+      document.getElementById('yt-frame').style.display='block';
+      document.getElementById('cimg').style.display='none';
+    }else{
+      document.getElementById('cimg').src=ci.body;
+      document.getElementById('cimg').style.display='block';
+      document.getElementById('yt-frame').style.display='none';
+    }
+    document.getElementById('icap').textContent=ci.title||'';
+  }
+}
+init();
+</script>
+</body>
+</html>
