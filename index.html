@@ -3,338 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة النشرة اليومية | نورة</title>
+<title>لوحة التحكم | نورة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;font-family:'Cairo',sans-serif;}
+html,body{font-family:'Cairo',sans-serif;min-height:100vh;}
+body.dark{--bg:#07111C;--card:#0D1B2A;--card2:#132435;--border:rgba(255,255,255,0.07);--accent:#1DA9BD;--gold:#F4C430;--green:#27AE60;--red:#E74C3C;--text:#EEF2F7;--text2:rgba(238,242,247,0.6);--text3:rgba(238,242,247,0.3);}
+body.light{--bg:#F0F4F8;--card:#FFFFFF;--card2:#EDF2F7;--border:rgba(0,0,0,0.07);--accent:#1DA9BD;--gold:#B8860A;--green:#1E8449;--red:#C0392B;--text:#1A202C;--text2:rgba(26,32,44,0.6);--text3:rgba(26,32,44,0.3);}
+body{background:var(--bg);color:var(--text);transition:background .4s;}
 
-/* ══ Apple Arcade Dark Theme ══ */
-body.dark{
-  --bg:#06090F;
-  --card:rgba(255,255,255,0.05);
-  --card-solid:#0D1520;
-  --card2:rgba(255,255,255,0.07);
-  --border:rgba(255,255,255,0.08);
-  --border-hi:rgba(255,255,255,0.14);
-  --accent:#1DA9BD;
-  --accent2:#0D7A8A;
-  --gold:#FFD60A;
-  --purple:#BF5AF2;
-  --pink:#FF375F;
-  --text:#F5F5F7;
-  --text2:rgba(245,245,247,0.55);
-  --text3:rgba(245,245,247,0.28);
-  --tb:#06090F;
-  --glow-a:rgba(29,169,189,0.15);
-  --glow-g:rgba(48,209,88,0.12);
-  --glow-p:rgba(191,90,242,0.12);
-  --glow-y:rgba(255,214,10,0.12);
-}
-body.light{
-  --bg:#F2F2F7;
-  --card:rgba(255,255,255,0.72);
-  --card-solid:#FFFFFF;
-  --card2:rgba(255,255,255,0.9);
-  --border:rgba(0,0,0,0.06);
-  --border-hi:rgba(0,0,0,0.12);
-  --accent:#1DA9BD;
-  --accent2:#0D7A8A;
-  --gold:#B8860A;
-  --purple:#7B2FBE;
-  --pink:#D70015;
-  --text:#1C1C1E;
-  --text2:rgba(28,28,30,0.55);
-  --text3:rgba(28,28,30,0.28);
-  --tb:rgba(242,242,247,0.85);
-  --glow-a:rgba(29,169,189,0.08);
-  --glow-g:rgba(48,209,88,0.08);
-  --glow-p:rgba(123,47,190,0.08);
-  --glow-y:rgba(184,134,10,0.08);
-}
-
-body{background:var(--bg);color:var(--text);transition:background .5s,color .5s;}
-
-/* انارة */
-@keyframes glow-breathe{0%,100%{opacity:.4;transform:scale(1);}50%{opacity:.85;transform:scale(1.12);}}
-.orb{position:absolute;border-radius:50%;filter:blur(44px);pointer-events:none;animation:glow-breathe 5s ease-in-out infinite;}
-
-/* ══ LOGIN ══ */
-#ls{display:flex;position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 50% 40%,#0D1A2E,#030508 70%);align-items:center;justify-content:center;}
-.lbox{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:44px 40px;width:100%;max-width:380px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);}
-.lico{width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;}
-.ltitle{text-align:center;font-size:20px;font-weight:700;color:#F5F5F7;margin-bottom:3px;}
-.lsub{text-align:center;font-size:10px;color:rgba(29,169,189,0.8);letter-spacing:1.5px;margin-bottom:28px;}
-.llbl{font-size:11px;font-weight:600;color:rgba(245,245,247,0.5);display:block;margin-bottom:6px;}
-.linp{width:100%;padding:13px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.07);color:#F5F5F7;font-family:Cairo,sans-serif;font-size:14px;outline:none;margin-bottom:12px;transition:border-color .2s;}
+/* LOGIN */
+#ls{display:flex;position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 50% 30%,#0D2E3A,#040D14 70%);align-items:center;justify-content:center;}
+.lbox{background:rgba(255,255,255,0.04);border:1px solid rgba(29,169,189,0.2);border-radius:24px;padding:44px 40px;width:100%;max-width:380px;backdrop-filter:blur(20px);}
+.lico{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:11px;font-weight:900;color:#fff;letter-spacing:.5px;}
+.ltitle{text-align:center;font-size:19px;font-weight:900;color:#fff;margin-bottom:3px;}
+.lsub{text-align:center;font-size:10px;color:rgba(29,169,189,0.8);letter-spacing:1px;margin-bottom:26px;}
+.llbl{font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px;}
+.linp{width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(29,169,189,0.2);background:rgba(255,255,255,0.06);color:#fff;font-family:Cairo,sans-serif;font-size:14px;outline:none;margin-bottom:12px;transition:border .2s;}
 .linp:focus{border-color:rgba(29,169,189,0.6);}
-.lbtn{width:100%;padding:14px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);color:#fff;border:none;border-radius:14px;font-family:Cairo,sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.5px;}
-.lerr{display:none;color:#FF375F;font-size:12px;text-align:center;background:rgba(255,55,95,0.1);padding:7px;border-radius:10px;margin-bottom:11px;}
+.lbtn{width:100%;padding:13px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);color:#fff;border:none;border-radius:12px;font-family:Cairo,sans-serif;font-size:14px;font-weight:900;cursor:pointer;}
+.lerr{display:none;color:#E74C3C;font-size:12px;text-align:center;background:rgba(231,76,60,0.1);padding:7px;border-radius:8px;margin-bottom:11px;}
 
-/* ══ APP ══ */
-#app{display:none;height:100vh;flex-direction:column;}
-
-/* TOPBAR — glass */
-.topbar{
-  background:rgba(6,9,15,0.7);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  padding:0 22px;height:50px;
-  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
-}
-body.light .topbar{background:rgba(242,242,247,0.8);}
+/* APP */
+#app{display:none;}
+.topbar{background:var(--card);border-bottom:2px solid var(--accent);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .tb-brand{display:flex;align-items:center;gap:10px;}
-.tb-ico{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;letter-spacing:.5px;}
-.tb-nm{font-size:13px;font-weight:700;color:var(--text);}
-.tb-sb{font-size:8px;color:var(--text3);letter-spacing:1.2px;}
-.tabs{display:flex;gap:3px;background:rgba(255,255,255,0.06);border-radius:10px;padding:3px;}
-body.light .tabs{background:rgba(0,0,0,0.06);}
-.tab{padding:5px 16px;border:none;border-radius:8px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--text2);transition:all .25s;}
-.tab.active{background:var(--accent);color:#fff;}
-.tb-r{display:flex;align-items:center;gap:14px;}
-.tb-d{font-size:14px;font-weight:700;color:var(--text);}
-.tb-dt{font-size:8px;color:var(--text3);}
-#clk{font-size:18px;font-weight:700;color:var(--text);direction:ltr;font-variant-numeric:tabular-nums;letter-spacing:.5px;}
-.ldot{width:6px;height:6px;border-radius:50%;background:#30D158;animation:pp 2s infinite;display:inline-block;}
-@keyframes pp{0%,100%{opacity:1;}50%{opacity:.2;}}
-.out-btn{background:rgba(255,55,95,0.1);border:1px solid rgba(255,55,95,0.2);color:var(--pink);padding:5px 12px;border-radius:9px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;}
+.tb-ico{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;}
+.tb-nm{font-size:13px;font-weight:900;color:var(--text);}
+.tb-sb{font-size:8px;color:var(--text3);letter-spacing:1px;}
+.tb-actions{display:flex;gap:8px;align-items:center;}
+.dash-link{background:rgba(29,169,189,0.1);border:1px solid rgba(29,169,189,0.25);color:var(--accent);padding:6px 14px;border-radius:9px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;}
+.out-btn{background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);color:var(--red);padding:6px 12px;border-radius:9px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;}
+.thm-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:9px;font-family:Cairo,sans-serif;font-size:11px;font-weight:700;cursor:pointer;}
 
-/* ══ DASHBOARD GRID ══ */
-#pgd{display:none;flex-direction:column;flex:1;overflow:hidden;}
-.dgrid{
-  display:grid;
-  grid-template-columns:1fr 320px 1fr 1fr;
-  grid-template-rows:1fr 1fr;
-  gap:10px;padding:10px 14px;
-  flex:1;overflow:hidden;
-  position:relative;
-}
-
-/* Glass Card */
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  position:relative;
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  transition:backdrop-filter .4s,filter .6s,background .4s;
-}
-/* blur العناصر المحيطة عند MindMap */
-.card.blurred{
-  filter:blur(2px) brightness(0.7);
-  pointer-events:none;
-}
-.ch{padding:9px 14px 7px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;z-index:1;position:relative;}
-.cht{font-size:11px;font-weight:700;color:var(--text);letter-spacing:.3px;}
-.chb{font-size:8px;font-weight:700;background:var(--accent);color:#fff;padding:2px 9px;border-radius:20px;margin-right:auto;letter-spacing:.5px;}
-
-/* ── تراث (عمود1 صف1) ── */
-#card-heritage{grid-column:1;grid-row:1;}
-.hlist-inner{display:flex;flex-direction:column;}
-.hi{display:flex;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.hi:last-child{border-bottom:none;}
-.hd2{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px;}
-.ht2{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:3px;letter-spacing:.2px;}
-.hx2{font-size:10px;color:var(--text2);line-height:1.65;}
-.prv-strip{background:linear-gradient(135deg,rgba(255,214,10,0.08),transparent);border-top:1px solid rgba(255,214,10,0.12);padding:10px 14px;flex-shrink:0;z-index:1;position:relative;}
-.prv-lbl2{font-size:8px;letter-spacing:1.5px;color:var(--text3);font-weight:600;margin-bottom:5px;text-transform:uppercase;}
-.prv-txt2{font-size:12px;font-weight:700;color:var(--gold);margin-bottom:3px;line-height:1.4;}
-.prv-mean2{font-size:10px;color:var(--text2);line-height:1.5;}
-
-/* ── صورة (عمود1 صف2) ── */
-#card-img{grid-column:1;grid-row:2;}
-.img-wrap{flex:1;position:relative;overflow:hidden;min-height:0;}
-.img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
-.img-wrap:hover img{transform:scale(1.04);}
-.img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 55%);display:flex;align-items:flex-end;padding:13px 15px;}
-.img-cap{font-size:14px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.9);letter-spacing:.3px;}
-
-/* ══ موظف الشهر — وسط ══ */
-#card-emp{
-  grid-column:1;grid-row:1/3;
-  background:linear-gradient(160deg,rgba(29,169,189,0.08),rgba(13,122,138,0.05),rgba(191,90,242,0.06));
-  border:1px solid rgba(29,169,189,0.2);
-  display:flex;flex-direction:column;
-  position:relative;overflow:hidden;border-radius:18px;
-  z-index:2;
-}
-.eg1{position:absolute;width:280px;height:280px;background:rgba(29,169,189,0.1);border-radius:50%;filter:blur(60px);top:-60px;right:-60px;animation:glow-breathe 5s ease-in-out infinite;}
-.eg2{position:absolute;width:220px;height:220px;background:rgba(48,209,88,0.08);border-radius:50%;filter:blur(50px);bottom:-50px;left:-50px;animation:glow-breathe 6.5s ease-in-out infinite 1.5s;}
-
-.emp-hdr{
-  background:linear-gradient(135deg,rgba(29,169,189,0.12),transparent);
-  padding:12px 16px;border-bottom:1px solid rgba(29,169,189,0.15);
-  flex-shrink:0;position:relative;z-index:1;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.emp-hdr-ttl{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.5px;}
-.emp-counter{font-size:10px;color:var(--text3);font-weight:600;}
-
-/* شريط الانزلاق الأفقي */
-.emp-viewport{flex:1;position:relative;overflow:hidden;z-index:1;}
-.emp-track{display:flex;height:100%;will-change:transform;}
-.emp-panel{
-  min-width:100%;height:100%;flex-shrink:0;
-  display:flex;flex-direction:row;align-items:center;
-  padding:16px 20px;gap:22px;
-}
-.emp-av-big{
-  width:90px;height:90px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,#1DA9BD,#0D7A8A);
-  display:flex;align-items:center;justify-content:center;
-  font-size:32px;font-weight:900;color:#fff;
-  box-shadow:0 0 0 5px rgba(29,169,189,0.15),0 8px 30px rgba(29,169,189,0.3);
-  transition:transform .5s;
-}
-.emp-panel:hover .emp-av-big{transform:scale(1.06);}
-.emp-content{flex:1;min-width:0;}
-.emp-rank2{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase;}
-.emp-name2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.2;letter-spacing:.2px;}
-.emp-dept2{font-size:11px;color:var(--accent);font-weight:600;margin-bottom:12px;letter-spacing:.2px;}
-.emp-reason2{font-size:10.5px;color:var(--text2);line-height:1.7;background:rgba(255,255,255,0.04);border-radius:12px;padding:11px 13px;margin-bottom:11px;border:1px solid var(--border);}
-.emp-quote2{font-size:10.5px;font-weight:700;color:var(--accent2);padding:9px 13px;border-radius:12px;background:rgba(48,209,88,0.07);border:1px solid rgba(48,209,88,0.15);}
-
-/* نقاط التنقل */
-.emp-dots{display:flex;justify-content:center;gap:7px;padding:10px 0 12px;flex-shrink:0;position:relative;z-index:1;}
-.dot{width:7px;height:7px;border-radius:50%;background:rgba(29,169,189,0.2);transition:all .4s;cursor:pointer;}
-.dot.on{background:var(--accent);width:22px;border-radius:4px;}
-
-/* ══ MindMap Overlay ══ */
-#mm-overlay{
-  display:none;
-  position:absolute;
-  inset:0;
-  z-index:100;
-  pointer-events:none;
-  align-items:flex-start;
-  justify-content:center;
-  padding-top:18px;
-}
-#mm-overlay.active{display:flex;pointer-events:auto;}
-
-/* SVG connections */
-#mm-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
-
-/* كارد MindMap المركزي */
-.mm-center{
-  position:relative;z-index:10;
-  background:linear-gradient(135deg,rgba(29,169,189,0.2),rgba(48,209,88,0.15));
-  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
-  border:1px solid rgba(29,169,189,0.4);
-  border-radius:20px;padding:18px 22px;
-  text-align:center;
-  box-shadow:0 0 60px rgba(29,169,189,0.3),0 20px 60px rgba(0,0,0,0.5);
-  animation:mm-center-in .5s cubic-bezier(.34,1.56,.64,1) both;
-}
-@keyframes mm-center-in{from{opacity:0;transform:translateY(-60px) scale(.8);}to{opacity:1;transform:translateY(0) scale(1);}}
-.mm-av{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#1DA9BD,#0D7A8A);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;margin:0 auto 12px;box-shadow:0 0 30px rgba(29,169,189,0.4);}
-.mm-name{font-size:16px;font-weight:900;color:#fff;margin-bottom:3px;}
-.mm-dept{font-size:10px;color:rgba(29,169,189,0.9);font-weight:700;margin-bottom:2px;}
-
-/* فقاعات MindMap */
-.mm-bubble{
-  position:absolute;z-index:10;
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:1px solid var(--border-hi);
-  border-radius:16px;padding:10px 14px;
-  min-width:140px;max-width:180px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.4);
-  opacity:0;
-  transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.56,.64,1);
-  transform:scale(.7);
-  pointer-events:none;
-}
-.mm-bubble.show{opacity:1;transform:scale(1);}
-.mm-bubble-label{font-size:8px;font-weight:700;color:var(--text3);letter-spacing:1.5px;margin-bottom:5px;text-transform:uppercase;}
-.mm-bubble-val{font-size:11px;font-weight:700;color:var(--text);line-height:1.55;}
-
-/* ── عمود 3 يسار ── */
-#col-right{grid-column:3;grid-row:1/3;display:flex;flex-direction:column;gap:10px;overflow:hidden;}
-
-.dyk2{
-  background:linear-gradient(135deg,rgba(29,169,189,0.08),transparent);
-  border:1px solid rgba(10,132,255,0.18);border-right:3px solid var(--accent);
-  border-radius:18px;padding:14px 16px;flex-shrink:0;position:relative;overflow:hidden;
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-}
-.dlbl{font-size:8px;font-weight:700;color:var(--accent);letter-spacing:1.5px;margin-bottom:7px;text-transform:uppercase;}
-.dtxt{font-size:11.5px;color:var(--text);line-height:1.75;font-weight:500;}
-
-.pride-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:18px;flex:1;overflow:hidden;display:flex;flex-direction:column;
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-}
-.pi2{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);}
-.pi2:last-child{border-bottom:none;}
-.pi2-num{font-size:9px;font-weight:900;color:var(--accent);background:rgba(29,169,189,0.1);width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;border:1px solid rgba(29,169,189,0.15);}
-.pi2-title{font-size:11px;font-weight:700;color:var(--text);margin-bottom:3px;letter-spacing:.2px;}
-.pi2-body{font-size:10px;color:var(--text2);line-height:1.6;}
-
-.evt2{
-  background:linear-gradient(135deg,rgba(191,90,242,0.08),transparent);
-  border:1px solid rgba(191,90,242,0.18);border-right:3px solid var(--purple);
-  border-radius:18px;padding:14px 16px;flex-shrink:0;position:relative;overflow:hidden;
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-}
-.etitle{font-size:12px;font-weight:700;color:var(--purple);margin-bottom:5px;letter-spacing:.2px;}
-.edesc{font-size:10.5px;color:var(--text2);line-height:1.65;margin-bottom:7px;}
-.esaudi{font-size:10.5px;color:var(--accent);border-right:2px solid var(--accent);padding-right:8px;font-style:italic;line-height:1.6;}
-
-/* شريط تمرير */
-.ticker{background:rgba(6,9,15,0.85);backdrop-filter:blur(10px);border-top:1px solid var(--border);height:30px;display:flex;align-items:center;overflow:hidden;flex-shrink:0;}
-body.light .ticker{background:rgba(242,242,247,0.9);}
-.tlbl{background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:0 13px;height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;letter-spacing:1px;}
-.ttrack{display:flex;align-items:center;animation:tk 60s linear infinite;white-space:nowrap;}
-.ttrack:hover{animation-play-state:paused;}
-@keyframes tk{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.titem{font-size:10px;color:var(--text2);padding:0 24px;border-right:1px solid var(--border);}
-.titem b{color:var(--text);font-weight:700;}
-
-/* ══ ADMIN ══ */
-#pga{display:none;flex:1;overflow-y:auto;padding:14px 20px;background:var(--bg);}
-.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:100%;margin:0 auto;align-content:start;}
-.acard{background:var(--card-solid);border:1px solid var(--border);border-radius:14px;padding:12px 14px;}
+/* ADMIN GRID */
+.admin-wrap{padding:18px 20px;max-width:1400px;margin:0 auto;}
+.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.acard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;}
 .acard.full{grid-column:1/4;}
 .acard.span2{grid-column:span 2;}
-.atitle{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);letter-spacing:.3px;}
-.albl{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;margin-top:7px;}
+.atitle{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.albl{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;margin-top:8px;}
 .albl:first-of-type{margin-top:0;}
-.ainp{width:100%;padding:7px 11px;border-radius:9px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;transition:border-color .2s;box-sizing:border-box;}
+.ainp{width:100%;padding:8px 12px;border-radius:9px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;transition:border .2s;box-sizing:border-box;}
 .ainp:focus{border-color:var(--accent);}
-.ata{width:100%;padding:7px 11px;border-radius:9px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;resize:vertical;min-height:50px;transition:border-color .2s;box-sizing:border-box;}
+.ata{width:100%;padding:8px 12px;border-radius:9px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:Cairo,sans-serif;font-size:12px;outline:none;resize:vertical;min-height:50px;transition:border .2s;box-sizing:border-box;}
 .ata:focus{border-color:var(--accent);}
-.abtn{padding:9px 18px;border:none;border-radius:11px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;letter-spacing:.3px;}
-.abtn:hover{opacity:.82;}
+.abtn{padding:8px 16px;border:none;border-radius:9px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+.abtn:hover{opacity:.85;}
 .abtn-p{background:linear-gradient(135deg,#1DA9BD,#0D7A8A);color:#fff;}
 .abtn-g{background:rgba(29,169,189,0.1);border:1px solid rgba(29,169,189,0.2);color:var(--accent);}
-.asuc{display:none;color:var(--accent2);font-size:11px;font-weight:700;margin-top:8px;}
-.ee{background:var(--card2);border-radius:10px;padding:9px 12px;margin-bottom:7px;border:1px solid var(--border);position:relative;}
-.ee-del{position:absolute;top:10px;left:10px;background:rgba(255,55,95,0.1);border:1px solid rgba(255,55,95,0.2);color:var(--pink);border-radius:8px;padding:3px 10px;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer;}
-.ee-hdr{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:7px;letter-spacing:.3px;}
+.asuc{display:none;color:var(--green);font-size:11px;font-weight:700;margin-top:7px;}
+.ee{background:var(--card2);border-radius:10px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border);position:relative;}
+.ee-del{position:absolute;top:9px;left:9px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);color:var(--red);border-radius:7px;padding:3px 9px;font-family:Cairo,sans-serif;font-size:10px;cursor:pointer;}
+.ee-hdr{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;}
 .ee-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
-.thbtns{display:flex;gap:8px;margin-top:6px;}
-.thbtn{flex:1;padding:9px;border:1px solid var(--border);border-radius:11px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--text);}
+.thbtns{display:flex;gap:7px;margin-top:5px;}
+.thbtn{flex:1;padding:8px;border:1px solid var(--border);border-radius:9px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:var(--text);}
 .thbtn.on{border-color:var(--accent);background:rgba(29,169,189,0.1);color:var(--accent);}
-.pride-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.pride-block{background:var(--card2);border-radius:10px;padding:10px;border:1px solid var(--border);}
-.pride-block-num{font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.5px;}
-.h-block{background:var(--card2);border-radius:10px;padding:10px;border:1px solid var(--border);}
-.h-block-num{font-size:10px;font-weight:700;color:var(--gold);margin-bottom:8px;letter-spacing:.5px;}
+.pride-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.pride-block{background:var(--card2);border-radius:10px;padding:11px;border:1px solid var(--border);}
+.pride-block-num{font-size:10px;font-weight:700;color:var(--accent);margin-bottom:7px;}
+.h-block{background:var(--card2);border-radius:10px;padding:11px;border:1px solid var(--border);}
+.h-block-num{font-size:10px;font-weight:700;color:var(--gold);margin-bottom:7px;}
 </style>
 </head>
 <body class="dark">
 
-<!-- LOGIN -->
 <div id="ls">
   <div class="lbox">
-    <div class="lico">NOURA</div>
-    <div class="ltitle">لوحة النشرة اليومية</div>
-    <div class="lsub">DAILY BULLETIN</div>
+    <div class="lico">ADMIN</div>
+    <div class="ltitle">لوحة التحكم</div>
+    <div class="lsub">NOURA DASHBOARD CONTROL</div>
     <div class="lerr" id="lerr">اسم المستخدم او كلمة المرور غير صحيحة</div>
     <label class="llbl">اسم المستخدم</label>
     <input class="linp" id="lu" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')document.getElementById('lp').focus()">
@@ -344,188 +85,85 @@ body.light .ticker{background:rgba(242,242,247,0.9);}
   </div>
 </div>
 
-<!-- APP -->
-<div id="app" style="display:none;flex-direction:column;height:100vh;">
+<div id="app">
   <div class="topbar">
-    <div class="tb-brand">
-      <div class="tb-ico">N</div>
-      <div><div class="tb-nm">نورة لتعليم القيادة</div><div class="tb-sb">NOURA DRIVING ACADEMY</div></div>
-    </div>
-    <div class="tabs">
-      <button class="tab active" id="tdash" onclick="sw('d')">لوحة العرض</button>
-      <button class="tab" id="tadm" onclick="sw('a')">لوحة التحكم</button>
-    </div>
-    <div class="tb-r">
-      <div><div class="tb-d" id="cday">—</div><div class="tb-dt" id="cdate">—</div></div>
-      <div id="clk">--:--:--</div>
-      <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text3);"><span class="ldot"></span>LIVE</div>
+    <div class="tb-brand"><div class="tb-ico">N</div><div><div class="tb-nm">لوحة التحكم — نورة</div><div class="tb-sb">DASHBOARD CONTROL PANEL</div></div></div>
+    <div class="tb-actions">
+      <a class="dash-link" href="dashboard.html" target="_blank">عرض الداشبورد</a>
+      <button class="thm-btn" onclick="toggleTheme()">داكن / فاتح</button>
       <button class="out-btn" onclick="doLogout()">خروج</button>
     </div>
   </div>
 
-  <!-- DASHBOARD -->
-  <div id="pgd" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
-    <div class="dgrid" id="dgrid">
-
-      <!-- عمود 1 يمين: موظف الشهر (يمتد صفين) -->
-      <div id="card-emp" style="grid-column:1;grid-row:1/3;">
-        <div class="eg1"></div><div class="eg2"></div>
-        <div class="emp-hdr">
-          <div class="emp-hdr-ttl">موظف الشهر</div>
-          <div class="emp-counter" id="emp-counter">—</div>
-        </div>
-        <div class="emp-viewport">
-          <div class="emp-track" id="emp-track"></div>
-        </div>
-        <div class="emp-dots" id="emp-dots"></div>
-        <div id="mm-overlay">
-          <svg id="mm-svg"></svg>
-          <div class="mm-center" id="mm-center">
-            <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACoAgYDASIAAhEBAxEB/8QAHAABAAICAwEAAAAAAAAAAAAAAAYHBAUBAgMI/8QAWBAAAQMDAQQECAYLCwsFAQAAAQACAwQFEQYHEiExE0FRYQgUInGBkaGxFSMyUsHRFxgzQmJyk7LC0uEWJDRDU1RVZHOSoiUnNVZjdIKUs8PwKDY3dYPx/8QAGgEBAAIDAQAAAAAAAAAAAAAAAAIDAQQFBv/EADkRAAEDAQQEDAcAAQUAAAAAAAABAgMEBREhMRJBUZEGExQiMmFxgaGx0fAVFkJSU8HhQyMkM3Lx/9oADAMBAAIRAxEAPwD4yREQBERAEREAREQBERAEREAREQBERAERZFFQ1lbII6SlmncTgCNhKXXmFVES9THRSih0JqGpAMkEVK3tmkwfUMre0WzZoINZci7tbFHj2n6leymldkhzprXo4elIndj5FdIrepNC2CnPlwzVH9pJz9WFtaWwWam+422mH4zM+9bDbPkXNUOdJwmpW9FqqUYivz4OoAP4DTcP9kPqQ26g66Gm9MQU/hrtpR80xfjXeUGivv4PoP5jTfkgufg6g/mNN+SCx8Od9w+aYvxrvKDRX58HW/n4lTfkgnwfb/5lTfkgs/DXfcPmmL8a7yg0V+fB1v8A5lTfkgnwdQHh4hSnzwt+pYWznfcZ+aYvxrvKDRX1Ja7ZI0NfbqMjuhaPcsSbTNhmJ37ZAc8OGR7ii2c9NZJOFFPfixfApBFcsmjdOvbgW9rc9bXu+tYkuz+wyHLTVx8+DZB9IUFs+VNhc3hLRrmip3f0qVFZlTs3oXA+L3CePs32B31LX1GzarAJgucD8fPjLfdlVuo5k1G0y3aF/wBd3ai+hA0UpqdBahhaXNigmx1Ry8fbhaqr09e6Vu9PbKlre0N3h7FS6GRuaKbsdbTy9B6L3oatF3lhlhduyxPjPY5pC6Ks2kW8IiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAi2llsF1u78UVI90f30rhusb5yeCndj2fUVNuyXSU1Mg49GzgwfSVfFTSS9FMDn1dqU1Jg92OxM/faVvRUdXWzCGkp5Z3nqY0lSq1bPrtUbr658VGw8wTvP9Q4e1WfR0tNRxCKkp4oGDhhjccO9epwBngF0I7PYnTW88zVcJpn4QN0etcV9PMjdq0TY6HDpIHVUgx5Up4Z8ykUEUMDNyGKOJvWGNDR58Bae7apsltyJ6xskg+8iG8c9nd6VE7ntHmdltuoWsH3r5jkj0DgrllggwTwNJlHaVet7r1TauCe+wsfA7uPJa24Xy0UGfGq+GPuByfUFUl01PfLjvNnrpAx3Nkfkt9i07nOc4ucSSesla77S+xDqQcF9c0m71X0LUrtoNmhJbTxVNQRyIaGtPrOfYtNVbSKtzSKa2wx88OfIXezgoGi1XVsztZ14bBoovpv7VJXJr/ULhhslNH2bsI4etYMmrtRvz/lWZgPUwBvuC0SKhZpFzcpusoaZnRjRO5DZzagvcxBlulU4j/aFcxahvkTd2O6VQH461aKOm7aXcTH9qbiR0OttQ00m86sFQOsStB9o4qaad11QXGRtPWx+Jzu4Ak5YT5+pVQiviqpI1wW80Kux6WpTFty7UwPoXg4EAgh3DgVWesaa/wCn6h09HcKzxGR2WnfPkHsK6aG1g+hLLdc3ufTE4ZITxZ3HuVlzw01ZSuhmayaCVuHDqcD/AOZyune2rj5q3KeVRstjVN0iaTV8f6hS7dU6haMC7VOPOu37rdRY/wBKzekN+peus9OTWKty0OfRyHMT+z8E96j65Llljdoqqop7GFlLUxpIxqKi9SEjZrXUbMfv4Ox86Npz7F7jX2ogeMtOe4whRVE5RL9ymVs+kXONu5CXR7Qb6HDfZSPHX8VjPtWZFtIr24Mlup3kdjiFBUWUqZU+oqdZFE7ONCxINpQJ+PtO6O2OXPvC2NNtDsshDZYauE9ZLQR7CqqRWNrpk1ms/g/Quybd2Kv7vLkGptK1rgJKunkceqaE/SMLzl01pW6tJgjg3jxL6eQA+pU+u8UssRzFI9h7WuIU+W6XTYilKWCsX/BM5vvuLCuOzdpJdb7hjPyWTN/SH1KLXXSd9t5JkonTRj+MhO+D6uKW3Vl+oAGxVzpGAY3JQHt9qkVu2kVDcNuFAyX5z4nYJ9B4LCrTSbWkkS1afWkibl97yBOa5ri1wII5ghcK1Rc9G6lYI6psUUxB+6t6N4/4uRWmvWz6YNM9mqW1DDxbG8gHzA8j6cKDqR117F0k6i6K2ItLQnasbuvLeQNFkV1HVUM5grKeSCQfevbhY61lS7M66ORyXoERFgyEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREARe1HTVFZUNgponyyuOA1oyVYemdARRblReSJH8CIGnyR5z1q6KB8q81DSrLQgo23yrjs1kJsdiuV4k3aKnc5g+VIeDG+lWJp7QtuoA2W4YrKgfen5DfR1+lSyCGOCFsMETIo2DyWNbgD0BYd4u9ttUJlrqlkXDg3OXO8wXUio4oU0n4+R5CqtuqrHcXClyLqTFV99RnMa1kYYxoYxo4BowB6Asa4V9Hb4elramOBnUXnGfMOtV7ftoVVMXRWmPxdn8o/i70dihdXVVNXMZamd8rzzLjlQlr2NwYl/kW0nBuaTnTu0fFSxb3tEpoy6O1QOndyEsnBo7wOahd31JeLoSKmseGH7xnkt9QWoRc+SpkkzU9PS2XS0vQbjtXFTkkk5JyVwiKg6AREQBERAEREAREQBF6zU88LWOmhkja8ZYXNIDh3LyQIt4Vg7OdVNja2z3KQbvKCV3V+Ce5V8uQSCCDgjkVZFK6J2khqVtHHWRLE//wAL8udFT3Gjko6uPfjeOIPMd6pfU9mnsd0fSS5dGfKik6ntU+2danFxgba61376jGI3H+MH1rc6uskV9tZhIAqGDehf1g9nmXUmjbVR6bM/eB5GhqZbJqlgm6K+70/ZSaL1q6eWlqZKedhZLG4tc09RXkuOe4RUVL0CIiGQiIgCIiAIiIAtnaL9dbU/eo6t7W9bHcWn0LWIstcrVvQhJGyRui9L0LAptaWu7QCj1Fb2bhGOka3eAPbjmPQsC8aQimhdXabqmV1PzMQdl7fr83NQ5ZNBXVdBOJqSokheOtpxlX8fp4SJf16znpZ6wLpUrtHqXFu7V3HhLG+KR0crHMe04c1wwQV1Usfe7Tf4xFf4BTVYGG1sDfzgOYWjvFqntr2lz2T08nGKoiOWSDuP0Kt0dyXtW9DbinVy6MiaLvBexfamvREVZsBERAEREAREQBERAEREAREQBERAEREAREQBERAERdo2PkkbHG0ue44AA4koDqpHpXSddentleDT0eeMhHE/ijrUk0doVjAyuvbN93NlNnh/xfUp6A2KMABsbGjA+9AA93uXSp6FXc6TI8vafCBsd8VNiu3V3bTAsllt1npxFQ07WE/KkPFzvOfoWRcq+jt1OaitnZCwdbjxPm7VFNUa6paEup7Xu1FQOcn3jT9Kri6XKtudQZ62ofK88sngPMOpXS1ccSaMePkc6jsSorH8dUKqIu3NSYaj2gVM5dBaGGCPl0rh5R8w6lCamonqpnTVEz5ZHc3PdkleSLlyTPkW9ynr6WigpW6MTbvPeFkw0FbPSSVcNJNJBGQ18jWEtaewlYyvXwYL2Xis0zNROkjLnVDJ2t4NJABDj6BhZhjSR6NVbiFoVL6WB0rW6V2q+7Aoo8OaL6+1Psw0bfw59RaY6ac/x1N8W4E9ZxwPpCqvVGwO5U4fNp+5x1bBxENQNx/rHBXyUUrcsTn0vCGknwcuivXlvKVRbXUOnL3p+oMF3t09K7qL2+SfMeS1S1FRUW5Ttte16aTVvQIiLBIIiIAiIgCl+x200F62hWyhuQa6mLnPcw8nlrSQPWFEF6U881NOyenlfDKw5Y9ji1zT2ghSaqI5FUqnY6SNzGrcqouOw+ifCe+CoNIUVMI4W1XjA6BrAAWtA4nzY4L5yWVcrlcLnMJrjXVNZKBgPnlc8gdmSViqyol416uRLjVs2jWjp0iVbwiIqTfPSmnlpqhk8DyySN281w6irl0Zfor7bQ8uAqosNmZ1/jDuKpZZ9hulRaLlHWU54tOHNzwc3rC2aadYXdRyrVs1tdFcnSTJf0WhrPSdPe2+M05bDWtbjexwk7AfrVWXS111sqDDW074nDkSOB7wVddjulLd6FlXSvBB+U3PFh7CsyphhqIjFUQxysPNr27wK6U1IyfntwPLUNtVFB/oytvRNS4Kh8+Iroq9H6dqX77rbHGeyNzmD1ArFOg9OHlBUjrO7OStJbPl6jus4S0js0VO5PUqFFbT9n+n3Y3RWM80wPvC83bPbGWkNlrAf7QH6FHkM2ws+YqLau4qlFZ/2OLX/Pqz1t+pc/Y3tX9JVo/4WlOQzbCacIKFfq8FKvRWVJs2o907l1n3urMTce9Y0mzZ2Pi7q3P4UX7VHkc32k0t2hX6/BfQr5FPfsa1XVdqf0xOC8Z9m9zY3MdfRynsG8PeFFaWZPpLW2xROykQhCKWP0Bfw4hraZw/tcZXlLoXUUbc+LRO/FlBUFgkT6VLUtKkXKRN6EYWTTVk8ET4Wu3oZPlxu4tPo7e9bF+ldQMOPguod+KMrHqLDeoATNbKpmO2MqOg9uouSeF6YORe9DXHGeAwFwvZ9LUsJD6eVpHawrzcxzflNcPOFAuRUXI6oiIZCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiLLtFuq7rXR0dHEZJXn0Adp7llEVVuQi5yNRXOW5EOlvoqmvq2UtJE6WV5wGgK2NH6UpLIxtRMGz1xHF54hnc361l6U07R2Gkw0CWoeB0kvb3DsC41VqOksNNmT4yqePi4geJ7z2BdaCmbA3jJMzxlo2pLaEnJ6VF0fP0Qz7xc6O1UbqqslEbByHW49gCq3VWsK68F1PAXU1H8xp4v/GP0LUXy7114qzUVsxefvWD5LB2ALXrVqKx0uDcEOvZlhxUqI+TnP8E7PUIiLSO8EREBKNmekKrWepGW2Jxip2DpKmX5jPrPUvonUt203sl0jHBQ0kYmeC2CEAb8zxzc888dqr3wUKqBlzvdK4tbPJFE9hJ4uALsgesKUbV9mF51nrajr4rjBFa2wtika4nfiAJyWtxg54di6VO1WQ6cac5TyNpzNmr+IqXaMTUv7cDP2Fap1Nq6G7XK99GKMSMZSBkYaGnjvAHmebea7bUdqDdHaioLXFRMrTK3fqAHYcwEgDGOvmpxZLRS2Cww2q0wtZFTx4ja4/KPaT2k9agNk2VifVkuqdW14uNY6XpI4GNIijxyyTxOOzgtpWzIxGN6W040ctFJUyTSNuYmTU16tW8sCvt9vvlr6Cvo4qmCaMExyMDsAj3r4+2i2ijses7la6CUSU0MpDDnOB2Z7l9H7YNodHpC0vpaOSOW7zDdhiBz0XDG8fMvlSrqJquqlqaiR0k0ri973HJcTzK1K+RqqjdZ2+DNPO1HSuwYuSfs8kUx2Y6CuWtLoGRAwW+IjxipI4Adg7Srs1psu0VQaErDFRspZaWnc9lW553t4DmeOD5lrR0z5Gq5MjsVdr09NM2F2Ll2au0+YlKtmuibjra8mjpHCGnhAdUVDhkRt+klRVfVng8WeC3bN6SpawdPXPdNI7HPiQPUAFmlhSWS5cjFsV60VNpt6SrchjxbD9EsthpnxVklRu48ZM5Ds9u7y9i+ctZWSTTmp66zSvLzTSbocR8puMg+or7b4HlyVN7Tdj1x1Tq6pvdHdqSnjnazMckZyCBjq8y3aqlRWosbTzdi2y5srkqpOau3afOKK5/tfr7/AE5Qfk3Lj7X6+5/05Qfk3LQ5LL9p6ZbYoU/yIUyprsj0ZVau1NAwwuFup3h9VKR5O6D8nzlWbp/wf6OGdsl7vclUwYPRU8fRg9xJJOPNhWvTU1g0dp9whZBbbdTN3nnly6yeZPvWzDROv0pMEOVX8IotDi6XnOXD31lGeEtpez2aa23K2U0VK+pLo5Y42hrTgZzgcMqmVMtrms36z1M+riDmUMA6OmYee72nvKhq1ahzXSKrcjs2ZFLFSsbMvO94BERUm+ZdsuNdbZ+noamSB/a08/OOtSGDX99jZuv8XlPa6PHuUTRWMlezoqa01HTzrfIxFXsJmzaLeWjyqajd3lrvoK7HaNdzzoqH+679ZQpFPlMv3Gv8IovxoTn7JFw/mFL63fWu8e0irBPSW+Aj8FxH0qBopcsm+4h8Fofxp4lgfZJl/o1n98r2btKh3Rv2mQu68TgD81VyiylZMmsith0C/wCPxX1LH+yVB/RMo/8A3H1LuzaTSHO/bZm+aQH6FWqLPLptvkQWwKBfo8V9S0I9otrIy+kqGnuIKyGbQbCWgubVtd2dGD9KqdFnl820gvB2hX6V3qW1+7/T/bVfkv2r3ZrfTziB4y9ue2PkqeRS+IS67it3BujXK/eXW3VmnCcfC0Az3OH0LsNUaePK70x9J+pUkiz8Qk2IVrwYptTneHoXtDeLRPkMuFK7HPMgCSCyzcZBbpes7247KolFL4gq5tIfLMbehIqF4usdhrBgW2ik/s2AH2LEl0Rp1+Sba5hJ+8kePpVOxzzx/c5pGfiuIXu25XFow2vqhjsmd9aLWRrnGnvuMpYdUzoVK+PqWZUbPbFIfipayH8WQO9hCwKnZrTEfva6zNOf4yEEewqFQX+9wDEV1rGj+1J96y2aw1KwYF3nx3hp94UFmplzYWpQ2ozozovan8U3tRs2rmtJgulJKfmua5ufetZU6D1DCzeEME3dHKCfUcFcQa71JEA11XFKPw4W/QFlx7Rb4OD4KGQd8ZHuKj/tV2oWIlrsz0Hb/wCGiqdOX2mZvzWupa3t3Mj2LXSQTx/LhkZ+M0hTun2lVA/hFsif29HIW/WsgbRKCo8mrtDy3vkD/YQscVAuT/AsSrtBvTgv7HIVwisabUOiK1rWVNrLM4ziANx6WkFeM1Bs9q2h0dwfSE/etecj+8Co8mv6Lk3liWm5MJIXp3X+RX6KbDR9nq3E27UcG7jIEoGT7QvGbZ9dyHOoqmirGj5kmD6iPpUVppNSX9mJe20qZc3XdqKnmQ9Ftq/Td9oWl9TbKhrBzc1u8PWMrVEEHBBBVKtVMzbZIx6XtW84REWCYRF2jY+SRscbS5zjgAcyUB60FJUV1ZHSUsZklkdutaFcmkdP09hoQwNElTIAZpO3uHYFh6D00LJReM1LQa6VuX8Pubfm/Ws64awsNiukUVxbPV7pzJFTgEt8+SAutTwtgbpyZni7Vr5bQk5NSpe1M7tf8JpYNN1t4jklbIKaIAhkr2b2XdXDhkelRq47BbhcKySrqtXMklkOXE0Z9Xy1sI9vmmYWNigslybE0YaMMGP8S6zeEFZA4dFY69w695zB9Ksllp5Okt+81KWktalVeJZdf/1/ZqvteJv9ao/+SP669YfB5aAel1OSerdpMfpLN+2CtH9A1v5Rqx3eELTBx3dNTEdWakD9FU3Ufu83UW319tPWHwfLe1uJdQVDz2thDfpWTTbALC0nxi8Vzx1bgaPoWB9sNB/qxJ/zQ/VWKfCHqcnGlYsdWa0/qLOlRp7UxxdvO1+LSQfYB0v1XO6f3m/qrtHsD0mG/GV91cc9T2j9FRk+ENcMnGl6THVmqdn81Y03hA3x290VioI+zMjnYWOMpE1GUprdXN3ihZWl9kmmNO3enulBNcPGYDlrnTjj3EABSvVOorTpq2PuF3q2QRtHBp+W89jRzK+b7ntu1vVseyGWio2u4AwwneHpJPuUCvN4ul5qTU3Svnq5Sc5kfnHmHIehYWtjjS6JpJnB+qqXo+skvu71LsqPCGY2d4g0uXxBx3HPrMEjqJG4cetRvUm3TVFxikhttLS2tj+G+3Mkg8xPD2KqEWo6rmdm47cViUMS3tjTvvXzPatqqmtqpKqrnknnkOXve7JJUo2Z6FuWtLu2GBroaGNwNTUkcGjsHaVk7L9nd01lcGvLH01rjOZqlw5j5re0+5fRt0uGmdmekWjdZBTxN3YomY35nY9pPqVlPT6fPfg01rTtXiF5PTJfIvh/eoyZZtNbPNJtD3R0VDTNDWjm+R3vJK+dNqe0+56xkdRU7DRWlrvIhB8qTvefo5LR7QNaXbWV2NXXyFkDCRBTtPkRj6T3qMpUVSyc1mCCy7GbTrx8/OkXw/vWF9B+Dhrps9JDo2qhf08Qe6nlaOBZnJDuPUSVRtisl1vlY2ktVDNVSuOMMbwHnPIL6Y2PbPINE22S43V8L7pM341+fJhbz3Qfp9SUTJFfpNy1keEM9MlMscmLlyTXftJ9d7jR2q2z3GvmENNCwve4nqHvVd/Zy0T21/5D9qrjb1tHF/qzYLNNm2wO+Olafu7x+iPaqjWxPXK19zDn2bwdjkhSSovRVyTLDrPqP7OOiPnV/wCQ/aufs46I+dX/AJD9q+W0VHL5eo3/AJZouvf/AA+jbzt+sUMLhabTW1Uv3pmIjb7MlU7rzX2odYz/AOUqgR0rTllLD5MbfrPnUURUyVEkmCqb9JZNLSLpRtx2riERFQdIIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAL1iqKiH7lPLH+K8heSIFS82dLf73TAiG6VbQeYMpI9RWPX3Grr8GqeyRw5ERtafYBlYiLOkuV5BI2It6JiERFgmFYmy7Tzd0XurjJOcUzSOz776lDNO2yW73aGijBw45efmtHMqaaw1bFQUwstjIb0TejdK3kwDhgd/etumRrb5X5Jl2nFtV80t1LT9J2a7E/pn631fFbWPoLa8PrCMOeDkR/t9yq2WR8sjpJHF73HLnE5JK4c4ucXOJJJySetcKqad0zr1Nygs+Oij0GZ612hERUm8EREAREQBERAEREB3gilnmZDDG6SR7g1jWjJcTyAV1bOdiFVUPhuOq3iCn4OFIw5e78Y9QVMUdTPR1cVVTSOimheHxvbza4cQVJ7ptH1pcYuiqL7UiPd3S2M7oI78K6F0bVvel5z6+KrlRG07kamtdfcfQmtdf6Y0BahbaMRTVcbN2Gip8eTjkXdgXzVrPVN31ZdXXC7VBe7+LjHyIx2ALSyPfI8vke57jxJcckrqpT1LpcMk2Fdn2TFRc5Oc5c1U3WibLT6g1JTWqquEVvimJzNIRgYGccSOJV9WvY9oS1COputxdU44/Gztaw+hfNgJByDghejqioeMOnlcOwvJSGVjE5zb1JV1HPUKnFzKxNiJ+z6rq9c7ONF0Hi1BVUfkjyYaFokLu4kcPWVTW0na5eNUskoLex1ttruDmNdmSUfhH6Aq0RSlq3vTRTBOoppLEp6d/GOvc7aoREWqdgIiIAiIgCIiALkDJxnC4RAc47VzjzrjeK5DiOQHqQABcDHZ7VzvnsHqXBJKA5IHzT604A8RkedcZKBxHI4QDI7Auc/gN9qb7/AJxXG87tKA53h8xvtTeHzG+1N93zim87tKAbw+Y32rnfH8m32rjed2lN53aUALh8wBMj5qbzu0pvO7SgOPQuQW44tOfOm+75xXGSgBx2IAmfN6lyHEdnqQHGB159ScO1c7x7G+pcE56ggOQwnk5vrTcdnGOKBxCbzfmD1oDkxSDmw8V13T2H1Ltvdgx6UDgPnjzFAdEXqJQDkF2e/BXBk3vlfmhAeaL2Bixggefd/aumWY5cfOgOiLsQ3Gd70IG560B1Rc4OcIQQcFAcIiIDa2y7utlsqIaNpZU1Pkvm62s7B51qkRZVVXAg1jWqqomKhERYJhERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAW/sW2d2DWGlbhVXMzR1bJeihlbLuhmRwOOR4qstTWWu09e6m0XGIxz07y08MBw6nDuI4qytHmem2AXytppHRyMrm4c04II3ev0rOvNPFtU2eNvtIxv7prQzcq42jyp2Ac8eYZ8+R2ICIbGNL2zVV9raS6NkdFDSOlaGPLfKHLkoRUsEdTLG3k15A9BVqeDQ9rNVXVj+DnW54Ge3IUR0NpWo1hrI2mF5ii3nyTy4z0bAeJQEVRWzcKjY/ZLg+0my190ETujnqvGHDLhzIAOPVhavaZoq0UFiotW6UqJZ7LWu3THKcvhd1DPoPP6UBXSKebV9LW3TFFp4UAeZKykM073uyXO8n0DGTyXGx7S9t1NcrmLo2R8VHQvnYxrt0OcMAZI444oCCIrO2XaY0xcdM3+86hinfHQ5DTG8gsG6SSB1nh1rX6jk2WGySiyQXkXAD4syuw0ntPPggICisakuuzGlgijj0vX3CTowJZJJ3N8rHHAHDmtheNJaT1BoOu1TpOKqt8tuP75pJnl4I58CeKAqlXDcdJbOdP6estdqCS6iW5UwlHQHeG9utJ4dXygqeV/bQdG3zV+jdHmzQwv8WofjOkkDcZawDnz5ICvr4zZb8E1JtEt48e3PiBK07u93qBKZ6q2Z6p01aH3W6Q0raZhAJZOHHj3KRW7ReldNaSo9Qa6kqpZq8ZpqGB26d3tJHH/wDqAqpFb9n01s411FNb9MeO2a8sYXwxzyF7JcdXFaLZDo2ivmuaq0X+KQx0Ub3SRNcW5LTjBI4oCvUVn3CDY7TsqqeOS+yVDA7ccCAC7qA/aFWLsbx3c4zwzzQFr7OtHaSk2dVes9TsrKmOCVzOgik3RwIA5cevtXFFXbG7rKKKps1fat87rakTOIYe08eS3GmAPtX7xn+Xk/PYqQQE02o6Fl0fWU01NVCutVazfpakdY7DjhniPWoWrptb/hzwargKv4x9pqSIXOHEYLTz8zytNs10lpO4bPbvqPUr6topphEHQu4xjyTkDkSSccUBV6kGptLzWO20FbJW09Q2sbvBkZyWcM8VvdWN2XjTrnadN3NzDgGCZwDSOsnux2YW02o6T0/pnTGlK6jpXOkrAJKsmRxMow0454HMjggKuRWNte0jaLNQWe+acY8Wy4Rcd6Qv3X4zzPdleWgNL2eo0Ve9U6ghkkp6Ru5TNDy0Pk9HfwQEbtWm5a/TVfe21tPGyjODC4+W/hngtErB0Zpi03DZjqW/1ULn1tEMU53yAzhnOBz9K32g9EaNrNlp1LqOoqKd/Tu3pWPxhrXEboHLj60BUCK37bYNlGq5/giw1Nzt1ycMQPqDlsjuzB/YoRa9F3Gs18dIvc2OpZMWSv6mtHHe9WPWgIuitm8w7JNOVr7RUW65XSqpzuTTtnc1pcOfI4XXaPaNIHZpb9Q6btT6N1RVBhL5C52MOyOJ7ggKoREQBERAFKdM6XpLtpi43ea6x00tI7dZA7GZOAOfao9bqOouFdBRUkZknneGRtHMkq159muirBFHT6v1fJTXFzA50NPugNz1cQT6UBCdd6Yo9Ox291JdWV3jUW+/dx8WeHDgosrT2l6E0tZdD0eodO3KrrWVEwjD5HDdcOOTgAdYWs0VpDSdZYGXvU2qBQxvkcxtPEAH5HaSD7kBX6muz/SNJfrBfrtVTSD4Npy+ONpxvO3XEE+pSDUmzOzVGl59RaJvcl0p6bJnieAXAdeMAYxz4rI2Kj/N9rbnnxT9B6AqJERAEXvQUz62ugpIiA+aRsbSeWScKVbVNFt0TdaO3isdVvmphK95bgA5IwB2cEBEYWdJKyPON5wGezKsduzCndf47X+6OlAfSeMdLgbuckbvPuWp2X6Dn1jU1E0tUKG2UgzU1LurhnAz14U3tOiNkddcIbZTaqramrlduMAcBvO/u4QFNV0Hi1bPTB4f0Ujmbw68HGVN7Zoyhl2TXDV888jqqOURwxjg1vEZJ7ea0e0ay0unta3KzUT5H09LI1rDIcuILGnj61Y1pH/pmuJ/rf6TUBTCsHanom36SsNgnpppZqivjMkz3nhyBAA6hxVfK6vCP/0BpEf1U/mtQFKqS7OtO0eptQC211ybb4ujc/pTjmBy4qNK1tM7L7RHpiDUOtr+6z01SAYI2Y3yDyJyD6gEBpL1oe2UOi6u+w32OaeCrfA2nyMvaJC0O7eIGVBFeNHs02d3PTF2udi1BcLg+ihe/i9o3XBpIBG6M8lSETDJK2Mc3EAelAdUUw2i6Hn0abZFPWNqp6yASuDG4DCTyHapPa9l9lt2naW8a41C61eNgOhgjxvY58cg8fQgKoRWxrTZ1pSg2fyap09fKy4MbI1gLywsOTx5NBVToApTo7RlRqSz3a5Q19PTMtse+5knN/kk4HqUWU02SaQdrK91NA+4y0VPBAZpTHxc8ZAwOrrQELPA4Rd52COeSMHIa4gegogLi0O1rvBy1QHgECclvDr8hV7s71VV6R1LDc6cl0J8ioi6pIzzH1LMset5bXs/uukhQNlZcH73TmTBj5fe448u1RBAfT+kdH0cGqLhrSwSxOstztz5GNa7jHI7GWgdnPzHIUA8G+SJ2rL/AEfkipqKJ4hJPWHccev2KP7ONqFz0daKu0+Jtr6ObJjY+UsMLiMEjgeB7FELNea+zXuO722YwVUTy9jhxHHqPaEB43ilqKK61VJVscyeKVzXhw45BVqGOW3eDa+O4NLTWV29TB/A4yOIHoKx5NrlurXtqrxoS01teAN6fe3d8jrI3SoltA1xdtY1EXjbIaWjp+FPSwDDI/rKAmXhBMdNaNI1sTS+nNAW9IBwzhnD3rjwc6efpdR1Yjd0Lba9hfjhk8cexaLR2064WS0ts9ytdFe7azjHDVDizzHB9ykLNtggo6mhotIW6jpZ4XM3IZN1wcRjJIbx9XpQHls6djZJrbhzY78wqr7RSitutLRufuCaVrC7sycKRad1k60aSvVgFvEwugIMvS46PII5Y48+0KKsc5j2vYS1zTkEdRQFz7QdTUuz+8t03p7TFrDaeJhdUVcHSPly0HOeC2enNS1Opdj2rZ6i10FD0UZaDSQ9G1+RnJ4nJUUg2tsq7dDT6l0pbrzPCwNbUPO4445Z4H2epcXHa6+p0xctPwaaoaKkq2FkfQP3THnmTw8o+pAVerh20VtbRaQ0Q2krKin3qAl3RSFufJZzwqeUs11q8altVjoRRmn+C6cw7xfvb/Bozy4fJQGgmulxqGiOrr6ueHILmSTOcD6CVavhGxyTW7SVfCC6idQbjXDi0HDTjP8A5yVOqwNI7TKm12Eafvdopr5a2HMUU5w6PzHB/wDOtAeOwenqZ9qFpfTtcRE575HAcGt3HZz7vSrE2YTU8+3PVklOAYnxzYwcg+WMqIVe1aGits9HpLS9FZJJ27r6kO35MHnjgMe1R/ZnrL9yF8qrnLRurTUU7oiN/dIJOc8kBF6/+HVGP5V3vXgu87+lnkkxjfcXY85XRAXbpokeDDd+eDUvH+JipWKOSWVsUTHPe44a1oySVPNC7SZNPaan03XWSlutsmc5zmPeWO44zx4jqHUtzR7UtM2hpmsWgKGnrObJZZd/cPaOGUBsdQsdorYRT6frh0dyvEpmdCRhzG8Dx9Ab61h6QA+1y1PkcfHG/wDbVdat1JdtU3d9zu9R0szhhrQMNY3saOoLcWfWbaDZtdNIGhLzXTiUT7+Nz5PDGPwUBD1dnhAADQWi+3oP+2xUmpxtD123Vdgslsbb3Uxtke4XmTe3/JA5Y4ckBJdFuOsdj910wfjLha/3zSN5uc0cd0D1j0ry2puOl9n1i0Sw7lQ9vjVaB849R9KhezjVlRo7Usd3hiM7Nx0c0O9u9I0jlnz4K8NeakqNV6mqr1UMMfTEBke9ncaOACAn+zof5jdYnv8A0QvKV+fBphaOGLmQePPyyo1pnWjLPoK9aYdQGZ1yzibfx0fADljjyWO7VrTs2bpDxN28Knp+n3+HMnGMd6A8tl3/AMhWP/fGK17W5kfhP3AHDS+MhveTGxUrpi5/AuoaG69F0viszZNzON7HVlbfUusaq4a/l1bbmOoah0jXxtLt7dIaBx7QcIDX64ilh1hd45mlrxWSZB58XEqd6gdveD1ZuA8mvx7HrwuW0PTF+kbWai0RBU3HdDZJ4qlzA/HWQB9a3e1Se3DY3Y20FsNrjqKsSR0rnlxaN12Tk8ez1oCl0REAREQEw2NPhZtItBnxgzYbn5x5e1d9tVLXU20m7Gta8GSXfjc4cHMIG7j0KHwSyQTMmhe5kjCHNcDxBCs6n2w1FRRQw6h0zarzPE3dFRM3DyO/gUBn6r4eDpYB/WvpeqfVga72knU+nqeyRWGlttPBMJGiF+QMZ4YwO1bKh2sUFPRQU79B2WYxRtYXuAy7Axn5KAzfBymkczU1E52YJKDecw9vEfSV32PDd0VrtrRwFO4f4ZF5R7aI6enqIqLRlrpDPGY3PhfunBHc3iozs92gy6RZcmC0wV7K9wL2yvwAOORjBznKAhCK2BtetgjDRs9se91nA/VXA2u2/JJ0BY8fij9VAV3pT/3NbP8Aeo/zgrL8KbP7s7fn+Yj84rJtG1BlbUf5L2Z22eaIb56FuS3jz4M4LIvG1uapghuN22c0csLhuxzTkkEdgcWlAeGzWOSq2CappbcHOrOlJexnyiN1vL0KAbJwW7SrECMEVbc56uandBtyNvEjbfo210rJD5TYn7ufPhvFY0e2WniqhVQ6Gs0c7XbwkbwcD25DUBF9txztTvh/2zP+m1TK05+1ouPZ43+k1YtTtkpaqokqavQ1nqJ5Ob3kEnzndyV3btsLbe63s0fa20jzl0Id5DvOMYKAqFXR4R7s2XSQ/qmf8LVrfsuWwMAGz6ybw5n/AMao3tL17Ua2dQ9NboaJtG1zWNjfkEHHcMckBDVc3hGMnqLXpiupg51s8T3WkcWhxwfcqZU90jtOudlszbLX0FJebaz7nDVDO53A8eHoQEw2BkDZvrQdfQu/6TlTFF/DIf7RvvVqSbZY2WOutVBpC30DKyJ0b3QSbvMYzgN4lVhZ6aesulLTU0T5ZZJWhrGjJJygLm8Id0TdTaWdN9yELC/zby1PhNRVr9T26tw91ukomCncPkA5OR2Z5exenhPShuoLRRkgyQ0I38ec/UtPpnazc7dZIrNdrTQ3ykgGIRUt8po6hnjlASGlc37WOoacZ8b4f3gqXX0vW62p7Xsmpr3U6UoYoqqfdZbzgRnJPlYx3digLtr1rwQ3Z3YxkY6v1UBUyt/wXRnVF3/+vd+c1eP2X7bkf5vbEB2AD9Ve9HtsjoukNDou10rpGlrnQv3SR6GoCpaz+GTf2jvei85XmSV8hGC5xOPOiA6oiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiALlpAcCRkA8R2oiAsOi2hafpm05+x7a5JYWtaHunOTgcyN1R3XOr7pq6vjqK/o4ooW7sEEQwyMd3f3oiAjqIiAIiIAiIgCIiAIiIAiIgN9ozVl20nVVFTaTAJKiLon9Kze4Zzw4hdrtq+8XPTdLYKp0BoqU5jDY8O9JREBH0REAREQBERAEREAViaG2l0+k7TFTUelKGesjB/fksvlknPH5PAd2URAQ7VF8uGo71PdrnKH1Ex44GGtA4AAdQWy0LqWi01UT1FTYKW7SSbu5078CPGeQwe32IiA99oeu7nrKoh8ZhipKOnGIaaL5LPrUTREAREQBERAf/9k=" alt="نورة" style="height:46px;display:block;margin:0 auto 10px;">
-            <div class="mm-name" id="mm-name">—</div>
-            <div class="mm-dept" id="mm-dept">—</div>
-          </div>
-          <div class="mm-bubble" id="mm-b1" style="bottom:24%;right:4%;"><div class="mm-bubble-label">المسمى الوظيفي</div><div class="mm-bubble-val" id="mm-role">—</div></div>
-          <div class="mm-bubble" id="mm-b2" style="bottom:6%;right:14%;"><div class="mm-bubble-label">الاقتباس</div><div class="mm-bubble-val" id="mm-quote">—</div></div>
-          <div class="mm-bubble" id="mm-b3" style="bottom:24%;left:4%;"><div class="mm-bubble-label">القسم</div><div class="mm-bubble-val" id="mm-deptb">—</div></div>
-        </div>
-      </div>
-
-      <!-- عمود 2 وسط: فخر وطن (يمتد صفين) -->
-      <div id="card-pride-main" style="grid-column:2;grid-row:1/3;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;position:relative;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);">
-        <div class="orb" style="width:160px;height:160px;background:var(--glow-a);top:-40px;left:-40px;animation-delay:.9s;"></div>
-        <div class="ch"><span class="cht">فخر وطن</span><span class="chb">انجازات ومشاريع</span></div>
-        <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;" id="pride-seq"></div>
-      </div>
-
-      <!-- عمود 3 يسار صف 1: تراث وثقافة -->
-      <div class="card" id="card-heritage" style="grid-column:3;grid-row:1;">
-        <div class="orb" style="width:110px;height:110px;background:var(--glow-y);top:-25px;right:-15px;animation-delay:.5s;"></div>
-        <div class="ch"><span class="cht">تراث وثقافة</span><span class="chb" style="background:var(--gold);color:#000;">موروث</span></div>
-        <div class="hlist-inner" id="hlist"></div>
-        <div class="prv-strip">
-          <div class="prv-lbl2">المثل اليوم</div>
-          <div class="prv-txt2" id="ptxt">—</div>
-          <div class="prv-mean2" id="pmean">—</div>
-        </div>
-      </div>
-
-      <!-- عمود 3 يسار صف 2: معلومة + حدث -->
-      <div id="col-right" style="grid-column:3;grid-row:2;display:flex;flex-direction:column;gap:7px;overflow:hidden;">
-        <div class="dyk2" style="flex:1;">
-          <div class="orb" style="width:80px;height:80px;background:var(--glow-a);top:-15px;left:-15px;animation-delay:.3s;"></div>
-          <div class="dlbl">معلومة اليوم</div>
-          <div class="dtxt" id="dtxt">جار التحميل...</div>
-        </div>
-        <div class="evt2" style="flex:1;">
-          <div class="orb" style="width:70px;height:70px;background:var(--glow-p);bottom:-8px;right:-8px;animation-delay:.7s;"></div>
-          <div class="etitle" id="etitle">—</div>
-          <div class="edesc" id="edesc">—</div>
-          <div class="esaudi" id="esaudi">—</div>
-        </div>
-      </div>
-
-      <!-- عمود 4: الفيديو / الصورة — نصف الشاشة (صفين) -->
-      <div id="card-media" style="grid-column:4;grid-row:1/3;border-radius:18px;overflow:hidden;position:relative;border:1px solid var(--border);">
-        <div class="orb" style="width:200px;height:200px;background:var(--glow-g);top:-40px;right:-40px;animation-delay:1s;"></div>
-        <iframe id="yt-frame" style="display:none;width:100%;height:100%;border:none;" allow="autoplay;mute;loop" allowfullscreen></iframe>
-        <img id="cimg" src="https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80" alt="" style="width:100%;height:100%;object-fit:cover;">
-        <div class="img-ov" style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 40%);display:flex;align-items:flex-end;padding:16px 18px;">
-          <div class="img-cap" id="icap" style="font-size:16px;">الرياض</div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="ticker">
-      <div class="tlbl">نورة</div>
-      <div class="ttrack" id="ttrack">
-        <div class="titem"><b>رؤية 2030</b> — المملكة تمضي بخطى ثابتة نحو مستقبل مزدهر</div>
-        <div class="titem"><b>الجودة</b> — معدل رضا العملاء 96% في الربع الاول 2026</div>
-        <div class="titem"><b>نورة</b> — نحو قيادة آمنة لكل سعودية وسعودي</div>
-        <div class="titem"><b>الانجاز</b> — فخورون بفريقنا المتميز</div>
-        <div class="titem"><b>رؤية 2030</b> — المملكة تمضي بخطى ثابتة نحو مستقبل مزدهر</div>
-        <div class="titem"><b>الجودة</b> — معدل رضا العملاء 96% في الربع الاول 2026</div>
-        <div class="titem"><b>نورة</b> — نحو قيادة آمنة لكل سعودية وسعودي</div>
-        <div class="titem"><b>الانجاز</b> — فخورون بفريقنا المتميز</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ADMIN -->
-  <div id="pga" style="display:none;flex:1;overflow-y:auto;padding:12px 18px;">
+  <div class="admin-wrap">
     <div class="agrid">
 
+      <!-- موظفو الشهر -->
       <div class="acard full">
-        <div class="atitle">موظفو الشهر — حتى 7 (MindMap كل 30 ثانية)</div>
+        <div class="atitle">موظفو الشهر — حتى 7 أشخاص</div>
         <div id="emp-admin-list"></div>
-        <div style="display:flex;gap:10px;margin-top:8px;align-items:center;flex-wrap:wrap;">
+        <div style="display:flex;gap:9px;margin-top:8px;align-items:center;flex-wrap:wrap;">
           <button class="abtn abtn-g" onclick="addEE()">+ اضافة موظف</button>
-          <div style="display:flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;">
-            <label style="font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;">وقت الانبثاق (ثانية)</label>
-            <input class="ainp" id="mmInterval" type="number" min="10" max="300" value="30" style="width:70px;text-align:center;padding:5px 8px;">
+          <div style="display:flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:5px 11px;">
+            <label style="font-size:10px;font-weight:600;color:var(--text2);white-space:nowrap;">وقت الانتقال (ثانية)</label>
+            <input class="ainp" id="empInterval" type="number" min="5" max="300" value="20" style="width:65px;text-align:center;padding:5px 8px;">
           </div>
           <button class="abtn abtn-p" onclick="saveEmps()">حفظ وتطبيق على الداشبورد</button>
-          <span class="asuc" id="esuc">تم الحفظ وظهر على الداشبورد</span>
+          <span class="asuc" id="esuc">تم الحفظ</span>
         </div>
       </div>
 
-      <div class="acard span2">
-        <div class="atitle">فخر وطن — 4 انجازات</div>
-        <div class="pride-admin-grid" id="prideF"></div>
-        <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
-          <button class="abtn abtn-p" onclick="savePride()">حفظ وتطبيق</button>
-          <span class="asuc" id="psuc">تم الحفظ</span>
-        </div>
-      </div>
-
+      <!-- تراث وثقافة -->
       <div class="acard">
         <div class="atitle">تراث وثقافة + المثل</div>
         <label class="albl">المثل الشعبي</label><input class="ainp" id="aPrv">
         <label class="albl">معنى المثل</label><input class="ainp" id="aPrvM">
-        <div id="heritageF" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
-        <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
+        <div id="heritageF" style="margin-top:8px;display:flex;flex-direction:column;gap:7px;"></div>
+        <div style="margin-top:11px;display:flex;gap:8px;align-items:center;">
           <button class="abtn abtn-p" onclick="saveHer()">حفظ وتطبيق</button>
           <span class="asuc" id="hsuc">تم الحفظ</span>
         </div>
       </div>
 
+      <!-- المحتوى اليومي -->
       <div class="acard">
         <div class="atitle">المحتوى اليومي</div>
-        <label class="albl">معلومة اليوم</label>
-        <textarea class="ata" id="aDyk" style="min-height:80px;"></textarea>
+        <label class="albl">معلومة اليوم</label><textarea class="ata" id="aDyk" style="min-height:72px;"></textarea>
         <label class="albl">عنوان حدث اليوم</label><input class="ainp" id="aEt">
         <label class="albl">وصف الحدث</label><textarea class="ata" id="aEd"></textarea>
         <label class="albl">الربط بالسعودية</label><input class="ainp" id="aEs">
-        <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
+        <div style="margin-top:11px;display:flex;gap:8px;align-items:center;">
           <button class="abtn abtn-p" onclick="saveDaily()">حفظ وتطبيق</button>
           <span class="asuc" id="dsuc">تم الحفظ</span>
         </div>
       </div>
 
+      <!-- الصورة / الفيديو -->
       <div class="acard">
         <div class="atitle">الفيديو / الصورة المميزة</div>
-        <label class="albl">رابط يوتيوب او رابط صورة مباشر</label>
+        <label class="albl">رابط يوتيوب او رابط صورة</label>
         <input class="ainp" id="aCI" placeholder="https://youtube.com/watch?v=... او https://...jpg">
-        <div style="font-size:10px;color:var(--text3);margin-top:4px;margin-bottom:2px;">يوتيوب: الصق رابط الفيديو مباشرة — سيظهر مضمناً بشعار يوتيوب</div>
-        <label class="albl">وصف / عنوان</label><input class="ainp" id="aCC" style="margin-top:4px;">
-        <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
+        <div style="font-size:10px;color:var(--text3);margin-top:3px;margin-bottom:4px;">يوتيوب: الصق رابط الفيديو — يظهر مضمناً تلقائياً</div>
+        <label class="albl">وصف</label><input class="ainp" id="aCC" style="margin-top:4px;">
+        <div style="margin-top:11px;display:flex;gap:8px;align-items:center;">
           <button class="abtn abtn-p" onclick="saveCImg()">حفظ وتطبيق</button>
           <span class="asuc" id="cisuc">تم الحفظ</span>
         </div>
-        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
-          <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px;">الاعدادات</div>
-          <label class="albl">الثيم</label>
-          <div class="thbtns">
-            <button class="thbtn on" id="thd" onclick="setTheme('dark')">داكن</button>
-            <button class="thbtn" id="thl" onclick="setTheme('light')">فاتح</button>
-          </div>
-          <label class="albl">نص شريط التمرير</label>
-          <input class="ainp" id="aTicker" style="margin-top:5px;">
-          <div style="margin-top:13px;display:flex;gap:8px;align-items:center;">
-            <button class="abtn abtn-p" onclick="saveTicker()">حفظ الشريط</button>
-            <span class="asuc" id="ssuc">تم الحفظ</span>
-          </div>
+      </div>
+
+      <!-- الاعدادات -->
+      <div class="acard">
+        <div class="atitle">الاعدادات العامة</div>
+        <label class="albl">ثيم الداشبورد</label>
+        <div class="thbtns">
+          <button class="thbtn on" id="thd" onclick="setTheme('dark')">داكن</button>
+          <button class="thbtn" id="thl" onclick="setTheme('light')">فاتح</button>
+        </div>
+        <label class="albl">نص شريط التمرير</label>
+        <input class="ainp" id="aTicker" style="margin-top:5px;">
+        <div style="margin-top:11px;display:flex;gap:8px;align-items:center;">
+          <button class="abtn abtn-p" onclick="saveTicker()">حفظ الشريط</button>
+          <span class="asuc" id="ssuc">تم الحفظ</span>
         </div>
       </div>
 
@@ -534,238 +172,37 @@ body.light .ticker{background:rgba(242,242,247,0.9);}
 </div>
 
 <script>
-const SB_URL='https://ljgctajxnqzkwxxhyrqi.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqZ2N0YWp4bnF6a3d4eGh5cnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzY5MTEsImV4cCI6MjA4ODc1MjkxMX0.0QUy4hmqpjfIKmK0XOPWElfqEzhp1ILr9xjUtt_K6EM';
+const SB_URL= + SB_URL + ;
+const SB_KEY= + SB_KEY + ;
+const HASH= + HASH + ;
 const{createClient}=supabase;
 const db=createClient(SB_URL,SB_KEY);
-const HASH='00eef6545e71068cf7874ff31a08ccab21e3dcb0da1685bc131317f9504ad357';
 
-let curTheme='dark', lastSnap='', gTimer=null, eTimer=null, mmTimer=null;
-let eList=[], eIdx=0, mmShowing=false;
+function toggleTheme(){document.body.className=document.body.className==='dark'?'light':'dark';}
 
 async function hp(p){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
-
 async function doLogin(){
   const u=document.getElementById('lu').value.trim().toLowerCase();
   const p=document.getElementById('lp').value;
   if(u==='admin'&&await hp(p)===HASH){
     document.getElementById('ls').style.display='none';
-    document.getElementById('app').style.display='flex';
-    init();
+    document.getElementById('app').style.display='block';
+    loadAdmin();
   }else{document.getElementById('lerr').style.display='block';}
 }
-function doLogout(){
-  document.getElementById('app').style.display='none';
-  document.getElementById('ls').style.display='flex';
-  document.getElementById('lp').value='';
-  clearInterval(gTimer);clearInterval(eTimer);clearInterval(mmTimer);
-}
+function doLogout(){document.getElementById('app').style.display='none';document.getElementById('ls').style.display='flex';document.getElementById('lp').value='';}
 
-function sw(t){
-  document.getElementById('pgd').style.display=t==='d'?'flex':'none';
-  document.getElementById('pga').style.display=t==='a'?'flex':'none';
-  document.getElementById('tdash').className='tab'+(t==='d'?' active':'');
-  document.getElementById('tadm').className='tab'+(t==='a'?' active':'');
-  if(t==='a') loadAdmin();
-}
+function suc(id){const el=document.getElementById(id);el.style.display='block';setTimeout(()=>el.style.display='none',2500);}
 
-// ساعة
-function tick(){
-  const n=new Date();
-  const D=['الاحد','الاثنين','الثلاثاء','الاربعاء','الخميس','الجمعة','السبت'];
-  const M=['يناير','فبراير','مارس','ابريل','مايو','يونيو','يوليو','اغسطس','سبتمبر','اكتوبر','نوفمبر','ديسمبر'];
-  document.getElementById('clk').textContent=n.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  document.getElementById('cday').textContent=D[n.getDay()];
-  document.getElementById('cdate').textContent=n.getDate()+' '+M[n.getMonth()]+' '+n.getFullYear();
-}
-setInterval(tick,1000);tick();
-
-async function fetchAll(){
-  const[s,e,c]=await Promise.all([
-    db.from('dashboard_settings').select('*').single(),
-    db.from('employee_of_month').select('*').eq('active',true).order('updated_at',{ascending:true}),
-    db.from('dashboard_content').select('*').eq('active',true),
-  ]);
-  return JSON.stringify({s:s.data,e:e.data||[],c:c.data||[]});
-}
-
-async function init(){
-  const sn=await fetchAll();lastSnap=sn;renderAll(JSON.parse(sn));loadAdmin();
-  gTimer=setInterval(async()=>{
-    const sn=await fetchAll();
-    if(sn!==lastSnap){lastSnap=sn;renderAll(JSON.parse(sn));}
-  },25000);
-}
-
-// ══ MindMap ══
-function showMindMap(emp){
-  if(mmShowing) return;
-  mmShowing=true;
-
-  // blur باقي الكروت
-  ['card-heritage','card-media','col-right'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.classList.add('blurred');
-  });
-
-  // ملأ البيانات
-  document.getElementById('mm-name').textContent=emp.name||'—';
-  document.getElementById('mm-dept').textContent=[emp.role,emp.department].filter(Boolean).join(' — ');
-  document.getElementById('mm-role').textContent=emp.role||'—';
-  document.getElementById('mm-quote').textContent=emp.quote||'—';
-  document.getElementById('mm-deptb').textContent=emp.department||'—';
-
-  // أظهر الـ overlay
-  const ov=document.getElementById('mm-overlay');
-  ov.classList.add('active');
-
-  // خطوط SVG
-  setTimeout(()=>{
-    drawLines();
-    // أظهر الفقاعات تدريجياً
-    ['mm-b1','mm-b2','mm-b3','mm-b4'].forEach((id,i)=>{
-      setTimeout(()=>{document.getElementById(id).classList.add('show');},200+i*150);
-    });
-  },400);
-
-  // اخفِ بعد 7 ثوانٍ
-  setTimeout(()=>hideMindMap(),7000);
-}
-
-function hideMindMap(){
-  mmShowing=false;
-  ['mm-b1','mm-b2','mm-b3','mm-b4'].forEach(id=>document.getElementById(id).classList.remove('show'));
-
-  setTimeout(()=>{
-    document.getElementById('mm-overlay').classList.remove('active');
-    document.getElementById('mm-svg').innerHTML='';
-    ['card-heritage','card-media','col-right'].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el) el.classList.remove('blurred');
-    });
-    // انتقل للموظف التالي
-    if(eList.length>1){
-      eIdx=(eIdx+1)%eList.length;
-      slideEmp();
-    }
-  },600);
-}
-
-function drawLines(){
-  const svg=document.getElementById('mm-svg');
-  svg.innerHTML='';
-  const center=document.getElementById('mm-center');
-  const cr=center.getBoundingClientRect();
-  const svgR=svg.getBoundingClientRect();
-  const cx=cr.left-svgR.left+cr.width/2;
-  const cy=cr.top-svgR.top+cr.height/2;
-  ['mm-b1','mm-b2','mm-b3','mm-b4'].forEach((id,i)=>{
-    const b=document.getElementById(id);
-    const br=b.getBoundingClientRect();
-    const bx=br.left-svgR.left+br.width/2;
-    const by=br.top-svgR.top+br.height/2;
-    const colors=['rgba(29,169,189,0.4)','rgba(48,209,88,0.4)','rgba(191,90,242,0.4)','rgba(255,214,10,0.4)'];
-    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1',cx);line.setAttribute('y1',cy);
-    line.setAttribute('x2',bx);line.setAttribute('y2',by);
-    line.setAttribute('stroke',colors[i]);
-    line.setAttribute('stroke-width','1.5');
-    line.setAttribute('stroke-dasharray','5,4');
-    svg.appendChild(line);
-  });
-}
-
-// ══ موظف الشهر ══
-function buildEmp(list){
-  clearInterval(eTimer);clearInterval(mmTimer);
-  eList=list||[];eIdx=0;
-  const track=document.getElementById('emp-track');
-  const dots=document.getElementById('emp-dots');
-  const counter=document.getElementById('emp-counter');
-  if(!eList.length){
-    track.innerHTML='<div class="emp-panel"><div class="emp-content" style="text-align:center;color:var(--text3);">لا يوجد موظفون — اضف من لوحة التحكم</div></div>';
-    dots.innerHTML='';counter.textContent='—';return;
-  }
-  track.innerHTML=eList.map((e,i)=>`
-    <div class="emp-panel">
-      <div class="emp-av-big">${(e.name||'?').trim().charAt(0)}</div>
-      <div class="emp-content">
-        <div class="emp-rank2">${i+1} / ${eList.length}</div>
-        <div class="emp-name2">${e.name||'—'}</div>
-        <div class="emp-dept2">${[e.role,e.department].filter(Boolean).join(' — ')}</div>
-        ${e.quote?`<div class="emp-quote2">${e.quote}</div>`:''}
-      </div>
-    </div>`).join('');
-
-  function updateDots(){
-    dots.innerHTML=eList.map((_,i)=>`<div class="dot${i===eIdx?' on':''}" onclick="goE(${i})"></div>`).join('');
-    counter.textContent=`${eIdx+1} / ${eList.length}`;
-  }
-  updateDots();
-
-  window.slideEmp=function(){
-    document.getElementById('emp-track').style.transition='transform .7s cubic-bezier(.4,0,.2,1)';
-    document.getElementById('emp-track').style.transform=`translateX(${-eIdx*100}%)`;
-    updateDots();
-  };
-  window.goE=function(i){clearInterval(mmTimer);eIdx=i;slideEmp();startMmTimer();};
-
-  function startMmTimer(){
-    clearInterval(mmTimer);
-    const sec=parseInt(document.getElementById('mmInterval')?.value||'30')*1000;
-    mmTimer=setInterval(()=>{
-      if(!mmShowing) showMindMap(eList[eIdx]);
-    },sec);
-  }
-  startMmTimer();
-}
-
-// ══ renderAll ══
-function renderAll({s,e,c}){
-  if(s?.theme==='dark'){curTheme='dark';document.body.className='dark';document.getElementById('thd').className='thbtn on';document.getElementById('thl').className='thbtn';}
-  else if(s?.theme==='light'){curTheme='light';document.body.className='light';document.getElementById('thd').className='thbtn';document.getElementById('thl').className='thbtn on';}
-  if(s?.ticker_text) document.getElementById('ttrack').innerHTML=`<div class="titem">${s.ticker_text}</div>`.repeat(8);
-  buildEmp(e||[]);
-  const get=t=>(c||[]).find(x=>x.content_type===t)||{};
-  document.getElementById('dtxt').textContent=get('did_you_know').body||'—';
-  const ev=get('today_event');
-  document.getElementById('etitle').textContent=ev.title||'—';
-  document.getElementById('edesc').textContent=ev.body||'';
-  document.getElementById('esaudi').textContent=ev.subtitle||'';
-  const pr=get('proverb');
-  document.getElementById('ptxt').textContent=pr.title||'—';
-  document.getElementById('pmean').textContent=pr.body||'';
-  document.getElementById('hlist').innerHTML=['1','2','3'].map(n=>{const h=get('heritage_'+n);return h.title?`<div class="hi"><div class="hd2"></div><div><div class="ht2">${h.title}</div><div class="hx2">${h.body||''}</div></div></div>`:''}).join('');
-  document.getElementById('pride-seq').innerHTML=['1','2','3','4'].map((n,i)=>{const p=get('pride_'+n);return p.title?`<div class="pi2"><div class="pi2-num">${i+1}</div><div><div class="pi2-title">${p.title}</div><div class="pi2-body">${p.body||''}</div></div></div>`:''}).join('');
-  const ci=get('custom_image');
-  if(ci?.body){
-    const ytMatch=ci.body.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-    if(ytMatch){
-      const vid=ytMatch[1];
-      document.getElementById('yt-frame').src=`https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&loop=1&playlist=${vid}&controls=0&modestbranding=1`;
-      document.getElementById('yt-frame').style.display='block';
-      document.getElementById('cimg').style.display='none';
-    }else{
-      document.getElementById('cimg').src=ci.body;
-      document.getElementById('cimg').style.display='block';
-      document.getElementById('yt-frame').style.display='none';
-    }
-    document.getElementById('icap').textContent=ci.title||'';
-  }
-}
-
-// ══ upsert + admin ══
 async function upsert(type,data){
   const{data:ex}=await db.from('dashboard_content').select('id').eq('content_type',type).single();
   if(ex?.id) await db.from('dashboard_content').update({...data,updated_at:new Date().toISOString()}).eq('id',ex.id);
   else await db.from('dashboard_content').insert({content_type:type,...data,active:true});
 }
-function suc(id){const el=document.getElementById(id);el.style.display='block';setTimeout(()=>el.style.display='none',2500);}
-async function refresh(){const sn=await fetchAll();lastSnap=sn;renderAll(JSON.parse(sn));}
 
 let eeIds=[];
 function addEE(data={}){
-  if(eeIds.length>=7){alert('الحد الاقصى 7 موظفين');return;}
+  if(eeIds.length>=7){alert('الحد الاقصى 7');return;}
   const id='ee_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
   eeIds.push(id);
   const div=document.createElement('div');
@@ -774,12 +211,12 @@ function addEE(data={}){
     <button class="ee-del" onclick="removeEE('${id}')">حذف</button>
     <div class="ee-hdr">موظف ${eeIds.length}</div>
     <div class="ee-grid">
-      <div><label class="albl" style="margin-top:0;">الاسم الكامل *</label><input class="ainp" id="${id}_n" value="${(data.name||'').replace(/"/g,'&quot;')}" placeholder="مثال: سارة العمري"></div>
-      <div><label class="albl" style="margin-top:0;">المسمى الوظيفي</label><input class="ainp" id="${id}_r" value="${(data.role||'').replace(/"/g,'&quot;')}" placeholder="مثال: مشرفة جودة"></div>
-      <div><label class="albl" style="margin-top:0;">القسم</label><input class="ainp" id="${id}_d" value="${(data.department||'').replace(/"/g,'&quot;')}" placeholder="مثال: الجودة"></div>
+      <div><label class="albl" style="margin-top:0;">الاسم الكامل *</label><input class="ainp" id="${id}_n" value="${(data.name||'').replace(/"/g,'&quot;')}" placeholder="الاسم"></div>
+      <div><label class="albl" style="margin-top:0;">المسمى</label><input class="ainp" id="${id}_r" value="${(data.role||'').replace(/"/g,'&quot;')}" placeholder="المسمى"></div>
+      <div><label class="albl" style="margin-top:0;">القسم</label><input class="ainp" id="${id}_d" value="${(data.department||'').replace(/"/g,'&quot;')}" placeholder="القسم"></div>
     </div>
-    <label class="albl">اقتباس مميز</label>
-    <input class="ainp" id="${id}_q" value="${(data.quote||'').replace(/"/g,'&quot;')}" placeholder="جملة تحفيزية...">
+    <label class="albl">اقتباس</label>
+    <input class="ainp" id="${id}_q" value="${(data.quote||'').replace(/"/g,'&quot;')}" placeholder="جملة مميزة...">
   `;
   document.getElementById('emp-admin-list').appendChild(div);
 }
@@ -790,21 +227,48 @@ async function saveEmps(){
   await new Promise(r=>setTimeout(r,400));
   const rows=eeIds.map(id=>({
     name:(document.getElementById(id+'_n')?.value||'').trim(),
-    department:(document.getElementById(id+'_d')?.value||'').trim(),
     role:(document.getElementById(id+'_r')?.value||'').trim(),
-    reason:(document.getElementById(id+'_rs')?.value||'').trim(),
+    department:(document.getElementById(id+'_d')?.value||'').trim(),
     quote:(document.getElementById(id+'_q')?.value||'').trim(),
     active:true,updated_at:new Date().toISOString()
   })).filter(r=>r.name.length>0);
+  /* احفظ وقت الانتقال في الاعدادات */
+  const interval=document.getElementById('empInterval').value;
+  const{data:st}=await db.from('dashboard_settings').select('id').single();
+  if(st?.id) await db.from('dashboard_settings').update({emp_interval:interval,updated_at:new Date().toISOString()}).eq('id',st.id);
   if(rows.length){const{error}=await db.from('employee_of_month').insert(rows);if(error){alert('خطأ: '+error.message);return;}}
-  suc('esuc');await refresh();
+  suc('esuc');
 }
-async function savePride(){await Promise.all(['1','2','3','4'].map(n=>upsert('pride_'+n,{title:(document.getElementById('ap'+n+'t')?.value||'').trim(),body:(document.getElementById('ap'+n+'b')?.value||'').trim()})));suc('psuc');await refresh();}
-async function saveHer(){await Promise.all([upsert('proverb',{title:document.getElementById('aPrv').value.trim(),body:document.getElementById('aPrvM').value.trim()}),upsert('heritage_1',{title:(document.getElementById('ah1t')?.value||'').trim(),body:(document.getElementById('ah1b')?.value||'').trim()}),upsert('heritage_2',{title:(document.getElementById('ah2t')?.value||'').trim(),body:(document.getElementById('ah2b')?.value||'').trim()}),upsert('heritage_3',{title:(document.getElementById('ah3t')?.value||'').trim(),body:(document.getElementById('ah3b')?.value||'').trim()})]);suc('hsuc');await refresh();}
-async function saveDaily(){await Promise.all([upsert('did_you_know',{title:'هل تعلم',body:document.getElementById('aDyk').value.trim()}),upsert('today_event',{title:document.getElementById('aEt').value.trim(),body:document.getElementById('aEd').value.trim(),subtitle:document.getElementById('aEs').value.trim()})]);suc('dsuc');await refresh();}
-async function saveCImg(){await upsert('custom_image',{title:document.getElementById('aCC').value.trim(),body:document.getElementById('aCI').value.trim()});suc('cisuc');await refresh();}
-async function setTheme(t){curTheme=t;document.body.className=t;document.getElementById('thd').className='thbtn'+(t==='dark'?' on':'');document.getElementById('thl').className='thbtn'+(t==='light'?' on':'');const{data}=await db.from('dashboard_settings').select('id').single();if(data?.id)await db.from('dashboard_settings').update({theme:t,updated_at:new Date().toISOString()}).eq('id',data.id);else await db.from('dashboard_settings').insert({theme:t,ticker_text:'نورة لتعليم القيادة'});suc('ssuc');}
-async function saveTicker(){const tk=document.getElementById('aTicker').value.trim();const{data}=await db.from('dashboard_settings').select('id').single();if(data?.id)await db.from('dashboard_settings').update({ticker_text:tk,updated_at:new Date().toISOString()}).eq('id',data.id);else await db.from('dashboard_settings').insert({theme:curTheme,ticker_text:tk});suc('ssuc');await refresh();}
+async function saveHer(){
+  await Promise.all([
+    upsert('proverb',{title:document.getElementById('aPrv').value.trim(),body:document.getElementById('aPrvM').value.trim()}),
+    upsert('heritage_1',{title:(document.getElementById('ah1t')?.value||'').trim(),body:(document.getElementById('ah1b')?.value||'').trim()}),
+    upsert('heritage_2',{title:(document.getElementById('ah2t')?.value||'').trim(),body:(document.getElementById('ah2b')?.value||'').trim()}),
+    upsert('heritage_3',{title:(document.getElementById('ah3t')?.value||'').trim(),body:(document.getElementById('ah3b')?.value||'').trim()}),
+  ]);suc('hsuc');
+}
+async function saveDaily(){
+  await Promise.all([
+    upsert('did_you_know',{title:'هل تعلم',body:document.getElementById('aDyk').value.trim()}),
+    upsert('today_event',{title:document.getElementById('aEt').value.trim(),body:document.getElementById('aEd').value.trim(),subtitle:document.getElementById('aEs').value.trim()}),
+  ]);suc('dsuc');
+}
+async function saveCImg(){await upsert('custom_image',{title:document.getElementById('aCC').value.trim(),body:document.getElementById('aCI').value.trim()});suc('cisuc');}
+async function setTheme(t){
+  document.getElementById('thd').className='thbtn'+(t==='dark'?' on':'');
+  document.getElementById('thl').className='thbtn'+(t==='light'?' on':'');
+  const{data}=await db.from('dashboard_settings').select('id').single();
+  if(data?.id) await db.from('dashboard_settings').update({theme:t,updated_at:new Date().toISOString()}).eq('id',data.id);
+  else await db.from('dashboard_settings').insert({theme:t,ticker_text:'نورة لتعليم القيادة'});
+  suc('ssuc');
+}
+async function saveTicker(){
+  const tk=document.getElementById('aTicker').value.trim();
+  const{data}=await db.from('dashboard_settings').select('id').single();
+  if(data?.id) await db.from('dashboard_settings').update({ticker_text:tk,updated_at:new Date().toISOString()}).eq('id',data.id);
+  else await db.from('dashboard_settings').insert({theme:'dark',ticker_text:tk});
+  suc('ssuc');
+}
 
 async function loadAdmin(){
   const[e,c,s]=await Promise.all([
@@ -814,18 +278,25 @@ async function loadAdmin(){
   ]);
   eeIds=[];document.getElementById('emp-admin-list').innerHTML='';
   (e.data||[]).forEach(emp=>addEE(emp));
+  if(s.data?.emp_interval) document.getElementById('empInterval').value=s.data.emp_interval;
   const get=t=>(c.data||[]).find(x=>x.content_type===t)||{};
-  document.getElementById('prideF').innerHTML=['1','2','3','4'].map(n=>{const p=get('pride_'+n);return`<div class="pride-block"><div class="pride-block-num">انجاز ${n}</div><label class="albl" style="margin-top:0;">العنوان</label><input class="ainp" id="ap${n}t" value="${(p.title||'').replace(/"/g,'&quot;')}" placeholder="مثال: رؤية 2030"><label class="albl">النص</label><textarea class="ata" id="ap${n}b" style="min-height:44px;">${p.body||''}</textarea></div>`;}).join('');
   document.getElementById('aPrv').value=get('proverb').title||'';
   document.getElementById('aPrvM').value=get('proverb').body||'';
-  document.getElementById('heritageF').innerHTML=['1','2','3'].map(n=>{const h=get('heritage_'+n);return`<div class="h-block"><div class="h-block-num">فقرة ${n}</div><label class="albl" style="margin-top:0;">العنوان</label><input class="ainp" id="ah${n}t" value="${(h.title||'').replace(/"/g,'&quot;')}" placeholder="مثال: قهوة السادة"><label class="albl">النص</label><textarea class="ata" id="ah${n}b" style="min-height:44px;">${h.body||''}</textarea></div>`;}).join('');
+  document.getElementById('heritageF').innerHTML=['1','2','3'].map(n=>{
+    const h=get('heritage_'+n);
+    return`<div class="h-block"><div class="h-block-num">فقرة ${n}</div><label class="albl" style="margin-top:0;">العنوان</label><input class="ainp" id="ah${n}t" value="${(h.title||'').replace(/"/g,'&quot;')}"><label class="albl">النص</label><textarea class="ata" id="ah${n}b" style="min-height:44px;">${h.body||''}</textarea></div>`;}).join('');
   document.getElementById('aDyk').value=get('did_you_know').body||'';
-  const ev=get('today_event');document.getElementById('aEt').value=ev.title||'';document.getElementById('aEd').value=ev.body||'';document.getElementById('aEs').value=ev.subtitle||'';
+  const ev=get('today_event');
+  document.getElementById('aEt').value=ev.title||'';document.getElementById('aEd').value=ev.body||'';document.getElementById('aEs').value=ev.subtitle||'';
   const ci=get('custom_image');document.getElementById('aCI').value=ci.body||'';document.getElementById('aCC').value=ci.title||'';
   const st=s.data||{};document.getElementById('aTicker').value=st.ticker_text||'';
   document.getElementById('thd').className='thbtn'+(st.theme==='dark'?' on':'');
   document.getElementById('thl').className='thbtn'+(st.theme==='light'?' on':'');
 }
+/* إضافة emp_interval للجدول — تأكد أنه موجود */
+db.from('dashboard_settings').select('emp_interval').limit(1).then(({error})=>{
+  if(error && error.message.includes('emp_interval')) console.log('emp_interval column may not exist');
+});
 </script>
 </body>
 </html>
