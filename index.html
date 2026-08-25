@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>نورة لتعليم القيادة | Noura For Driving</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ============================================================================
+   config/theme.ts
+   ============================================================================ */
+const THEME = {
+  PRIMARY: "#2E9896", PRIMARY_DARK: "#1F6F6D",
+  INK: "#1E2A2A", INK_SOFT: "#4B5A5A",
+  BORDER: "#E1E7E6", SURFACE: "#FFFFFF", BG: "#F6F8F8",
+  FONT_AR: "'Tajawal', sans-serif", FONT_LATIN: "'Inter', sans-serif"
+};
+
+/* ============================================================================
+   config/locations.ts
+   googleMapsUrl هي الروابط الرسمية الحقيقية المرسلة — تُستخدم مباشرة في QR Code.
+   lat/lng لا تزال LOCATION_PLACEHOLDER لأنه لا يمكن استخراج إحداثيات دقيقة من رابط
+   مختصر (maps.app.goo.gl) بدون Google Places API بمفتاح مدفوع. عدّلها يدويًا:
+   افتح الرابط على جوالك، اضغط مطولاً على المكان في الخريطة، وانسخ الإحداثيات
+   الظاهرة أعلى الشاشة، ثم استبدل القيم أدناه.
+   ============================================================================ */
+const LOCATIONS = {
+  defaultStart: { lat: 24.85129506896528, lng: 46.71098236525595 }, // DEFAULT_START_LOCATION — مؤقتًا نفس المبنى الرئيسي؛ عدّلها إذا أردت نقطة بداية مختلفة
+  mainBuilding: {
+    nameKey:"mainBuilding",
+    googleMapsUrl: "https://maps.app.goo.gl/ro6YbH8GnvU8dDWi9",
+    lat: 24.85129506896528, lng: 46.71098236525595
+  },
+  practicalBuilding: {
+    nameKey:"practicalBuilding",
+    googleMapsUrl: "https://maps.app.goo.gl/CT6wmmHrbWYiT2WA6",
+    lat: 24.860297239315656, lng: 46.71121173670771
+  },
+  trafficBuilding: {
+    nameKey:"trafficBuilding",
+    googleMapsUrl: "https://maps.app.goo.gl/svyJ3YxMnqWpEVvQ9",
+    lat: 24.8563508724535, lng: 46.71203296044215
+  }
+};
+
+/* ============================================================================
+   config/tts.ts — طبقة تجريد الصوت
+   أولوية التشغيل: 1) ملف صوتي مسجّل مسبقًا  2) مزود TTS احترافي (Backend)  3) Web Speech API
+   ممنوع نهائيًا: تشغيل صوت بلغة غير اللغة المختارة (لا يوجد English Fallback إطلاقًا).
+   ============================================================================ */
+const TTS_CONFIG = {
+  // Azure Speech هو المزود الأساسي الآن. المفتاح لا يوضع هنا أبدًا — الاستدعاء يمر عبر
+  // /api/tts.js (Vercel Serverless Function) الذي يقرأ AZURE_SPEECH_KEY من Environment Variables.
+  professionalProvider: {
+    enabled: true,
+    endpoint: "/api/tts",
+    provider: "azure"
+  },
+  rate: 0.97, // 0.95–1.0 كما طُلب — سرعة نطق طبيعية لخدمة العملاء
+  audioBasePath: "/audio", // /audio/<lang>/<key>.mp3 — تسجيلات بشرية تُشغَّل أولاً إن وُجدت
+  languageConfig: {
+    ar: { locale:"ar-SA", voice:"ar-SA-HamedNeural", direction:"rtl", label:"العربية", note:"صوت Azure سعودي رسمي (ليس نجديًا مخصصًا) — اللهجة النجدية تأتي من صياغة spokenText نفسه." },
+    en: { locale:"en-US", voice:"en-US-AriaNeural", direction:"ltr", label:"English" },
+    ur: { locale:"ur-PK", voice:"ur-PK-UzmaNeural", direction:"rtl", label:"اردو" },
+    hi: { locale:"hi-IN", voice:"hi-IN-SwaraNeural", direction:"ltr", label:"हिन्दी" },
+    pa: { locale:"ur-PK", voice:"ur-PK-UzmaNeural", direction:"rtl", label:"پاکستانی / اردو" }, // الباكستانية = Urdu Pakistan، لا توجد لغة "Pakistani" مستقلة في Azure
+    fr: { locale:"fr-FR", voice:"fr-FR-DeniseNeural", direction:"ltr", label:"Français" },
+    it: { locale:"it-IT", voice:"it-IT-IsabellaNeural", direction:"ltr", label:"Italiano" },
+    bn: { locale:"bn-BD", voice:"bn-BD-NabanitaNeural", direction:"ltr", label:"বাংলা" },
+    tr: { locale:"tr-TR", voice:"tr-TR-EmelNeural", direction:"ltr", label:"Türkçe" }
+  }
+};
+
+const LANGS = Object.keys(TTS_CONFIG.languageConfig).map(code=>({
+  code, dir:TTS_CONFIG.languageConfig[code].direction,
+  native: {ar:"العربية",en:"English",ur:"اردو",hi:"हिन्दी",pa:"پاکستانی / اردو",fr:"Français",it:"Italiano",bn:"বাংলা",tr:"Türkçe"}[code]
+}));
+
+const SETTINGS = { IDLE_TIMEOUT: 60000, LOGO_URL: "" };
+
+/* ============================================================================
+   TTS MANAGER
+   ============================================================================ */
+const TTSManager = {
+  currentAudio: null,
+  cancel(){ speechSynthesis.cancel(); if(this.currentAudio){ this.currentAudio.pause(); this.currentAudio=null; } },
+  pauseResume(){
+    if(this.currentAudio){ if(this.currentAudio.paused) this.currentAudio.play(); else this.currentAudio.pause(); return; }
+    if(speechSynthesis.speaking && !speechSynthesis.paused) speechSynthesis.pause();
+    else if(speechSynthesis.paused) speechSynthesis.resume();
+  },
+  // Audio Cache على مستوى المتصفح (Cache Storage API) — يمنع إعادة استدعاء Azure لنفس
+  // النص مرتين على نفس الجهاز. للتخزين الدائم عبر كل الأجهزة (حتى لا يُستدعى Azure أول
+  // مرة من كل شاشة) يُستحسن لاحقًا توليد الملفات مسبقًا ورفعها إلى /audio مباشرة.
+  cacheName: "noura-tts-cache-v1",
+  async _getFromCache(url){
+    if(!('caches' in window)) return null;
+    try{ const c = await caches.open(this.cacheName); const hit = await c.match(url); return hit ? await hit.blob() : null; }
+    catch(e){ return null; }
+  },
+  async _saveToCache(url, blob){
+    if(!('caches' in window)) return;
+    try{ const c = await caches.open(this.cacheName); await c.put(url, new Response(blob)); }catch(e){}
+  },
+  async speak(lang, key, spokenText){
+    this.cancel();
+    const cfg = TTS_CONFIG.languageConfig[lang];
+    if(!cfg){ console.warn("لا يوجد إعداد صوت للغة", lang); return; }
+
+    // 1) تسجيل بشري مسبق إن وُجد
+    const audioUrl = `${TTS_CONFIG.audioBasePath}/${lang}/${key}.mp3`;
+    if(await this._tryPlayFile(audioUrl)) return;
+
+    // 2) Azure Speech عبر Backend، مع Cache على مستوى المتصفح
+    if(TTS_CONFIG.professionalProvider.enabled){
+      const cacheKey = `${TTS_CONFIG.professionalProvider.endpoint}?voice=${cfg.voice}&key=${encodeURIComponent(lang+"."+key)}`;
+      try{
+        let blob = await this._getFromCache(cacheKey);
+        if(!blob){
+          const res = await fetch(TTS_CONFIG.professionalProvider.endpoint, {
+            method:"POST", headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({lang, locale:cfg.locale, voice:cfg.voice, text:spokenText, rate:TTS_CONFIG.rate})
+          });
+          if(res.ok){ blob = await res.blob(); this._saveToCache(cacheKey, blob); }
+        }
+        if(blob){ const audio = new Audio(URL.createObjectURL(blob)); this.currentAudio = audio; audio.play(); return; }
+      }catch(e){ console.warn("تعذّر الوصول إلى Azure Speech عبر /api/tts — تأكد من نشر Backend ووضع AZURE_SPEECH_KEY. سيتم استخدام Web Speech API كبديل مؤقت فقط.", e); }
+    }
+
+    // 3) Web Speech API — احتياطي فقط، بنفس اللغة حصرًا وبدون أي Fallback لغة أخرى
+    const voices = speechSynthesis.getVoices();
+    const voice = voices.find(v=>v.lang.toLowerCase()===cfg.locale.toLowerCase())
+               || voices.find(v=>v.lang.toLowerCase().startsWith(lang+"-") || v.lang.toLowerCase()===lang);
+    if(!voice){
+      console.warn(`لا يتوفر صوت احتياطي للغة "${lang}" (${cfg.locale}) في هذا الجهاز، ولم يُستجب من Azure. لن يُشغَّل صوت بلغة أخرى بديلاً عنه.`);
+      return;
+    }
+    const u = new SpeechSynthesisUtterance(spokenText);
+    u.lang = cfg.locale; u.voice = voice; u.rate = TTS_CONFIG.rate;
+    speechSynthesis.speak(u);
+  },
+  _tryPlayFile(url){
+    return new Promise(resolve=>{
+      const audio = new Audio(); let settled=false;
+      audio.oncanplaythrough = ()=>{ if(settled)return; settled=true; this.currentAudio=audio; audio.play(); resolve(true); };
+      audio.onerror = ()=>{ if(settled)return; settled=true; resolve(false); };
+      audio.src = url;
+      setTimeout(()=>{ if(!settled){settled=true; resolve(false);} }, 1200);
+    });
+  }
+};
+if(typeof speechSynthesis !== "undefined") speechSynthesis.onvoiceschanged = ()=>{};
+
+/* ============================================================================
+   CONTENT — displayText رسمي فصيح / spokenText طبيعي (نجدي للعربية)
+   ============================================================================ */
+const CONTENT = {
+ar: {
+  ui:{ welcome:"مرحباً بك في شركة نورة لتعليم القيادة", chooseLang:"اختر اللغة", home:"الرئيسية", back:"رجوع", language:"اللغة", audioToggle:"إيقاف/تشغيل الصوت", scanCode:"امسح الرمز للوصول إلى الموقع", locationCode:"رمز الموقع" },
+  locationNames:{ mainBuilding:"المبنى الرئيسي النظري", practicalBuilding:"مبنى التدريب العملي", trafficBuilding:"مبنى المرور" },
+  services:{
+    goPractical:{title:"طريقة الذهاب إلى المبنى العملي", desc:"دليل الوصول إلى مبنى التدريب العملي"},
+    goMain:{title:"طريقة الذهاب إلى المبنى الرئيسي النظري", desc:"دليل الوصول إلى المبنى الرئيسي"},
+    goTraffic:{title:"طريقة الذهاب إلى مبنى المرور", desc:"دليل الوصول إلى مبنى المرور"},
+    payFees:{title:"طريقة دفع الرسوم", desc:"خطوات دفع الرسوم في مقر الشركة"},
+    afterEval:{title:"ماذا أفعل بعد التقييم؟", desc:"الإجراءات المطلوبة بعد التقييم"},
+    afterTheory:{title:"ماذا أفعل بعد الاختبار النظري؟", desc:"الإجراءات بعد اجتياز الاختبار النظري"},
+    afterPractical:{title:"ماذا أفعل بعد التدريب العملي؟", desc:"الإجراءات بعد التدريب العملي"},
+    changeInstructor:{title:"تغيير المدرب", desc:"طريقة تقديم طلب تغيير المدرب"},
+    changeAppointment:{title:"تغيير موعد التدريب", desc:"طريقة تغيير موعد التدريب"}
+  },
+  navPage:{
+    goPractical:{ displayText:"اتبع المسار الموضح للوصول إلى مبنى التدريب العملي.", spokenText:"عشان توصل لمبنى التدريب العملي، تابع المسار الموضّح قدامك لين توصل." },
+    goMain:{ displayText:"اتبع المسار الموضح للوصول إلى المبنى الرئيسي النظري.", spokenText:"عشان توصل للمبنى الرئيسي، تابع المسار الموضّح قدامك لين توصل." },
+    goTraffic:{ displayText:"اتبع المسار الموضح للوصول إلى مبنى المرور.", spokenText:"عشان توصل لمبنى المرور، تابع المسار الموضّح قدامك لين توصل." }
+  },
+  payFeesPage:{ title:"طريقة دفع الرسوم", spokenText:"عشان تدفع الرسوم، توجّه للاستقبال وخذ رقم انتظار، وبعدها انتظر لين يُنادى على رقمك، ثم توجّه لخدمة العملاء وكمّل الدفع واستلم برنامجك التدريبي.", steps:["التوجه إلى الاستقبال","أخذ رقم انتظار","انتظار مناداة الرقم","التوجه إلى خدمة العملاء","إتمام دفع الرسوم","استلام البرنامج التدريبي"] },
+  afterEvalPage:{ title:"ماذا أفعل بعد التقييم؟", spokenText:"بعد ما تخلص التقييم، توجّه للمبنى الرئيسي، ومن هناك خذ رقم من الاستقبال، وبعدها توجّه لخدمة العملاء عشان تكمل إجراءاتك وتستلم برنامجك التدريبي.", steps:["التقييم","التوجه إلى المبنى الرئيسي","مسح رمز الموقع","الاستقبال","أخذ رقم انتظار","خدمة العملاء","دفع الرسوم","استلام البرنامج التدريبي"], location:"mainBuilding" },
+  afterTheoryPage:{ title:"ماذا أفعل بعد الاختبار النظري؟", spokenText:"بعد ما تخلص الاختبار النظري وتجتازه، توجّه لمبنى التدريب العملي. تقدر تستخدم رمز الموقع عشان توصل، وبعد ما توصل ادخل وانتظر موعد تدريبك.", steps:["الاختبار النظري","اجتياز الاختبار","التوجه إلى المبنى العملي","مسح رمز الموقع","الدخول إلى المبنى","انتظار الموعد"], location:"practicalBuilding" },
+  afterPracticalPage:{ title:"ماذا أفعل بعد التدريب العملي؟", spokenText:"", placeholder:"[سيتم إضافة الإجراء المعتمد هنا]" },
+  changeInstructorPage:{ title:"تغيير المدرب", subtitle:"طريقة طلب تغيير المدرب", spokenText:"", placeholder:"سيتم إضافة الإجراء المعتمد لتغيير المدرب هنا.", steps:["سيتم تحديد الخطوات لاحقًا"] },
+  changeAppointmentPage:{ title:"تغيير موعد التدريب", subtitle:"طريقة تغيير موعد التدريب", spokenText:"", placeholder:"سيتم إضافة إجراء تغيير الموعد هنا.", steps:["سيتم تحديد الخطوات لاحقًا"] }
+},
+en: {
+  ui:{ welcome:"Welcome to Noura For Driving", chooseLang:"Choose your language", home:"Home", back:"Back", language:"Language", audioToggle:"Toggle audio", scanCode:"Scan the code to reach the location", locationCode:"Location code" },
+  locationNames:{ mainBuilding:"Main Theory Building", practicalBuilding:"Practical Training Building", trafficBuilding:"Traffic Building" },
+  services:{
+    goPractical:{title:"How to reach the Practical Building", desc:"Directions to the practical training building"},
+    goMain:{title:"How to reach the Main Theory Building", desc:"Directions to the main building"},
+    goTraffic:{title:"How to reach the Traffic Building", desc:"Directions to the traffic building"},
+    payFees:{title:"How to pay the fees", desc:"Steps to pay fees at the office"},
+    afterEval:{title:"What to do after the evaluation?", desc:"Required steps after the evaluation"},
+    afterTheory:{title:"What to do after the theory test?", desc:"Steps after passing the theory test"},
+    afterPractical:{title:"What to do after practical training?", desc:"Steps after practical training"},
+    changeInstructor:{title:"Change instructor", desc:"How to request an instructor change"},
+    changeAppointment:{title:"Change appointment", desc:"How to change your training appointment"}
+  },
+  navPage:{
+    goPractical:{ displayText:"Follow the route shown to reach the practical training building.", spokenText:"To reach the practical training building, follow the route shown ahead until you arrive." },
+    goMain:{ displayText:"Follow the route shown to reach the main theory building.", spokenText:"To reach the main building, follow the route shown ahead until you arrive." },
+    goTraffic:{ displayText:"Follow the route shown to reach the traffic building.", spokenText:"To reach the traffic building, follow the route shown ahead until you arrive." }
+  },
+  payFeesPage:{ title:"How to pay the fees", spokenText:"To pay your fees, go to reception and take a queue ticket, wait until your number is called, then go to customer service to complete payment and receive your training program.", steps:["Go to reception","Take a queue ticket","Wait for your number","Go to customer service","Complete payment","Receive your training program"] },
+  afterEvalPage:{ title:"What to do after the evaluation?", spokenText:"After the evaluation, go to the main building, take a ticket at reception, then go to customer service to complete your procedures and receive your training program.", steps:["Evaluation","Go to main building","Scan location code","Reception","Take a ticket","Customer service","Pay fees","Receive training program"], location:"mainBuilding" },
+  afterTheoryPage:{ title:"What to do after the theory test?", spokenText:"After finishing and passing the theory test, go to the practical training building. Use the location code to get there, then go inside and wait for your appointment.", steps:["Theory test","Pass the test","Go to practical building","Scan location code","Enter the building","Wait for appointment"], location:"practicalBuilding" },
+  afterPracticalPage:{ title:"What to do after practical training?", spokenText:"", placeholder:"[The approved procedure will be added here]" },
+  changeInstructorPage:{ title:"Change instructor", subtitle:"How to request an instructor change", spokenText:"", placeholder:"The approved procedure will be added here.", steps:["To be defined later"] },
+  changeAppointmentPage:{ title:"Change appointment", subtitle:"How to change your appointment", spokenText:"", placeholder:"The approved procedure will be added here.", steps:["To be defined later"] }
+}
+};
+["ur","hi","pa","fr","it","bn","tr"].forEach(c=>{
+  if(!CONTENT[c]){ CONTENT[c] = JSON.parse(JSON.stringify(CONTENT.en)); CONTENT[c]._untranslated = true; }
+});
+
+/* ============================================================================
+   STATE
+   ============================================================================ */
+let state = { lang:"ar", page:"welcome", currentService:null };
+let idleTimer = null;
+function t(){ return CONTENT[state.lang]; }
+function langMeta(){ return LANGS.find(l=>l.code===state.lang); }
+function resetIdle(){
+  if(idleTimer) clearTimeout(idleTimer);
+  idleTimer = setTimeout(()=>{ TTSManager.cancel(); state={lang:"ar",page:"welcome",currentService:null}; render(); }, SETTINGS.IDLE_TIMEOUT);
+}
+document.addEventListener("click", resetIdle);
+document.addEventListener("touchstart", resetIdle);
+
+function speakContent(key, spokenText){
+  if(!spokenText) return;
+  if(t()._untranslated){ console.info(`الصوت معطّل للغة "${state.lang}" حتى تُضاف ترجمة ومصدر صوت أصلي معتمد.`); return; }
+  TTSManager.speak(state.lang, key, spokenText);
+}
+
+/* ============================================================================
+   SVG ICONS — بدون Emoji
+   ============================================================================ */
+const ICON = {
+  home:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>`,
+  globe:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>`,
+  volume:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>`,
+  back:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>`,
+  forward:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`,
+  route:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M6 8.2V13a4 4 0 0 0 4 4h2a4 4 0 0 1 4 4"/></svg>`,
+  building:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="3.5" width="14" height="17" rx="1"/><path d="M9 7.5h2M13 7.5h2M9 11h2M13 11h2M9 14.5h2M13 14.5h2M10 20.5v-3h4v3"/></svg>`,
+  signpost:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4v16M12 6h6l-1.5 2L18 10h-6M8 8H4l1.5 2L4 12h4"/></svg>`,
+  card:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5.5" width="18" height="13" rx="1.6"/><path d="M3 9.5h18M6.5 14.5h4"/></svg>`,
+  clipboard:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="4.5" width="12" height="16" rx="1.5"/><path d="M9 4.5V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v.5M9 11h6M9 15h6"/></svg>`,
+  document:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5H7A.5.5 0 0 1 6.5 20V4a.5.5 0 0 1 .5-.5Z"/><path d="M14 3.5V7.5h4M9 12h6M9 15.5h6"/></svg>`,
+  flag:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3.5v17M6 4.5h11l-2.3 3.3L17 11H6"/></svg>`,
+  userChange:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>`,
+  calendar:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5.5" width="16" height="14.5" rx="1.5"/><path d="M4 9.5h16M8 3.5v3M16 3.5v3"/></svg>`,
+  pin:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/></svg>`
+};
+const SERVICE_ICON = { goPractical:ICON.route, goMain:ICON.building, goTraffic:ICON.signpost, payFees:ICON.card, afterEval:ICON.clipboard, afterTheory:ICON.document, afterPractical:ICON.flag, changeInstructor:ICON.userChange, changeAppointment:ICON.calendar };
+
+/* ============================================================================
+   STYLES
+   ============================================================================ */
+const style = document.createElement("style");
+style.textContent = `
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{background:${THEME.BG}; color:${THEME.INK}; height:100vh; overflow:hidden;}
+  #app{height:100vh; width:100vw; display:flex; flex-direction:column; font-family:${THEME.FONT_LATIN};}
+  [lang="ar"] #app, [lang="ur"] #app, [lang="pa"] #app { font-family:${THEME.FONT_AR}; }
+  .icon{width:22px; height:22px; color:${THEME.INK_SOFT}; display:block;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:18px 44px; background:${THEME.SURFACE}; border-bottom:1px solid ${THEME.BORDER};}
+  .brand{display:flex; align-items:center; gap:14px;}
+  .brand-logo-box{height:44px; display:flex; align-items:center;}
+  .brand-logo-box img{height:100%; object-fit:contain;}
+  .brand-mark{width:40px;height:40px;border:1.6px solid ${THEME.PRIMARY}; border-radius:8px; display:flex; align-items:center; justify-content:center; color:${THEME.PRIMARY}; font-weight:800; font-size:15px;}
+  .brand-name{font-size:18px; font-weight:700; color:${THEME.INK};}
+  .nav-controls{display:flex; gap:10px;}
+  .icon-btn{width:52px; height:52px; border-radius:10px; border:1px solid ${THEME.BORDER}; background:${THEME.SURFACE}; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.12s;}
+  .icon-btn:active{background:${THEME.PRIMARY}; border-color:${THEME.PRIMARY};}
+  .icon-btn:active .icon{color:#fff;}
+  .content{flex:1; overflow-y:auto; padding:44px;}
+  .center-screen{min-height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:34px;}
+  .welcome-logo{height:74px; margin-bottom:6px;}
+  .welcome-logo img{height:100%;}
+  .welcome-title{font-size:36px; font-weight:800; color:${THEME.INK};}
+  .welcome-sub{font-size:19px; color:${THEME.INK_SOFT}; font-weight:500;}
+  .lang-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; max-width:920px; width:100%;}
+  .lang-btn{padding:26px 18px; font-size:20px; font-weight:700; border-radius:12px; border:1.4px solid ${THEME.BORDER}; background:${THEME.SURFACE}; color:${THEME.INK}; cursor:pointer; transition:.12s;}
+  .lang-btn:active{border-color:${THEME.PRIMARY}; background:${THEME.PRIMARY}; color:#fff;}
+  .section-title{font-size:24px; font-weight:800; color:${THEME.INK}; margin-bottom:22px;}
+  .services-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:20px;}
+  .service-card{background:${THEME.SURFACE}; border:1px solid ${THEME.BORDER}; border-radius:12px; padding:26px; cursor:pointer; transition:.12s; text-align:start;}
+  .service-card:active{border-color:${THEME.PRIMARY}; background:#F2F9F8;}
+  .service-icon-box{width:46px; height:46px; border-radius:9px; background:#EAF5F4; display:flex; align-items:center; justify-content:center; margin-bottom:16px;}
+  .service-icon-box .icon{width:24px; height:24px; color:${THEME.PRIMARY};}
+  .service-title{font-size:18px; font-weight:700; color:${THEME.INK}; margin-bottom:8px;}
+  .service-desc{font-size:14.5px; color:${THEME.INK_SOFT}; line-height:1.6;}
+  .page-title{font-size:24px; font-weight:800; color:${THEME.INK}; margin-bottom:8px;}
+  .page-sub{font-size:15px; color:${THEME.INK_SOFT}; margin-bottom:24px;}
+  .steps-list{display:flex; flex-direction:column; gap:12px; max-width:880px;}
+  .step-item{display:flex; align-items:center; gap:18px; background:${THEME.SURFACE}; border:1px solid ${THEME.BORDER}; border-radius:10px; padding:18px 22px;}
+  .step-num{width:38px; height:38px; border-radius:8px; background:${THEME.PRIMARY}; color:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; flex-shrink:0;}
+  .step-text{font-size:16.5px; color:${THEME.INK};}
+  .nav-layout{display:grid; grid-template-columns:7fr 3fr; gap:20px; height:100%; min-height:520px;}
+  #map{border-radius:12px; overflow:hidden; border:1px solid ${THEME.BORDER}; min-height:420px;}
+  .trip-panel{background:${THEME.SURFACE}; border:1px solid ${THEME.BORDER}; border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:16px;}
+  .trip-dest{font-size:19px; font-weight:800; color:${THEME.INK}; display:flex; align-items:center; gap:8px;}
+  .trip-dest .icon{width:20px;height:20px;color:${THEME.PRIMARY};}
+  .qr-box{display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:auto; padding-top:18px; border-top:1px solid ${THEME.BORDER};}
+  .qr-caption{font-size:14px; color:${THEME.INK}; text-align:center; font-weight:600;}
+  .placeholder-box{background:#FBFAF4; border:1px solid #E3DBAE; border-radius:10px; padding:22px; font-size:16px; color:#6B5F2A; max-width:800px;}
+  .lang-note{margin-top:16px; font-size:13px; color:#9a7b2a; background:#FBFAF4; border:1px solid #E3DBAE; border-radius:8px; padding:10px 14px; max-width:600px;}
+  @media (max-width:900px){ .nav-layout{grid-template-columns:1fr;} .lang-grid{grid-template-columns:repeat(2,1fr);} .content{padding:26px;} .topbar{padding:14px 22px;} }
+`;
+document.head.appendChild(style);
+
+/* ============================================================================
+   RENDER
+   ============================================================================ */
+function locName(key){ return t().locationNames[key]; }
+
+function render(){
+  const app = document.getElementById("app");
+  const meta = langMeta();
+  document.documentElement.dir = state.page==="welcome" ? "rtl" : meta.dir;
+  document.documentElement.lang = state.page==="welcome" ? "ar" : meta.code;
+
+  let html = "";
+  if(state.page !== "welcome"){
+    html += `<div class="topbar">
+      <div class="brand">
+        <div class="brand-logo-box">${SETTINGS.LOGO_URL ? `<img src="${SETTINGS.LOGO_URL}" alt="Noura">` : `<div class="brand-mark">N</div>`}</div>
+        <div class="brand-name">${state.lang==="ar"?"نورة لتعليم القيادة":"Noura For Driving"}</div>
+      </div>
+      <div class="nav-controls">
+        ${state.page!=="home" ? `<button class="icon-btn" onclick="goHome()" title="${t().ui.back}"><span class="icon">${meta.dir==="rtl"?ICON.forward:ICON.back}</span></button>`:""}
+        <button class="icon-btn" onclick="goHome()" title="${t().ui.home}"><span class="icon">${ICON.home}</span></button>
+        <button class="icon-btn" onclick="goLangSelect()" title="${t().ui.language}"><span class="icon">${ICON.globe}</span></button>
+        <button class="icon-btn" onclick="TTSManager.pauseResume()" title="${t().ui.audioToggle}"><span class="icon">${ICON.volume}</span></button>
+      </div>
+    </div>`;
+  }
+
+  html += `<div class="content">`;
+  if(state.page === "welcome") html += renderWelcome();
+  else if(state.page === "home") html += renderHome();
+  else if(state.page === "nav") html += renderNavPage();
+  else if(state.page === "payFees") html += renderStepsPage(t().payFeesPage);
+  else if(state.page === "afterEval") html += renderStepsPage(t().afterEvalPage, true);
+  else if(state.page === "afterTheory") html += renderStepsPage(t().afterTheoryPage, true);
+  else if(state.page === "afterPractical") html += renderPlaceholderPage(t().afterPracticalPage);
+  else if(state.page === "changeInstructor") html += renderStepsPage(t().changeInstructorPage);
+  else if(state.page === "changeAppointment") html += renderStepsPage(t().changeAppointmentPage);
+  html += `</div>`;
+
+  app.innerHTML = html;
+
+  if(state.page === "nav") setTimeout(initMap, 50);
+  if(state.page === "afterEval" || state.page === "afterTheory"){
+    const loc = LOCATIONS[t()[state.page+"Page"].location];
+    setTimeout(()=>renderQR("qrcode-inline", loc.googleMapsUrl), 50);
+  }
+  resetIdle();
+}
+
+function renderWelcome(){
+  let langBtns = LANGS.map(l=>`<button class="lang-btn" onclick="selectLang('${l.code}')">${l.native}</button>`).join("");
+  return `<div class="center-screen">
+    <div class="welcome-logo">${SETTINGS.LOGO_URL ? `<img src="${SETTINGS.LOGO_URL}" alt="Noura For Driving">` : `<div class="brand-mark" style="width:74px;height:74px;font-size:26px;">N</div>`}</div>
+    <div class="welcome-title">${CONTENT.ar.ui.welcome}</div>
+    <div class="welcome-sub">${CONTENT.ar.ui.chooseLang}</div>
+    <div class="lang-grid">${langBtns}</div>
+  </div>`;
+}
+
+function renderHome(){
+  const s = t().services;
+  const order = ["goPractical","goMain","goTraffic","payFees","afterEval","afterTheory","afterPractical","changeInstructor","changeAppointment"];
+  let cards = order.map(key=>{
+    const svc = s[key];
+    return `<div class="service-card" onclick="openService('${key}')">
+      <div class="service-icon-box"><span class="icon" style="width:24px;height:24px;">${SERVICE_ICON[key]}</span></div>
+      <div class="service-title">${svc.title}</div>
+      <div class="service-desc">${svc.desc}</div>
+    </div>`;
+  }).join("");
+  let note = t()._untranslated ? `<div class="lang-note">هذه اللغة قيد إضافة الترجمة والصوت الأصلي الكامل. المحتوى المعروض حاليًا مؤقت والصوت معطّل لهذه اللغة.</div>` : "";
+  return `<div class="section-title">${t().ui.welcome}</div><div class="services-grid">${cards}</div>${note}`;
+}
+
+const NAV_DEST = { goPractical:"practicalBuilding", goMain:"mainBuilding", goTraffic:"trafficBuilding" };
+
+function renderNavPage(){
+  const key = state.currentService;
+  const p = t().navPage[key];
+  const destKey = NAV_DEST[key];
+  const dest = LOCATIONS[destKey];
+  return `<div class="page-title">${locName(destKey)}</div><div class="page-sub">${p.displayText}</div>
+  <div class="nav-layout">
+    <div id="map"></div>
+    <div class="trip-panel">
+      <div class="trip-dest"><span class="icon">${ICON.pin}</span>${locName(destKey)}</div>
+      <div class="qr-box"><div id="qrcode-nav"></div><div class="qr-caption">${t().ui.scanCode}</div></div>
+    </div>
+  </div>`;
+}
+
+function renderStepsPage(p, withQR){
+  let steps = (p.steps||[]).map((s,i)=>`<div class="step-item"><div class="step-num">${String(i+1).padStart(2,"0")}</div><div class="step-text">${s}</div></div>`).join("");
+  let qr = withQR ? `<div class="qr-box" style="max-width:280px;"><div id="qrcode-inline"></div><div class="qr-caption">${t().ui.scanCode}</div></div>` : "";
+  return `<div class="page-title">${p.title}</div>${p.subtitle?`<div class="page-sub">${p.subtitle}</div>`:""}<div class="steps-list">${steps}</div>${qr}`;
+}
+
+function renderPlaceholderPage(p){
+  return `<div class="page-title">${p.title}</div><div class="placeholder-box">${p.placeholder}</div>`;
+}
+
+function renderQR(elId, url){
+  const el = document.getElementById(elId);
+  if(el && window.QRCode){ el.innerHTML=""; new QRCode(el, {text:url, width:150, height:150, colorDark:THEME.INK, colorLight:"#ffffff"}); }
+}
+
+/* ============================================================================
+   MAP / DRONE-STYLE ROUTE NAVIGATION
+   عرض جوي حقيقي (Esri World Imagery، مجاني بدون مفتاح API) + مسار طرق حقيقي من OSRM
+   عبر Leaflet Routing Machine (وليس خطًا مستقيمًا بين نقطتين).
+   الكاميرا تتبع نقاط الطريق الفعلية، مع Zoom ديناميكي (قريب عند البداية → أبعد أثناء
+   الرحلة → قريب عند الاقتراب من الوجهة) وعلامة اتجاه (Heading Marker) تدور حسب Bearing
+   الفعلي بين نقاط الطريق مع تنعيم للدوران بدل قفزات مفاجئة.
+   تنويه صادق: هذه ليست Google Photorealistic 3D Maps (تلك تتطلب مفتاح Google Cloud
+   Platform مدفوعًا لا أملكه) — هي محاكاة احترافية ثنائية الأبعاد لتجربة "طيران فوق
+   الطريق" باستخدام بيانات جغرافية وطرق حقيقية فعليًا، وليست حركة مزخرفة عشوائية.
+   ============================================================================ */
+let mapInstance = null;
+let droneMarker = null;
+let flightAnimId = null;
+
+function bearing(a, b){
+  const toRad = d=>d*Math.PI/180, toDeg = r=>r*180/Math.PI;
+  const y = Math.sin(toRad(b.lng-a.lng))*Math.cos(toRad(b.lat));
+  const x = Math.cos(toRad(a.lat))*Math.sin(toRad(b.lat)) - Math.sin(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.cos(toRad(b.lng-a.lng));
+  return (toDeg(Math.atan2(y,x))+360)%360;
+}
+function shortestAngleDelta(from,to){ let d=(to-from+540)%360-180; return d; }
+
+function droneIcon(){
+  return L.divIcon({
+    className:"",
+    html:`<div id="drone-rot" style="width:26px;height:26px;transform:rotate(0deg);">
+      <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 2 L19 20 L12 16 L5 20 Z" fill="${THEME.PRIMARY}" stroke="#fff" stroke-width="1.4"/></svg>
+    </div>`,
+    iconSize:[26,26], iconAnchor:[13,13]
+  });
+}
+
+function initMap(){
+  if(flightAnimId) cancelAnimationFrame(flightAnimId);
+  if(mapInstance){ mapInstance.remove(); mapInstance=null; }
+  const key = state.currentService;
+  const destKey = NAV_DEST[key];
+  const dest = LOCATIONS[destKey];
+  const start = LOCATIONS.defaultStart;
+
+  mapInstance = L.map('map', {zoomControl:false, attributionControl:true, fadeAnimation:true}).setView([start.lat, start.lng], 17);
+  L.control.zoom({position:'bottomright'}).addTo(mapInstance);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution:'Imagery &copy; Esri', maxZoom:19
+  }).addTo(mapInstance);
+
+  L.circleMarker([start.lat,start.lng], {radius:7, color:"#fff", weight:2, fillColor:THEME.INK_SOFT, fillOpacity:1}).addTo(mapInstance);
+  const destMarker = L.circleMarker([dest.lat,dest.lng], {radius:9, color:"#fff", weight:2, fillColor:THEME.PRIMARY, fillOpacity:1}).addTo(mapInstance);
+  droneMarker = L.marker([start.lat,start.lng], {icon:droneIcon()}).addTo(mapInstance);
+
+  renderQR("qrcode-nav", dest.googleMapsUrl);
+
+  const routingControl = L.Routing.control({
+    waypoints:[L.latLng(start.lat,start.lng), L.latLng(dest.lat,dest.lng)],
+    routeWhileDragging:false, addWaypoints:false, draggableWaypoints:false, fitSelectedRoutes:false, show:false,
+    lineOptions:{ styles:[{color:THEME.PRIMARY, weight:4, opacity:0.85}] },
+    createMarker:()=>null // نستخدم علاماتنا الخاصة أعلاه بدل علامات المكوّن الافتراضية
+  }).addTo(mapInstance);
+
+  routingControl.on('routesfound', e=>{
+    flyRoute(e.routes[0].coordinates.map(c=>({lat:c.lat, lng:c.lng})));
+  });
+  routingControl.on('routingerror', ()=>{
+    // في حال تعذّر حساب مسار طرق حقيقي (مثال: عدم تغطية OSRM للمنطقة) — نتحرك مباشرة
+    // للوجهة بدل تعليق الشاشة، مع تنبيه واضح في الكونسول بدل الادعاء بأنه مسار حقيقي.
+    console.warn("تعذّر حساب مسار طرق حقيقي من OSRM لهذه الإحداثيات. سيتم عرض انتقال مباشر للوجهة فقط.");
+    flyRoute([start, dest]);
+  });
+
+  speakContent(`${key}.audio`, t().navPage[key].spokenText);
+}
+
+// تبسيط بسيط لنقاط المسار (يحافظ على كل تغييرات الاتجاه الفعلية، يقلل فقط النقاط شبه المستقيمة المتلاصقة)
+function simplifyRoute(points, minDistM){
+  if(points.length<=2) return points;
+  const out=[points[0]];
+  for(let i=1;i<points.length-1;i++){
+    const prev=out[out.length-1], cur=points[i];
+    const d=haversine(prev,cur);
+    if(d>=minDistM) out.push(cur);
+  }
+  out.push(points[points.length-1]);
+  return out;
+}
+function haversine(a,b){
+  const R=6371000, toRad=d=>d*Math.PI/180;
+  const dLat=toRad(b.lat-a.lat), dLng=toRad(b.lng-a.lng);
+  const x=Math.sin(dLat/2)**2 + Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
+}
+
+function flyRoute(rawCoords){
+  const coords = simplifyRoute(rawCoords, 6); // نقطة كل ~6 أمتار على الأقل
+  if(coords.length<2) return;
+
+  // طول المسار الكلي لتحديد مدة الرحلة (15–30 ثانية كما طُلب)
+  let totalDist=0; const cum=[0];
+  for(let i=1;i<coords.length;i++){ totalDist += haversine(coords[i-1],coords[i]); cum.push(totalDist); }
+  const durationMs = Math.min(30000, Math.max(15000, totalDist*35)); // تقريبيًا أطول للمسارات الأطول
+
+  let currentHeading = bearing(coords[0], coords[Math.min(1,coords.length-1)]);
+  const startT = performance.now();
+
+  function zoomForProgress(p){
+    // إقلاع: تقريب (17) → منتصف الرحلة: تبعيد لرؤية الطريق (15) → اقتراب آخر 20%: تقريب تدريجي حتى 18.5
+    if(p < 0.12) return 17 - (p/0.12)*2;        // 17 → 15
+    if(p < 0.8) return 15;
+    const local = (p-0.8)/0.2;
+    return 15 + local*3.5;                       // 15 → 18.5
+  }
+
+  function step(now){
+    const p = Math.min(1, (now-startT)/durationMs);
+    const targetDist = p*totalDist;
+    let idx=0; while(idx<cum.length-1 && cum[idx+1]<targetDist) idx++;
+    const segStart=coords[idx], segEnd=coords[Math.min(idx+1,coords.length-1)];
+    const segLen = Math.max(1e-6, haversine(segStart,segEnd));
+    const segP = Math.min(1, (targetDist-cum[idx])/segLen);
+    const lat = segStart.lat + (segEnd.lat-segStart.lat)*segP;
+    const lng = segStart.lng + (segEnd.lng-segStart.lng)*segP;
+
+    const targetHeading = bearing(segStart, segEnd);
+    currentHeading += shortestAngleDelta(currentHeading, targetHeading) * 0.15; // تنعيم الدوران
+
+    mapInstance.setView([lat,lng], zoomForProgress(p), {animate:false});
+    if(droneMarker){
+      droneMarker.setLatLng([lat,lng]);
+      const rotEl = droneMarker.getElement() && droneMarker.getElement().querySelector('#drone-rot');
+      if(rotEl) rotEl.style.transform = `rotate(${currentHeading}deg)`;
+    }
+
+    if(p<1){ flightAnimId = requestAnimationFrame(step); }
+    else{
+      mapInstance.setView([coords[coords.length-1].lat, coords[coords.length-1].lng], 18.5, {animate:true, duration:1});
+    }
+  }
+  flightAnimId = requestAnimationFrame(step);
+}
+
+/* ============================================================================
+   NAVIGATION HANDLERS
+   ============================================================================ */
+function selectLang(code){ state.lang = code; state.page = "home"; render(); }
+function goHome(){ TTSManager.cancel(); state.page="home"; state.currentService=null; render(); }
+function goLangSelect(){ TTSManager.cancel(); state.page="welcome"; render(); }
+function openService(key){
+  state.currentService = key;
+  const map = { goPractical:"nav", goMain:"nav", goTraffic:"nav", payFees:"payFees", afterEval:"afterEval", afterTheory:"afterTheory", afterPractical:"afterPractical", changeInstructor:"changeInstructor", changeAppointment:"changeAppointment" };
+  state.page = map[key];
+  render();
+  if(state.page !== "nav"){
+    const pageContentMap = { payFees:t().payFeesPage, afterEval:t().afterEvalPage, afterTheory:t().afterTheoryPage, afterPractical:t().afterPracticalPage, changeInstructor:t().changeInstructorPage, changeAppointment:t().changeAppointmentPage };
+    const pc = pageContentMap[state.page];
+    if(pc && pc.spokenText) speakContent(`${state.page}.audio`, pc.spokenText);
+  }
+}
+
+render();
+</script>
+</body>
+</html>
