@@ -218,7 +218,808 @@ en: {
   changeAppointmentPage:{ title:"Change appointment", subtitle:"How to change your appointment", spokenText:"", placeholder:"The approved procedure will be added here.", steps:["To be defined later"] }
 }
 };
-["ur","hi","pa","fr","it","bn","tr"].forEach(c=>{
+// ترجمات دقيقة كاملة (نص + صوت) للغات الأردية، الهندية، الفرنسية، الإيطالية، البنغالية، التركية.
+// الباكستانية (pa) = نفس محتوى الأردية Pakistani Urdu، حسب توصية Azure Voice Support.
+const CONTENT_TRANSLATIONS = {
+  "ur": {
+    "ui": {
+      "welcome": "نورہ ڈرائیونگ سکول میں خوش آمدید",
+      "chooseLang": "اپنی زبان منتخب کریں",
+      "home": "ہوم",
+      "back": "واپس",
+      "language": "زبان",
+      "audioToggle": "آواز آن/آف کریں",
+      "scanCode": "مقام تک پہنچنے کے لیے کوڈ اسکین کریں",
+      "locationCode": "مقام کا کوڈ"
+    },
+    "locationNames": {
+      "mainBuilding": "مرکزی تھیوری عمارت",
+      "practicalBuilding": "عملی تربیت کی عمارت",
+      "trafficBuilding": "ٹریفک عمارت"
+    },
+    "services": {
+      "goPractical": {
+        "title": "عملی تربیت کی عمارت تک جانے کا طریقہ",
+        "desc": "عملی تربیت کی عمارت تک رہنمائی"
+      },
+      "goMain": {
+        "title": "مرکزی تھیوری عمارت تک جانے کا طریقہ",
+        "desc": "مرکزی عمارت تک رہنمائی"
+      },
+      "goTraffic": {
+        "title": "ٹریفک عمارت تک جانے کا طریقہ",
+        "desc": "ٹریفک عمارت تک رہنمائی"
+      },
+      "payFees": {
+        "title": "فیس ادا کرنے کا طریقہ",
+        "desc": "دفتر میں فیس ادا کرنے کے مراحل"
+      },
+      "afterEval": {
+        "title": "تشخیص کے بعد کیا کریں؟",
+        "desc": "تشخیص کے بعد ضروری مراحل"
+      },
+      "afterTheory": {
+        "title": "تھیوری ٹیسٹ کے بعد کیا کریں؟",
+        "desc": "تھیوری ٹیسٹ پاس کرنے کے بعد کے مراحل"
+      },
+      "afterPractical": {
+        "title": "عملی تربیت کے بعد کیا کریں؟",
+        "desc": "عملی تربیت کے بعد کے مراحل"
+      },
+      "changeInstructor": {
+        "title": "انسٹرکٹر تبدیل کرنا",
+        "desc": "انسٹرکٹر تبدیل کرنے کی درخواست کا طریقہ"
+      },
+      "changeAppointment": {
+        "title": "تربیت کا وقت تبدیل کرنا",
+        "desc": "اپائنٹمنٹ تبدیل کرنے کا طریقہ"
+      }
+    },
+    "navPage": {
+      "goPractical": {
+        "displayText": "عملی تربیت کی عمارت تک پہنچنے کے لیے دکھایا گیا راستہ اختیار کریں۔",
+        "spokenText": "عملی تربیت کی عمارت تک پہنچنے کے لیے، سامنے دکھایا گیا راستہ اختیار کریں یہاں تک کہ آپ پہنچ جائیں۔"
+      },
+      "goMain": {
+        "displayText": "مرکزی تھیوری عمارت تک پہنچنے کے لیے دکھایا گیا راستہ اختیار کریں۔",
+        "spokenText": "مرکزی عمارت تک پہنچنے کے لیے، سامنے دکھایا گیا راستہ اختیار کریں یہاں تک کہ آپ پہنچ جائیں۔"
+      },
+      "goTraffic": {
+        "displayText": "ٹریفک عمارت تک پہنچنے کے لیے دکھایا گیا راستہ اختیار کریں۔",
+        "spokenText": "ٹریفک عمارت تک پہنچنے کے لیے، سامنے دکھایا گیا راستہ اختیار کریں یہاں تک کہ آپ پہنچ جائیں۔"
+      }
+    },
+    "payFeesPage": {
+      "title": "فیس ادا کرنے کا طریقہ",
+      "spokenText": "فیس ادا کرنے کے لیے استقبالیہ پر جائیں اور نمبر لیں، پھر اپنے نمبر کے اعلان کا انتظار کریں، اس کے بعد کسٹمر سروس پر جا کر ادائیگی مکمل کریں اور اپنا تربیتی پروگرام حاصل کریں۔",
+      "steps": [
+        "استقبالیہ پر جانا",
+        "نمبر لینا",
+        "نمبر کے اعلان کا انتظار",
+        "کسٹمر سروس پر جانا",
+        "فیس کی ادائیگی مکمل کرنا",
+        "تربیتی پروگرام حاصل کرنا"
+      ]
+    },
+    "afterEvalPage": {
+      "title": "تشخیص کے بعد کیا کریں؟",
+      "spokenText": "تشخیص کے بعد مرکزی عمارت جائیں، وہاں پہنچ کر استقبالیہ سے نمبر لیں، پھر کسٹمر سروس پر جا کر اپنے کام مکمل کریں اور اپنی تشخیص کے مطابق تربیتی پروگرام حاصل کریں۔",
+      "steps": [
+        "تشخیص",
+        "مرکزی عمارت جانا",
+        "مقام کا کوڈ اسکین کرنا",
+        "استقبالیہ",
+        "نمبر لینا",
+        "کسٹمر سروس",
+        "فیس کی ادائیگی",
+        "تربیتی پروگرام حاصل کرنا"
+      ],
+      "location": "mainBuilding"
+    },
+    "afterTheoryPage": {
+      "title": "تھیوری ٹیسٹ کے بعد کیا کریں؟",
+      "spokenText": "تھیوری ٹیسٹ مکمل کرنے اور پاس کرنے کے بعد، عملی تربیت کی عمارت جائیں۔ مقام تک پہنچنے کے لیے کوڈ استعمال کریں، پھر اندر جا کر اپنے تربیتی وقت کا انتظار کریں۔",
+      "steps": [
+        "تھیوری ٹیسٹ",
+        "ٹیسٹ پاس کرنا",
+        "عملی عمارت جانا",
+        "مقام کا کوڈ اسکین کرنا",
+        "عمارت میں داخل ہونا",
+        "وقت کا انتظار"
+      ],
+      "location": "practicalBuilding"
+    },
+    "afterPracticalPage": {
+      "title": "عملی تربیت کے بعد کیا کریں؟",
+      "spokenText": "",
+      "placeholder": "[منظور شدہ طریقہ کار یہاں شامل کیا جائے گا]"
+    },
+    "changeInstructorPage": {
+      "title": "انسٹرکٹر تبدیل کرنا",
+      "subtitle": "انسٹرکٹر تبدیل کرنے کی درخواست کا طریقہ",
+      "spokenText": "",
+      "placeholder": "انسٹرکٹر تبدیل کرنے کا منظور شدہ طریقہ کار یہاں شامل کیا جائے گا۔",
+      "steps": [
+        "مراحل بعد میں طے کیے جائیں گے"
+      ]
+    },
+    "changeAppointmentPage": {
+      "title": "تربیت کا وقت تبدیل کرنا",
+      "subtitle": "اپائنٹمنٹ تبدیل کرنے کا طریقہ",
+      "spokenText": "",
+      "placeholder": "اپائنٹمنٹ تبدیل کرنے کا طریقہ کار یہاں شامل کیا جائے گا۔",
+      "steps": [
+        "مراحل بعد میں طے کیے جائیں گے"
+      ]
+    }
+  },
+  "hi": {
+    "ui": {
+      "welcome": "नूरा ड्राइविंग स्कूल में आपका स्वागत है",
+      "chooseLang": "अपनी भाषा चुनें",
+      "home": "होम",
+      "back": "वापस",
+      "language": "भाषा",
+      "audioToggle": "आवाज़ चालू/बंद करें",
+      "scanCode": "स्थान तक पहुँचने के लिए कोड स्कैन करें",
+      "locationCode": "स्थान कोड"
+    },
+    "locationNames": {
+      "mainBuilding": "मुख्य थ्योरी भवन",
+      "practicalBuilding": "व्यावहारिक प्रशिक्षण भवन",
+      "trafficBuilding": "यातायात भवन"
+    },
+    "services": {
+      "goPractical": {
+        "title": "व्यावहारिक प्रशिक्षण भवन तक जाने का तरीका",
+        "desc": "व्यावहारिक प्रशिक्षण भवन तक मार्गदर्शन"
+      },
+      "goMain": {
+        "title": "मुख्य थ्योरी भवन तक जाने का तरीका",
+        "desc": "मुख्य भवन तक मार्गदर्शन"
+      },
+      "goTraffic": {
+        "title": "यातायात भवन तक जाने का तरीका",
+        "desc": "यातायात भवन तक मार्गदर्शन"
+      },
+      "payFees": {
+        "title": "शुल्क भुगतान का तरीका",
+        "desc": "कार्यालय में शुल्क भुगतान के चरण"
+      },
+      "afterEval": {
+        "title": "मूल्यांकन के बाद क्या करें?",
+        "desc": "मूल्यांकन के बाद आवश्यक चरण"
+      },
+      "afterTheory": {
+        "title": "थ्योरी परीक्षा के बाद क्या करें?",
+        "desc": "थ्योरी परीक्षा पास करने के बाद के चरण"
+      },
+      "afterPractical": {
+        "title": "व्यावहारिक प्रशिक्षण के बाद क्या करें?",
+        "desc": "व्यावहारिक प्रशिक्षण के बाद के चरण"
+      },
+      "changeInstructor": {
+        "title": "प्रशिक्षक बदलना",
+        "desc": "प्रशिक्षक बदलने के अनुरोध का तरीका"
+      },
+      "changeAppointment": {
+        "title": "प्रशिक्षण समय बदलना",
+        "desc": "अपॉइंटमेंट बदलने का तरीका"
+      }
+    },
+    "navPage": {
+      "goPractical": {
+        "displayText": "व्यावहारिक प्रशिक्षण भवन तक पहुँचने के लिए दिखाया गया मार्ग अपनाएँ।",
+        "spokenText": "व्यावहारिक प्रशिक्षण भवन तक पहुँचने के लिए, सामने दिखाए गए मार्ग का अनुसरण करें जब तक आप पहुँच न जाएँ।"
+      },
+      "goMain": {
+        "displayText": "मुख्य थ्योरी भवन तक पहुँचने के लिए दिखाया गया मार्ग अपनाएँ।",
+        "spokenText": "मुख्य भवन तक पहुँचने के लिए, सामने दिखाए गए मार्ग का अनुसरण करें जब तक आप पहुँच न जाएँ।"
+      },
+      "goTraffic": {
+        "displayText": "यातायात भवन तक पहुँचने के लिए दिखाया गया मार्ग अपनाएँ।",
+        "spokenText": "यातायात भवन तक पहुँचने के लिए, सामने दिखाए गए मार्ग का अनुसरण करें जब तक आप पहुँच न जाएँ।"
+      }
+    },
+    "payFeesPage": {
+      "title": "शुल्क भुगतान का तरीका",
+      "spokenText": "शुल्क भुगतान के लिए रिसेप्शन पर जाएँ और टोकन लें, फिर अपने नंबर की घोषणा का इंतज़ार करें, उसके बाद ग्राहक सेवा पर जाकर भुगतान पूरा करें और अपना प्रशिक्षण कार्यक्रम प्राप्त करें।",
+      "steps": [
+        "रिसेप्शन जाना",
+        "टोकन लेना",
+        "नंबर की घोषणा का इंतज़ार",
+        "ग्राहक सेवा जाना",
+        "शुल्क भुगतान पूरा करना",
+        "प्रशिक्षण कार्यक्रम प्राप्त करना"
+      ]
+    },
+    "afterEvalPage": {
+      "title": "मूल्यांकन के बाद क्या करें?",
+      "spokenText": "मूल्यांकन के बाद मुख्य भवन जाएँ, वहाँ पहुँचकर रिसेप्शन से टोकन लें, फिर ग्राहक सेवा पर जाकर अपनी प्रक्रिया पूरी करें और अपने मूल्यांकन के अनुसार प्रशिक्षण कार्यक्रम प्राप्त करें।",
+      "steps": [
+        "मूल्यांकन",
+        "मुख्य भवन जाना",
+        "स्थान कोड स्कैन करना",
+        "रिसेप्शन",
+        "टोकन लेना",
+        "ग्राहक सेवा",
+        "शुल्क भुगतान",
+        "प्रशिक्षण कार्यक्रम प्राप्त करना"
+      ],
+      "location": "mainBuilding"
+    },
+    "afterTheoryPage": {
+      "title": "थ्योरी परीक्षा के बाद क्या करें?",
+      "spokenText": "थ्योरी परीक्षा पूरी करने और पास करने के बाद, व्यावहारिक प्रशिक्षण भवन जाएँ। स्थान तक पहुँचने के लिए कोड का उपयोग करें, फिर अंदर जाकर अपने प्रशिक्षण समय का इंतज़ार करें।",
+      "steps": [
+        "थ्योरी परीक्षा",
+        "परीक्षा पास करना",
+        "व्यावहारिक भवन जाना",
+        "स्थान कोड स्कैन करना",
+        "भवन में प्रवेश",
+        "समय का इंतज़ार"
+      ],
+      "location": "practicalBuilding"
+    },
+    "afterPracticalPage": {
+      "title": "व्यावहारिक प्रशिक्षण के बाद क्या करें?",
+      "spokenText": "",
+      "placeholder": "[स्वीकृत प्रक्रिया यहाँ जोड़ी जाएगी]"
+    },
+    "changeInstructorPage": {
+      "title": "प्रशिक्षक बदलना",
+      "subtitle": "प्रशिक्षक बदलने के अनुरोध का तरीका",
+      "spokenText": "",
+      "placeholder": "प्रशिक्षक बदलने की स्वीकृत प्रक्रिया यहाँ जोड़ी जाएगी।",
+      "steps": [
+        "चरण बाद में निर्धारित किए जाएँगे"
+      ]
+    },
+    "changeAppointmentPage": {
+      "title": "प्रशिक्षण समय बदलना",
+      "subtitle": "अपॉइंटमेंट बदलने का तरीका",
+      "spokenText": "",
+      "placeholder": "अपॉइंटमेंट बदलने की प्रक्रिया यहाँ जोड़ी जाएगी।",
+      "steps": [
+        "चरण बाद में निर्धारित किए जाएँगे"
+      ]
+    }
+  },
+  "fr": {
+    "ui": {
+      "welcome": "Bienvenue chez Noura For Driving",
+      "chooseLang": "Choisissez votre langue",
+      "home": "Accueil",
+      "back": "Retour",
+      "language": "Langue",
+      "audioToggle": "Activer/désactiver le son",
+      "scanCode": "Scannez le code pour accéder au lieu",
+      "locationCode": "Code du lieu"
+    },
+    "locationNames": {
+      "mainBuilding": "Bâtiment principal (théorie)",
+      "practicalBuilding": "Bâtiment de formation pratique",
+      "trafficBuilding": "Bâtiment de la circulation"
+    },
+    "services": {
+      "goPractical": {
+        "title": "Comment se rendre au bâtiment pratique",
+        "desc": "Itinéraire vers le bâtiment de formation pratique"
+      },
+      "goMain": {
+        "title": "Comment se rendre au bâtiment principal",
+        "desc": "Itinéraire vers le bâtiment principal"
+      },
+      "goTraffic": {
+        "title": "Comment se rendre au bâtiment de la circulation",
+        "desc": "Itinéraire vers le bâtiment de la circulation"
+      },
+      "payFees": {
+        "title": "Comment payer les frais",
+        "desc": "Étapes pour payer les frais au bureau"
+      },
+      "afterEval": {
+        "title": "Que faire après l'évaluation ?",
+        "desc": "Étapes requises après l'évaluation"
+      },
+      "afterTheory": {
+        "title": "Que faire après l'examen théorique ?",
+        "desc": "Étapes après avoir réussi l'examen théorique"
+      },
+      "afterPractical": {
+        "title": "Que faire après la formation pratique ?",
+        "desc": "Étapes après la formation pratique"
+      },
+      "changeInstructor": {
+        "title": "Changer d'instructeur",
+        "desc": "Comment demander un changement d'instructeur"
+      },
+      "changeAppointment": {
+        "title": "Changer le rendez-vous",
+        "desc": "Comment changer votre rendez-vous de formation"
+      }
+    },
+    "navPage": {
+      "goPractical": {
+        "displayText": "Suivez l'itinéraire indiqué pour atteindre le bâtiment de formation pratique.",
+        "spokenText": "Pour atteindre le bâtiment de formation pratique, suivez l'itinéraire indiqué devant vous jusqu'à votre arrivée."
+      },
+      "goMain": {
+        "displayText": "Suivez l'itinéraire indiqué pour atteindre le bâtiment principal.",
+        "spokenText": "Pour atteindre le bâtiment principal, suivez l'itinéraire indiqué devant vous jusqu'à votre arrivée."
+      },
+      "goTraffic": {
+        "displayText": "Suivez l'itinéraire indiqué pour atteindre le bâtiment de la circulation.",
+        "spokenText": "Pour atteindre le bâtiment de la circulation, suivez l'itinéraire indiqué devant vous jusqu'à votre arrivée."
+      }
+    },
+    "payFeesPage": {
+      "title": "Comment payer les frais",
+      "spokenText": "Pour payer vos frais, rendez-vous à la réception et prenez un ticket, attendez que votre numéro soit appelé, puis rendez-vous au service client pour finaliser le paiement et recevoir votre programme de formation.",
+      "steps": [
+        "Se rendre à la réception",
+        "Prendre un ticket",
+        "Attendre l'appel du numéro",
+        "Se rendre au service client",
+        "Finaliser le paiement des frais",
+        "Recevoir le programme de formation"
+      ]
+    },
+    "afterEvalPage": {
+      "title": "Que faire après l'évaluation ?",
+      "spokenText": "Après l'évaluation, rendez-vous au bâtiment principal, prenez un ticket à la réception, puis allez au service client pour finaliser vos démarches et recevoir votre programme de formation selon votre évaluation.",
+      "steps": [
+        "Évaluation",
+        "Se rendre au bâtiment principal",
+        "Scanner le code du lieu",
+        "Réception",
+        "Prendre un ticket",
+        "Service client",
+        "Payer les frais",
+        "Recevoir le programme de formation"
+      ],
+      "location": "mainBuilding"
+    },
+    "afterTheoryPage": {
+      "title": "Que faire après l'examen théorique ?",
+      "spokenText": "Après avoir terminé et réussi l'examen théorique, rendez-vous au bâtiment de formation pratique. Utilisez le code du lieu pour vous y rendre, puis entrez et attendez votre rendez-vous de formation.",
+      "steps": [
+        "Examen théorique",
+        "Réussir l'examen",
+        "Se rendre au bâtiment pratique",
+        "Scanner le code du lieu",
+        "Entrer dans le bâtiment",
+        "Attendre le rendez-vous"
+      ],
+      "location": "practicalBuilding"
+    },
+    "afterPracticalPage": {
+      "title": "Que faire après la formation pratique ?",
+      "spokenText": "",
+      "placeholder": "[La procédure approuvée sera ajoutée ici]"
+    },
+    "changeInstructorPage": {
+      "title": "Changer d'instructeur",
+      "subtitle": "Comment demander un changement d'instructeur",
+      "spokenText": "",
+      "placeholder": "La procédure approuvée sera ajoutée ici.",
+      "steps": [
+        "Étapes à définir ultérieurement"
+      ]
+    },
+    "changeAppointmentPage": {
+      "title": "Changer le rendez-vous",
+      "subtitle": "Comment changer votre rendez-vous",
+      "spokenText": "",
+      "placeholder": "La procédure sera ajoutée ici.",
+      "steps": [
+        "Étapes à définir ultérieurement"
+      ]
+    }
+  },
+  "it": {
+    "ui": {
+      "welcome": "Benvenuti alla Noura For Driving",
+      "chooseLang": "Scegli la tua lingua",
+      "home": "Home",
+      "back": "Indietro",
+      "language": "Lingua",
+      "audioToggle": "Attiva/disattiva audio",
+      "scanCode": "Scansiona il codice per raggiungere la posizione",
+      "locationCode": "Codice della posizione"
+    },
+    "locationNames": {
+      "mainBuilding": "Edificio principale (teoria)",
+      "practicalBuilding": "Edificio di formazione pratica",
+      "trafficBuilding": "Edificio del traffico"
+    },
+    "services": {
+      "goPractical": {
+        "title": "Come raggiungere l'edificio pratico",
+        "desc": "Indicazioni per l'edificio di formazione pratica"
+      },
+      "goMain": {
+        "title": "Come raggiungere l'edificio principale",
+        "desc": "Indicazioni per l'edificio principale"
+      },
+      "goTraffic": {
+        "title": "Come raggiungere l'edificio del traffico",
+        "desc": "Indicazioni per l'edificio del traffico"
+      },
+      "payFees": {
+        "title": "Come pagare le tasse",
+        "desc": "Passaggi per pagare le tasse in ufficio"
+      },
+      "afterEval": {
+        "title": "Cosa fare dopo la valutazione?",
+        "desc": "Passaggi richiesti dopo la valutazione"
+      },
+      "afterTheory": {
+        "title": "Cosa fare dopo l'esame teorico?",
+        "desc": "Passaggi dopo aver superato l'esame teorico"
+      },
+      "afterPractical": {
+        "title": "Cosa fare dopo la formazione pratica?",
+        "desc": "Passaggi dopo la formazione pratica"
+      },
+      "changeInstructor": {
+        "title": "Cambiare istruttore",
+        "desc": "Come richiedere un cambio di istruttore"
+      },
+      "changeAppointment": {
+        "title": "Cambiare appuntamento",
+        "desc": "Come cambiare l'appuntamento di formazione"
+      }
+    },
+    "navPage": {
+      "goPractical": {
+        "displayText": "Segui il percorso indicato per raggiungere l'edificio di formazione pratica.",
+        "spokenText": "Per raggiungere l'edificio di formazione pratica, segui il percorso mostrato davanti a te fino ad arrivare."
+      },
+      "goMain": {
+        "displayText": "Segui il percorso indicato per raggiungere l'edificio principale.",
+        "spokenText": "Per raggiungere l'edificio principale, segui il percorso mostrato davanti a te fino ad arrivare."
+      },
+      "goTraffic": {
+        "displayText": "Segui il percorso indicato per raggiungere l'edificio del traffico.",
+        "spokenText": "Per raggiungere l'edificio del traffico, segui il percorso mostrato davanti a te fino ad arrivare."
+      }
+    },
+    "payFeesPage": {
+      "title": "Come pagare le tasse",
+      "spokenText": "Per pagare le tasse, recati alla reception e prendi un numero, attendi che venga chiamato, poi vai al servizio clienti per completare il pagamento e ricevere il tuo programma di formazione.",
+      "steps": [
+        "Andare alla reception",
+        "Prendere un numero",
+        "Attendere la chiamata del numero",
+        "Andare al servizio clienti",
+        "Completare il pagamento",
+        "Ricevere il programma di formazione"
+      ]
+    },
+    "afterEvalPage": {
+      "title": "Cosa fare dopo la valutazione?",
+      "spokenText": "Dopo la valutazione, recati all'edificio principale, prendi un numero alla reception, poi vai al servizio clienti per completare le pratiche e ricevere il tuo programma di formazione in base alla valutazione.",
+      "steps": [
+        "Valutazione",
+        "Andare all'edificio principale",
+        "Scansionare il codice della posizione",
+        "Reception",
+        "Prendere un numero",
+        "Servizio clienti",
+        "Pagare le tasse",
+        "Ricevere il programma di formazione"
+      ],
+      "location": "mainBuilding"
+    },
+    "afterTheoryPage": {
+      "title": "Cosa fare dopo l'esame teorico?",
+      "spokenText": "Dopo aver completato e superato l'esame teorico, recati all'edificio di formazione pratica. Usa il codice per raggiungere la posizione, poi entra e attendi il tuo appuntamento di formazione.",
+      "steps": [
+        "Esame teorico",
+        "Superare l'esame",
+        "Andare all'edificio pratico",
+        "Scansionare il codice della posizione",
+        "Entrare nell'edificio",
+        "Attendere l'appuntamento"
+      ],
+      "location": "practicalBuilding"
+    },
+    "afterPracticalPage": {
+      "title": "Cosa fare dopo la formazione pratica?",
+      "spokenText": "",
+      "placeholder": "[La procedura approvata sarà aggiunta qui]"
+    },
+    "changeInstructorPage": {
+      "title": "Cambiare istruttore",
+      "subtitle": "Come richiedere un cambio di istruttore",
+      "spokenText": "",
+      "placeholder": "La procedura approvata sarà aggiunta qui.",
+      "steps": [
+        "Passaggi da definire in seguito"
+      ]
+    },
+    "changeAppointmentPage": {
+      "title": "Cambiare appuntamento",
+      "subtitle": "Come cambiare l'appuntamento",
+      "spokenText": "",
+      "placeholder": "La procedura sarà aggiunta qui.",
+      "steps": [
+        "Passaggi da definire in seguito"
+      ]
+    }
+  },
+  "bn": {
+    "ui": {
+      "welcome": "নূরা ফর ড্রাইভিং-এ স্বাগতম",
+      "chooseLang": "আপনার ভাষা নির্বাচন করুন",
+      "home": "হোম",
+      "back": "ফিরে যান",
+      "language": "ভাষা",
+      "audioToggle": "অডিও চালু/বন্ধ করুন",
+      "scanCode": "অবস্থানে পৌঁছাতে কোড স্ক্যান করুন",
+      "locationCode": "অবস্থান কোড"
+    },
+    "locationNames": {
+      "mainBuilding": "প্রধান তত্ত্ব ভবন",
+      "practicalBuilding": "ব্যবহারিক প্রশিক্ষণ ভবন",
+      "trafficBuilding": "ট্রাফিক ভবন"
+    },
+    "services": {
+      "goPractical": {
+        "title": "ব্যবহারিক ভবনে যাওয়ার উপায়",
+        "desc": "ব্যবহারিক প্রশিক্ষণ ভবনের দিকনির্দেশনা"
+      },
+      "goMain": {
+        "title": "প্রধান ভবনে যাওয়ার উপায়",
+        "desc": "প্রধান ভবনের দিকনির্দেশনা"
+      },
+      "goTraffic": {
+        "title": "ট্রাফিক ভবনে যাওয়ার উপায়",
+        "desc": "ট্রাফিক ভবনের দিকনির্দেশনা"
+      },
+      "payFees": {
+        "title": "ফি প্রদানের উপায়",
+        "desc": "অফিসে ফি প্রদানের ধাপসমূহ"
+      },
+      "afterEval": {
+        "title": "মূল্যায়নের পরে কী করবেন?",
+        "desc": "মূল্যায়নের পরে প্রয়োজনীয় ধাপ"
+      },
+      "afterTheory": {
+        "title": "তত্ত্বীয় পরীক্ষার পরে কী করবেন?",
+        "desc": "তত্ত্বীয় পরীক্ষা পাসের পরের ধাপ"
+      },
+      "afterPractical": {
+        "title": "ব্যবহারিক প্রশিক্ষণের পরে কী করবেন?",
+        "desc": "ব্যবহারিক প্রশিক্ষণের পরের ধাপ"
+      },
+      "changeInstructor": {
+        "title": "প্রশিক্ষক পরিবর্তন",
+        "desc": "প্রশিক্ষক পরিবর্তনের অনুরোধের উপায়"
+      },
+      "changeAppointment": {
+        "title": "প্রশিক্ষণের সময় পরিবর্তন",
+        "desc": "অ্যাপয়েন্টমেন্ট পরিবর্তনের উপায়"
+      }
+    },
+    "navPage": {
+      "goPractical": {
+        "displayText": "ব্যবহারিক প্রশিক্ষণ ভবনে পৌঁছাতে প্রদর্শিত পথ অনুসরণ করুন।",
+        "spokenText": "ব্যবহারিক প্রশিক্ষণ ভবনে পৌঁছাতে, সামনে দেখানো পথ অনুসরণ করুন যতক্ষণ না আপনি পৌঁছান।"
+      },
+      "goMain": {
+        "displayText": "প্রধান ভবনে পৌঁছাতে প্রদর্শিত পথ অনুসরণ করুন।",
+        "spokenText": "প্রধান ভবনে পৌঁছাতে, সামনে দেখানো পথ অনুসরণ করুন যতক্ষণ না আপনি পৌঁছান।"
+      },
+      "goTraffic": {
+        "displayText": "ট্রাফিক ভবনে পৌঁছাতে প্রদর্শিত পথ অনুসরণ করুন।",
+        "spokenText": "ট্রাফিক ভবনে পৌঁছাতে, সামনে দেখানো পথ অনুসরণ করুন যতক্ষণ না আপনি পৌঁছান।"
+      }
+    },
+    "payFeesPage": {
+      "title": "ফি প্রদানের উপায়",
+      "spokenText": "ফি প্রদানের জন্য রিসেপশনে যান এবং একটি টোকেন নিন, তারপর আপনার নম্বর ডাকার অপেক্ষা করুন, এরপর কাস্টমার সার্ভিসে গিয়ে পেমেন্ট সম্পন্ন করুন এবং আপনার প্রশিক্ষণ প্রোগ্রাম গ্রহণ করুন।",
+      "steps": [
+        "রিসেপশনে যাওয়া",
+        "টোকেন নেওয়া",
+        "নম্বর ডাকার অপেক্ষা",
+        "কাস্টমার সার্ভিসে যাওয়া",
+        "ফি প্রদান সম্পন্ন করা",
+        "প্রশিক্ষণ প্রোগ্রাম গ্রহণ করা"
+      ]
+    },
+    "afterEvalPage": {
+      "title": "মূল্যায়নের পরে কী করবেন?",
+      "spokenText": "মূল্যায়নের পরে প্রধান ভবনে যান, সেখানে পৌঁছে রিসেপশন থেকে একটি টোকেন নিন, তারপর কাস্টমার সার্ভিসে গিয়ে আপনার প্রক্রিয়া সম্পন্ন করুন এবং আপনার মূল্যায়ন অনুযায়ী প্রশিক্ষণ প্রোগ্রাম গ্রহণ করুন।",
+      "steps": [
+        "মূল্যায়ন",
+        "প্রধান ভবনে যাওয়া",
+        "অবস্থান কোড স্ক্যান করা",
+        "রিসেপশন",
+        "টোকেন নেওয়া",
+        "কাস্টমার সার্ভিস",
+        "ফি প্রদান",
+        "প্রশিক্ষণ প্রোগ্রাম গ্রহণ করা"
+      ],
+      "location": "mainBuilding"
+    },
+    "afterTheoryPage": {
+      "title": "তত্ত্বীয় পরীক্ষার পরে কী করবেন?",
+      "spokenText": "তত্ত্বীয় পরীক্ষা সম্পন্ন ও পাস করার পরে, ব্যবহারিক প্রশিক্ষণ ভবনে যান। অবস্থানে পৌঁছাতে কোড ব্যবহার করুন, তারপর ভিতরে গিয়ে আপনার প্রশিক্ষণের সময়ের অপেক্ষা করুন।",
+      "steps": [
+        "তত্ত্বীয় পরীক্ষা",
+        "পরীক্ষা পাস করা",
+        "ব্যবহারিক ভবনে যাওয়া",
+        "অবস্থান কোড স্ক্যান করা",
+        "ভবনে প্রবেশ",
+        "সময়ের অপেক্ষা"
+      ],
+      "location": "practicalBuilding"
+    },
+    "afterPracticalPage": {
+      "title": "ব্যবহারিক প্রশিক্ষণের পরে কী করবেন?",
+      "spokenText": "",
+      "placeholder": "[অনুমোদিত পদ্ধতি এখানে যোগ করা হবে]"
+    },
+    "changeInstructorPage": {
+      "title": "প্রশিক্ষক পরিবর্তন",
+      "subtitle": "প্রশিক্ষক পরিবর্তনের অনুরোধের উপায়",
+      "spokenText": "",
+      "placeholder": "প্রশিক্ষক পরিবর্তনের অনুমোদিত পদ্ধতি এখানে যোগ করা হবে।",
+      "steps": [
+        "ধাপগুলো পরে নির্ধারণ করা হবে"
+      ]
+    },
+    "changeAppointmentPage": {
+      "title": "প্রশিক্ষণের সময় পরিবর্তন",
+      "subtitle": "অ্যাপয়েন্টমেন্ট পরিবর্তনের উপায়",
+      "spokenText": "",
+      "placeholder": "পদ্ধতি এখানে যোগ করা হবে।",
+      "steps": [
+        "ধাপগুলো পরে নির্ধারণ করা হবে"
+      ]
+    }
+  },
+  "tr": {
+    "ui": {
+      "welcome": "Noura For Driving'e Hoş Geldiniz",
+      "chooseLang": "Dilinizi seçin",
+      "home": "Ana Sayfa",
+      "back": "Geri",
+      "language": "Dil",
+      "audioToggle": "Sesi aç/kapat",
+      "scanCode": "Konuma ulaşmak için kodu tarayın",
+      "locationCode": "Konum kodu"
+    },
+    "locationNames": {
+      "mainBuilding": "Ana Teori Binası",
+      "practicalBuilding": "Uygulamalı Eğitim Binası",
+      "trafficBuilding": "Trafik Binası"
+    },
+    "services": {
+      "goPractical": {
+        "title": "Uygulama binasına nasıl gidilir",
+        "desc": "Uygulamalı eğitim binasına yol tarifi"
+      },
+      "goMain": {
+        "title": "Ana binaya nasıl gidilir",
+        "desc": "Ana binaya yol tarifi"
+      },
+      "goTraffic": {
+        "title": "Trafik binasına nasıl gidilir",
+        "desc": "Trafik binasına yol tarifi"
+      },
+      "payFees": {
+        "title": "Ücret nasıl ödenir",
+        "desc": "Ofiste ücret ödeme adımları"
+      },
+      "afterEval": {
+        "title": "Değerlendirmeden sonra ne yapmalıyım?",
+        "desc": "Değerlendirmeden sonra gerekli adımlar"
+      },
+      "afterTheory": {
+        "title": "Teori sınavından sonra ne yapmalıyım?",
+        "desc": "Teori sınavını geçtikten sonraki adımlar"
+      },
+      "afterPractical": {
+        "title": "Uygulamalı eğitimden sonra ne yapmalıyım?",
+        "desc": "Uygulamalı eğitimden sonraki adımlar"
+      },
+      "changeInstructor": {
+        "title": "Eğitmen değişikliği",
+        "desc": "Eğitmen değişikliği talebinde bulunma yöntemi"
+      },
+      "changeAppointment": {
+        "title": "Randevu değişikliği",
+        "desc": "Eğitim randevunuzu değiştirme yöntemi"
+      }
+    },
+    "navPage": {
+      "goPractical": {
+        "displayText": "Uygulamalı eğitim binasına ulaşmak için gösterilen rotayı izleyin.",
+        "spokenText": "Uygulamalı eğitim binasına ulaşmak için önünüzde gösterilen rotayı varana kadar takip edin."
+      },
+      "goMain": {
+        "displayText": "Ana binaya ulaşmak için gösterilen rotayı izleyin.",
+        "spokenText": "Ana binaya ulaşmak için önünüzde gösterilen rotayı varana kadar takip edin."
+      },
+      "goTraffic": {
+        "displayText": "Trafik binasına ulaşmak için gösterilen rotayı izleyin.",
+        "spokenText": "Trafik binasına ulaşmak için önünüzde gösterilen rotayı varana kadar takip edin."
+      }
+    },
+    "payFeesPage": {
+      "title": "Ücret nasıl ödenir",
+      "spokenText": "Ücretinizi ödemek için resepsiyona gidin ve bir sıra numarası alın, numaranız çağrılana kadar bekleyin, ardından müşteri hizmetlerine giderek ödemeyi tamamlayın ve eğitim programınızı alın.",
+      "steps": [
+        "Resepsiyona gitmek",
+        "Sıra numarası almak",
+        "Numaranın çağrılmasını beklemek",
+        "Müşteri hizmetlerine gitmek",
+        "Ücret ödemesini tamamlamak",
+        "Eğitim programını almak"
+      ]
+    },
+    "afterEvalPage": {
+      "title": "Değerlendirmeden sonra ne yapmalıyım?",
+      "spokenText": "Değerlendirmeden sonra ana binaya gidin, resepsiyondan bir numara alın, ardından müşteri hizmetlerine giderek işlemlerinizi tamamlayın ve değerlendirmenize göre eğitim programınızı alın.",
+      "steps": [
+        "Değerlendirme",
+        "Ana binaya gitmek",
+        "Konum kodunu taramak",
+        "Resepsiyon",
+        "Numara almak",
+        "Müşteri hizmetleri",
+        "Ücret ödemek",
+        "Eğitim programını almak"
+      ],
+      "location": "mainBuilding"
+    },
+    "afterTheoryPage": {
+      "title": "Teori sınavından sonra ne yapmalıyım?",
+      "spokenText": "Teori sınavını tamamlayıp geçtikten sonra, uygulamalı eğitim binasına gidin. Konuma ulaşmak için kodu kullanın, ardından içeri girip eğitim randevunuzu bekleyin.",
+      "steps": [
+        "Teori sınavı",
+        "Sınavı geçmek",
+        "Uygulama binasına gitmek",
+        "Konum kodunu taramak",
+        "Binaya girmek",
+        "Randevuyu beklemek"
+      ],
+      "location": "practicalBuilding"
+    },
+    "afterPracticalPage": {
+      "title": "Uygulamalı eğitimden sonra ne yapmalıyım?",
+      "spokenText": "",
+      "placeholder": "[Onaylanan prosedür buraya eklenecektir]"
+    },
+    "changeInstructorPage": {
+      "title": "Eğitmen değişikliği",
+      "subtitle": "Eğitmen değişikliği talebinde bulunma yöntemi",
+      "spokenText": "",
+      "placeholder": "Onaylanan prosedür buraya eklenecektir.",
+      "steps": [
+        "Adımlar daha sonra belirlenecektir"
+      ]
+    },
+    "changeAppointmentPage": {
+      "title": "Randevu değişikliği",
+      "subtitle": "Randevunuzu değiştirme yöntemi",
+      "spokenText": "",
+      "placeholder": "Prosedür buraya eklenecektir.",
+      "steps": [
+        "Adımlar daha sonra belirlenecektir"
+      ]
+    }
+  }
+};
+
+Object.assign(CONTENT, CONTENT_TRANSLATIONS);
+CONTENT.pa = JSON.parse(JSON.stringify(CONTENT.ur));
+// شبكة أمان: أي لغة معرّفة في LANGS لكن ما زالت بلا محتوى فعلي تُعطى نسخة إنجليزية مؤقتة
+// مع تعطيل الصوت (بدل خلط لغة بأخرى) — لن يحدث هذا لأي من التسع لغات الحالية بعد الترجمة أعلاه.
+Object.keys(TTS_CONFIG.languageConfig).forEach(c=>{
   if(!CONTENT[c]){ CONTENT[c] = JSON.parse(JSON.stringify(CONTENT.en)); CONTENT[c]._untranslated = true; }
 });
 
@@ -436,7 +1237,7 @@ function renderPlaceholderPage(p){
 
 function renderQR(elId, url){
   const el = document.getElementById(elId);
-  if(el && window.QRCode){ el.innerHTML=""; new QRCode(el, {text:url, width:150, height:150, colorDark:THEME.INK, colorLight:"#ffffff"}); }
+  if(el && window.QRCode){ el.innerHTML=""; new QRCode(el, {text:url, width:150, height:150, colorDark:"#0A1520", colorLight:"#ffffff"}); }
 }
 
 /* ============================================================================
