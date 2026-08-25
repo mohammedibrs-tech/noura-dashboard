@@ -58,25 +58,26 @@ const LOCATIONS = {
    ممنوع نهائيًا: تشغيل صوت بلغة غير اللغة المختارة (لا يوجد English Fallback إطلاقًا).
    ============================================================================ */
 const TTS_CONFIG = {
-  // Azure Speech هو المزود الأساسي الآن. المفتاح لا يوضع هنا أبدًا — الاستدعاء يمر عبر
-  // /api/tts.js (Vercel Serverless Function) الذي يقرأ AZURE_SPEECH_KEY من Environment Variables.
+  // ElevenLabs هو المزود الأساسي الآن — صوت واحد (multilingual) يغطي كل اللغات.
+  // المفتاح لا يوضع هنا أبدًا — الاستدعاء يمر عبر /api/tts.js الذي يقرأ
+  // ELEVENLABS_API_KEY و ELEVENLABS_VOICE_ID من Environment Variables على Vercel.
   professionalProvider: {
     enabled: true,
     endpoint: "/api/tts",
-    provider: "azure"
+    provider: "elevenlabs"
   },
-  rate: 0.97, // 0.95–1.0 كما طُلب — سرعة نطق طبيعية لخدمة العملاء
+  rate: 0.97,
   audioBasePath: "/audio", // /audio/<lang>/<key>.mp3 — تسجيلات بشرية تُشغَّل أولاً إن وُجدت
   languageConfig: {
-    ar: { locale:"ar-SA", voice:"ar-SA-HamedNeural", direction:"rtl", label:"العربية", note:"صوت Azure سعودي رسمي (ليس نجديًا مخصصًا) — اللهجة النجدية تأتي من صياغة spokenText نفسه." },
-    en: { locale:"en-US", voice:"en-US-AriaNeural", direction:"ltr", label:"English" },
-    ur: { locale:"ur-PK", voice:"ur-PK-UzmaNeural", direction:"rtl", label:"اردو" },
-    hi: { locale:"hi-IN", voice:"hi-IN-SwaraNeural", direction:"ltr", label:"हिन्दी" },
-    pa: { locale:"ur-PK", voice:"ur-PK-UzmaNeural", direction:"rtl", label:"پاکستانی / اردو" }, // الباكستانية = Urdu Pakistan، لا توجد لغة "Pakistani" مستقلة في Azure
-    fr: { locale:"fr-FR", voice:"fr-FR-DeniseNeural", direction:"ltr", label:"Français" },
-    it: { locale:"it-IT", voice:"it-IT-IsabellaNeural", direction:"ltr", label:"Italiano" },
-    bn: { locale:"bn-BD", voice:"bn-BD-NabanitaNeural", direction:"ltr", label:"বাংলা" },
-    tr: { locale:"tr-TR", voice:"tr-TR-EmelNeural", direction:"ltr", label:"Türkçe" }
+    ar: { locale:"ar-SA", direction:"rtl", label:"العربية", note:"اللهجة النجدية تأتي من صياغة spokenText نفسه — الصوت واحد لكل اللغات." },
+    en: { locale:"en-US", direction:"ltr", label:"English" },
+    ur: { locale:"ur-PK", direction:"rtl", label:"اردو" },
+    hi: { locale:"hi-IN", direction:"ltr", label:"हिन्दी" },
+    pa: { locale:"ur-PK", direction:"rtl", label:"پاکستانی / اردو" },
+    fr: { locale:"fr-FR", direction:"ltr", label:"Français" },
+    it: { locale:"it-IT", direction:"ltr", label:"Italiano" },
+    bn: { locale:"bn-BD", direction:"ltr", label:"বাংলা" },
+    tr: { locale:"tr-TR", direction:"ltr", label:"Türkçe" }
   }
 };
 
@@ -122,13 +123,13 @@ const TTSManager = {
 
     // 2) Azure Speech عبر Backend، مع Cache على مستوى المتصفح
     if(TTS_CONFIG.professionalProvider.enabled){
-      const cacheKey = `${TTS_CONFIG.professionalProvider.endpoint}?voice=${cfg.voice}&key=${encodeURIComponent(lang+"."+key)}`;
+      const cacheKey = `${TTS_CONFIG.professionalProvider.endpoint}?key=${encodeURIComponent(lang+"."+key)}`;
       try{
         let blob = await this._getFromCache(cacheKey);
         if(!blob){
           const res = await fetch(TTS_CONFIG.professionalProvider.endpoint, {
             method:"POST", headers:{"Content-Type":"application/json"},
-            body: JSON.stringify({lang, locale:cfg.locale, voice:cfg.voice, text:spokenText, rate:TTS_CONFIG.rate})
+            body: JSON.stringify({lang, locale:cfg.locale, text:spokenText, rate:TTS_CONFIG.rate})
           });
           if(res.ok){ blob = await res.blob(); this._saveToCache(cacheKey, blob); }
         }
