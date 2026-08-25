@@ -121,7 +121,7 @@ const TTSManager = {
     const audioUrl = `${TTS_CONFIG.audioBasePath}/${lang}/${key}.mp3`;
     if(await this._tryPlayFile(audioUrl)) return;
 
-    // 2) Azure Speech عبر Backend، مع Cache على مستوى المتصفح
+    // 2) ElevenLabs عبر Backend، مع Cache على مستوى المتصفح
     if(TTS_CONFIG.professionalProvider.enabled){
       const cacheKey = `${TTS_CONFIG.professionalProvider.endpoint}?key=${encodeURIComponent(lang+"."+key)}`;
       try{
@@ -131,10 +131,20 @@ const TTSManager = {
             method:"POST", headers:{"Content-Type":"application/json"},
             body: JSON.stringify({lang, locale:cfg.locale, text:spokenText, rate:TTS_CONFIG.rate})
           });
-          if(res.ok){ blob = await res.blob(); this._saveToCache(cacheKey, blob); }
+          if(res.ok){
+            blob = await res.blob();
+            this._saveToCache(cacheKey, blob);
+          } else {
+            // هنا بالضبط كانت المشكلة: كان الكود يتجاهل سبب الفشل بصمت. الآن نطبع الحالة
+            // ونص رسالة الخطأ الفعلي القادم من /api/tts (وبالتالي من ElevenLabs نفسه إن وصل إليه)
+            // حتى تعرف بالضبط أين المشكلة: مفتاح غير مضبوط، حصة منتهية، Voice ID خطأ...الخ.
+            let details = "";
+            try{ details = await res.text(); }catch(e2){}
+            console.error(`فشل استدعاء ElevenLabs عبر /api/tts — HTTP ${res.status}. التفاصيل: ${details}`);
+          }
         }
         if(blob){ const audio = new Audio(URL.createObjectURL(blob)); this.currentAudio = audio; audio.play(); return; }
-      }catch(e){ console.warn("تعذّر الوصول إلى Azure Speech عبر /api/tts — تأكد من نشر Backend ووضع AZURE_SPEECH_KEY. سيتم استخدام Web Speech API كبديل مؤقت فقط.", e); }
+      }catch(e){ console.error("تعذّر الوصول إلى /api/tts (خطأ شبكة/اتصال). سيتم استخدام Web Speech API كبديل مؤقت فقط.", e); }
     }
 
     // 3) Web Speech API — احتياطي فقط، بنفس اللغة حصرًا وبدون أي Fallback لغة أخرى
@@ -1293,22 +1303,25 @@ function initMap(){
 
   renderQR("qrcode-nav", dest.googleMapsUrl);
 
-  const routingControl = L.Routing.control({
-    waypoints:[L.latLng(start.lat,start.lng), L.latLng(dest.lat,dest.lng)],
-    routeWhileDragging:false, addWaypoints:false, draggableWaypoints:false, fitSelectedRoutes:false, show:false,
-    lineOptions:{ styles:[{color:THEME.PRIMARY, weight:4, opacity:0.85}] },
-    createMarker:()=>null // نستخدم علاماتنا الخاصة أعلاه بدل علامات المكوّن الافتراضية
-  }).addTo(mapInstance);
-
-  routingControl.on('routesfound', e=>{
-    flyRoute(e.routes[0].coordinates.map(c=>({lat:c.lat, lng:c.lng})));
-  });
-  routingControl.on('routingerror', ()=>{
-    // في حال تعذّر حساب مسار طرق حقيقي (مثال: عدم تغطية OSRM للمنطقة) — نتحرك مباشرة
-    // للوجهة بدل تعليق الشاشة، مع تنبيه واضح في الكونسول بدل الادعاء بأنه مسار حقيقي.
-    console.warn("تعذّر حساب مسار طرق حقيقي من OSRM لهذه الإحداثيات. سيتم عرض انتقال مباشر للوجهة فقط.");
-    flyRoute([start, dest]);
-  });
+  // نستخدم محرّك التوجيه (Router) مباشرة بدون إضافة عنصر التحكم الافتراضي L.Routing.control
+  // للخريطة إطلاقًا — ذلك العنصر هو مصدر لوحة "الاتجاهات النصية بالإحداثيات" (Head south,
+  // Make a sharp left...) التي كانت تظهر فوق الخريطة. حذفناها من الجذر بدل إخفائها بـ CSS،
+  // لأن الإخفاء بـ CSS كان يحتاج ملف leaflet-routing-machine.css الذي لم يكن محمّلاً أصلاً.
+  // هذه الطريقة تُرجع فقط بيانات المسار الخام (الإحداثيات) دون أي واجهة مرئية جانبية.
+  const router = L.Routing.osrmv1({ serviceUrl: "https://router.project-osrm.org/route/v1" });
+  router.route(
+    [L.Routing.waypoint(L.latLng(start.lat,start.lng)), L.Routing.waypoint(L.latLng(dest.lat,dest.lng))],
+    (err, routes) => {
+      if(err || !routes || !routes.length){
+        console.warn("تعذّر حساب مسار طرق حقيقي من OSRM لهذه الإحداثيات. سيتم عرض انتقال مباشر للوجهة فقط.", err);
+        flyRoute([start, dest]);
+        return;
+      }
+      const coords = routes[0].coordinates.map(c=>({lat:c.lat, lng:c.lng}));
+      L.polyline(coords, {color:THEME.PRIMARY, weight:4, opacity:0.85}).addTo(mapInstance);
+      flyRoute(coords);
+    }
+  );
 
   speakContent(`${key}.audio`, t().navPage[key].spokenText);
 }
