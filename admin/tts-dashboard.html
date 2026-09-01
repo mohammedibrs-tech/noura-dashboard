@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>TTS Admin — نورة (داخلي فقط)</title>
+<style>
+  body{font-family:sans-serif; background:#0d1520; color:#e0f0f5; padding:32px; max-width:820px; margin:0 auto;}
+  h1{font-size:20px;} h2{font-size:16px; margin-top:32px;}
+  input,select,textarea,button{font-family:inherit; font-size:14px; padding:8px; border-radius:6px; border:1px solid #2a3d4a; background:#152230; color:#e0f0f5; width:100%; margin-top:6px; box-sizing:border-box;}
+  button{background:#00C8B4; color:#04211D; font-weight:bold; cursor:pointer; margin-top:12px;}
+  .row{margin-bottom:16px;}
+  .stat{display:inline-block; background:#152230; padding:12px 16px; border-radius:8px; margin:6px 10px 6px 0; min-width:140px;}
+  .stat b{display:block; font-size:20px; color:#00C8B4;}
+  pre{background:#152230; padding:12px; border-radius:8px; overflow:auto; font-size:12px;}
+</style>
+</head>
+<body>
+<h1>لوحة إدارة TTS — نورة (داخلي فقط، لا يظهر للعملاء)</h1>
+
+<div class="row">
+  <label>المفتاح الإداري (ADMIN_SECRET)</label>
+  <input type="password" id="adminSecret" placeholder="الصق المفتاح الإداري هنا">
+</div>
+
+<h2>الإحصائيات</h2>
+<button onclick="loadStats()">تحديث الإحصائيات</button>
+<div id="stats" style="margin-top:16px;"></div>
+
+<h2>اختبار توليد صوت</h2>
+<div class="row"><label>اللغة</label>
+  <select id="testLang">
+    <option value="ar">العربية</option><option value="en">English</option><option value="ur">اردو</option>
+    <option value="hi">हिन्दी</option><option value="fr">Français</option><option value="it">Italiano</option>
+    <option value="bn">বাংলা</option><option value="tr">Türkçe</option>
+  </select>
+</div>
+<div class="row"><label>النص (spokenText)</label><textarea id="testText" rows="3">توجّه للاستقبال وخذ رقم انتظار.</textarea></div>
+<button onclick="testGenerate()">توليد وتشغيل</button>
+<div id="testResult" style="margin-top:12px;"></div>
+
+<script>
+function secretHeader(){ return { "X-Admin-Secret": document.getElementById("adminSecret").value }; }
+
+async function loadStats(){
+  const el = document.getElementById("stats");
+  el.textContent = "جاري التحميل...";
+  try{
+    const res = await fetch("/api/tts-stats", { headers: secretHeader() });
+    if(!res.ok){ el.textContent = "غير مصرّح — تأكد من المفتاح الإداري."; return; }
+    const d = await res.json();
+    el.innerHTML = `
+      <div class="stat">إجمالي الملفات<b>${d.totalCachedAudio}</b></div>
+      <div class="stat">إجمالي الأحرف<b>${d.totalCharactersGenerated}</b></div>
+      <div class="stat">إجمالي مرات التشغيل<b>${d.totalPlays}</b></div>
+      <div class="stat">آخر توليد<b style="font-size:13px;">${d.lastGenerated || "—"}</b></div>
+      <pre>اللغات: ${JSON.stringify(d.languages,null,2)}\n\nVoice IDs: ${JSON.stringify(d.voiceIds,null,2)}</pre>
+    `;
+  }catch(e){ el.textContent = "خطأ: " + e; }
+}
+
+async function testGenerate(){
+  const lang = document.getElementById("testLang").value;
+  const text = document.getElementById("testText").value;
+  const el = document.getElementById("testResult");
+  el.textContent = "جاري التوليد...";
+  try{
+    const res = await fetch("/api/tts", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ lang, text })
+    });
+    if(res.status === 204){ el.textContent = "فشل التوليد (تحقق من سجلات Vercel للتفاصيل)."; return; }
+    const d = await res.json();
+    el.innerHTML = `Cache Hit: <b>${d.cacheHit}</b><br>الرابط: <a href="${d.url}" target="_blank" style="color:#00C8B4;">${d.url}</a>`;
+    new Audio(d.url).play();
+  }catch(e){ el.textContent = "خطأ: " + e; }
+}
+</script>
+</body>
+</html>
