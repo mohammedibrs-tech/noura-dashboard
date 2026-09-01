@@ -1,0 +1,13 @@
+{
+  "name": "noura-kiosk",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@supabase/supabase-js": "^2"
+  },
+  "scripts": {
+    "extract-texts": "node scripts/extract-spoken-texts.js",
+    "pregenerate": "node scripts/pregenerate-audio.js"
+  }
+}
