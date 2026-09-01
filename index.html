@@ -99,60 +99,67 @@ const TTSManager = {
     if(speechSynthesis.speaking && !speechSynthesis.paused) speechSynthesis.pause();
     else if(speechSynthesis.paused) speechSynthesis.resume();
   },
-  // Audio Cache على مستوى المتصفح (Cache Storage API) — يمنع إعادة استدعاء Azure لنفس
-  // النص مرتين على نفس الجهاز. للتخزين الدائم عبر كل الأجهزة (حتى لا يُستدعى Azure أول
-  // مرة من كل شاشة) يُستحسن لاحقًا توليد الملفات مسبقًا ورفعها إلى /audio مباشرة.
-  cacheName: "noura-tts-cache-v1",
-  async _getFromCache(url){
-    if(!('caches' in window)) return null;
-    try{ const c = await caches.open(this.cacheName); const hit = await c.match(url); return hit ? await hit.blob() : null; }
-    catch(e){ return null; }
+  // Cache على مستوى المتصفح لروابط الصوت المُرجَعة من /api/tts (Supabase Storage) —
+  // يمنع طلب نفس /api/tts مرتين لنفس الجملة على نفس الجهاز خلال نفس الجلسة.
+  _urlCache: new Map(),
+  async _fetchAudioUrl(lang, text){
+    const memKey = lang + "::" + text;
+    if(this._urlCache.has(memKey)) return this._urlCache.get(memKey);
+    try{
+      const res = await fetch(TTS_CONFIG.professionalProvider.endpoint, {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ lang, text })
+      });
+      if(res.status === 204){
+        console.warn("لا يوجد صوت متاح من /api/tts لهذا الطلب (Supabase/ElevenLabs غير مضبوطة أو فشل التوليد).");
+        return null;
+      }
+      if(!res.ok){
+        let details=""; try{ details = await res.text(); }catch(e2){}
+        console.error(`فشل استدعاء /api/tts — HTTP ${res.status}. التفاصيل: ${details}`);
+        return null;
+      }
+      const data = await res.json();
+      if(data.ok && data.url){ this._urlCache.set(memKey, data.url); return data.url; }
+      return null;
+    }catch(e){
+      console.error("تعذّر الاتصال بـ /api/tts (خطأ شبكة).", e);
+      return null;
+    }
   },
-  async _saveToCache(url, blob){
-    if(!('caches' in window)) return;
-    try{ const c = await caches.open(this.cacheName); await c.put(url, new Response(blob)); }catch(e){}
+  // Preload بدون تشغيل — يُستخدم لتحضير صوت الخطوة التالية المحتملة سلفًا
+  // (مثال: في صفحة اختيار عدد الساعات، نجهّز الأصوات الأربعة المحتملة كلها).
+  async preload(lang, text){
+    if(!text) return;
+    if(t()._untranslated) return;
+    await this._fetchAudioUrl(lang, text);
   },
   async speak(lang, key, spokenText){
     this.cancel();
     const cfg = TTS_CONFIG.languageConfig[lang];
     if(!cfg){ console.warn("لا يوجد إعداد صوت للغة", lang); return; }
 
-    // 1) تسجيل بشري مسبق إن وُجد
-    const audioUrl = `${TTS_CONFIG.audioBasePath}/${lang}/${key}.mp3`;
-    if(await this._tryPlayFile(audioUrl)) return;
+    // 1) تسجيل بشري مسبق إن وُجد (مسار ثابت اختياري، غير مرتبط بنظام Supabase)
+    const localAudioUrl = `${TTS_CONFIG.audioBasePath}/${lang}/${key}.mp3`;
+    if(await this._tryPlayFile(localAudioUrl)) return;
 
-    // 2) ElevenLabs عبر Backend، مع Cache على مستوى المتصفح
+    // 2) ElevenLabs عبر Backend + Supabase Cache (Cache Hit/Miss تُدار بالكامل بالسيرفر)
     if(TTS_CONFIG.professionalProvider.enabled){
-      const cacheKey = `${TTS_CONFIG.professionalProvider.endpoint}?key=${encodeURIComponent(lang+"."+key)}`;
-      try{
-        let blob = await this._getFromCache(cacheKey);
-        if(!blob){
-          const res = await fetch(TTS_CONFIG.professionalProvider.endpoint, {
-            method:"POST", headers:{"Content-Type":"application/json"},
-            body: JSON.stringify({lang, locale:cfg.locale, text:spokenText, rate:TTS_CONFIG.rate})
-          });
-          if(res.ok){
-            blob = await res.blob();
-            this._saveToCache(cacheKey, blob);
-          } else {
-            // هنا بالضبط كانت المشكلة: كان الكود يتجاهل سبب الفشل بصمت. الآن نطبع الحالة
-            // ونص رسالة الخطأ الفعلي القادم من /api/tts (وبالتالي من ElevenLabs نفسه إن وصل إليه)
-            // حتى تعرف بالضبط أين المشكلة: مفتاح غير مضبوط، حصة منتهية، Voice ID خطأ...الخ.
-            let details = "";
-            try{ details = await res.text(); }catch(e2){}
-            console.error(`فشل استدعاء ElevenLabs عبر /api/tts — HTTP ${res.status}. التفاصيل: ${details}`);
-          }
-        }
-        if(blob){ const audio = new Audio(URL.createObjectURL(blob)); this.currentAudio = audio; audio.play(); return; }
-      }catch(e){ console.error("تعذّر الوصول إلى /api/tts (خطأ شبكة/اتصال). سيتم استخدام Web Speech API كبديل مؤقت فقط.", e); }
+      const url = await this._fetchAudioUrl(lang, spokenText);
+      if(url){
+        const audio = new Audio(url);
+        this.currentAudio = audio;
+        audio.play();
+        return;
+      }
     }
 
-    // 3) Web Speech API — احتياطي فقط، بنفس اللغة حصرًا وبدون أي Fallback لغة أخرى
+    // 3) Web Speech API — احتياطي أخير فقط، بنفس اللغة حصرًا وبدون أي Fallback لغة أخرى
     const voices = speechSynthesis.getVoices();
     const voice = voices.find(v=>v.lang.toLowerCase()===cfg.locale.toLowerCase())
                || voices.find(v=>v.lang.toLowerCase().startsWith(lang+"-") || v.lang.toLowerCase()===lang);
     if(!voice){
-      console.warn(`لا يتوفر صوت احتياطي للغة "${lang}" (${cfg.locale}) في هذا الجهاز، ولم يُستجب من Azure. لن يُشغَّل صوت بلغة أخرى بديلاً عنه.`);
+      console.warn(`لا يتوفر صوت احتياطي للغة "${lang}" (${cfg.locale}) في هذا الجهاز، ولم يُستجب من ElevenLabs. لن يُشغَّل صوت بلغة أخرى بديلاً عنه.`);
       return;
     }
     const u = new SpeechSynthesisUtterance(spokenText);
@@ -267,8 +274,13 @@ const CONTENT = {
     "practicalDone": {
       "title": "احجز موعد الاختبار العملي",
       "examLabel": "مقر الاختبار العملي: مبنى المرور",
-      "spokenText": "موعد اختبارك العملي بيكون في مبنى المرور. تقدر توصل للموقع عن طريق مسح الرمز الظاهر أمامك.",
-      "location": "trafficBuilding"
+      "spokenText": "الخطوة الجاية هي حجز موعد للاختبار العملي. الاختبار يكون في مبنى المرور، وبعد ما تحجز موعدك، تقدر توصل للموقع عن طريق مسح الرمز الظاهر أمامك.",
+      "location": "trafficBuilding",
+      "steps": [
+        "حجز موعد الاختبار العملي",
+        "التوجه إلى مبنى المرور في الموعد المحدد",
+        "مسح رمز الموقع للوصول إلى مبنى المرور"
+      ]
     }
   },
   "en": {
@@ -363,8 +375,13 @@ const CONTENT = {
     "practicalDone": {
       "title": "Book your practical exam",
       "examLabel": "Practical exam location: Traffic Building",
-      "spokenText": "Your practical exam will take place at the Traffic Building. You can reach the location by scanning the code shown in front of you.",
-      "location": "trafficBuilding"
+      "spokenText": "The next step is to book an appointment for your practical exam. The exam takes place at the Traffic Building, and once you've booked your appointment, you can reach the location by scanning the code shown in front of you.",
+      "location": "trafficBuilding",
+      "steps": [
+        "Book an appointment for the practical exam",
+        "Head to the Traffic Building at your scheduled time",
+        "Scan the location code to reach the Traffic Building"
+      ]
     }
   },
   "ur": {
@@ -459,8 +476,13 @@ const CONTENT = {
     "practicalDone": {
       "title": "عملی امتحان کی بکنگ",
       "examLabel": "عملی امتحان کا مقام: ٹریفک عمارت",
-      "spokenText": "آپ کا عملی امتحان ٹریفک عمارت میں ہوگا۔ آپ سامنے دکھائے گئے کوڈ کو اسکین کر کے مقام تک پہنچ سکتے ہیں۔",
-      "location": "trafficBuilding"
+      "spokenText": "اگلا مرحلہ یہ ہے کہ آپ اپنے عملی امتحان کے لیے وقت بک کریں۔ امتحان ٹریفک عمارت میں ہوگا، اور وقت بک کرنے کے بعد آپ سامنے دکھائے گئے کوڈ کو اسکین کر کے مقام تک پہنچ سکتے ہیں۔",
+      "location": "trafficBuilding",
+      "steps": [
+        "عملی امتحان کے لیے وقت بک کرنا",
+        "مقررہ وقت پر ٹریفک عمارت جانا",
+        "ٹریفک عمارت تک پہنچنے کے لیے مقام کا کوڈ اسکین کرنا"
+      ]
     }
   },
   "hi": {
@@ -555,8 +577,13 @@ const CONTENT = {
     "practicalDone": {
       "title": "व्यावहारिक परीक्षा बुक करें",
       "examLabel": "व्यावहारिक परीक्षा स्थान: यातायात भवन",
-      "spokenText": "आपकी व्यावहारिक परीक्षा यातायात भवन में होगी। आप सामने दिखाए गए कोड को स्कैन करके स्थान तक पहुँच सकते हैं।",
-      "location": "trafficBuilding"
+      "spokenText": "अगला कदम है अपनी व्यावहारिक परीक्षा के लिए अपॉइंटमेंट बुक करना। परीक्षा यातायात भवन में होगी, और अपॉइंटमेंट बुक करने के बाद आप सामने दिखाए गए कोड को स्कैन करके स्थान तक पहुँच सकते हैं।",
+      "location": "trafficBuilding",
+      "steps": [
+        "व्यावहारिक परीक्षा के लिए अपॉइंटमेंट बुक करना",
+        "निर्धारित समय पर यातायात भवन जाना",
+        "यातायात भवन तक पहुँचने के लिए स्थान कोड स्कैन करना"
+      ]
     }
   },
   "fr": {
@@ -651,8 +678,13 @@ const CONTENT = {
     "practicalDone": {
       "title": "Réserver votre examen pratique",
       "examLabel": "Lieu de l'examen pratique : Bâtiment de la circulation",
-      "spokenText": "Votre examen pratique aura lieu au bâtiment de la circulation. Vous pouvez y accéder en scannant le code affiché devant vous.",
-      "location": "trafficBuilding"
+      "spokenText": "La prochaine étape consiste à réserver un rendez-vous pour votre examen pratique. L'examen se déroule au bâtiment de la circulation, et une fois votre rendez-vous réservé, vous pouvez accéder au lieu en scannant le code affiché devant vous.",
+      "location": "trafficBuilding",
+      "steps": [
+        "Réserver un rendez-vous pour l'examen pratique",
+        "Se rendre au bâtiment de la circulation à l'heure prévue",
+        "Scanner le code du lieu pour accéder au bâtiment de la circulation"
+      ]
     }
   },
   "it": {
@@ -747,8 +779,13 @@ const CONTENT = {
     "practicalDone": {
       "title": "Prenota il tuo esame pratico",
       "examLabel": "Luogo dell'esame pratico: Edificio del traffico",
-      "spokenText": "Il tuo esame pratico si svolgerà presso l'edificio del traffico. Puoi raggiungere la posizione scansionando il codice mostrato davanti a te.",
-      "location": "trafficBuilding"
+      "spokenText": "Il prossimo passo è prenotare un appuntamento per il tuo esame pratico. L'esame si svolge presso l'edificio del traffico, e una volta prenotato l'appuntamento potrai raggiungere la posizione scansionando il codice mostrato davanti a te.",
+      "location": "trafficBuilding",
+      "steps": [
+        "Prenotare un appuntamento per l'esame pratico",
+        "Recarsi all'edificio del traffico all'orario stabilito",
+        "Scansionare il codice della posizione per raggiungere l'edificio del traffico"
+      ]
     }
   },
   "bn": {
@@ -843,8 +880,13 @@ const CONTENT = {
     "practicalDone": {
       "title": "ব্যবহারিক পরীক্ষা বুক করুন",
       "examLabel": "ব্যবহারিক পরীক্ষার স্থান: ট্রাফিক ভবন",
-      "spokenText": "আপনার ব্যবহারিক পরীক্ষা ট্রাফিক ভবনে হবে। আপনি সামনে দেখানো কোড স্ক্যান করে স্থানে পৌঁছাতে পারবেন।",
-      "location": "trafficBuilding"
+      "spokenText": "পরবর্তী ধাপ হলো আপনার ব্যবহারিক পরীক্ষার জন্য অ্যাপয়েন্টমেন্ট বুক করা। পরীক্ষা ট্রাফিক ভবনে হবে, এবং অ্যাপয়েন্টমেন্ট বুক করার পর আপনি সামনে দেখানো কোড স্ক্যান করে স্থানে পৌঁছাতে পারবেন।",
+      "location": "trafficBuilding",
+      "steps": [
+        "ব্যবহারিক পরীক্ষার জন্য অ্যাপয়েন্টমেন্ট বুক করা",
+        "নির্ধারিত সময়ে ট্রাফিক ভবনে যাওয়া",
+        "ট্রাফিক ভবনে পৌঁছাতে অবস্থান কোড স্ক্যান করা"
+      ]
     }
   },
   "tr": {
@@ -939,8 +981,13 @@ const CONTENT = {
     "practicalDone": {
       "title": "Uygulama sınavınızı ayırtın",
       "examLabel": "Uygulama sınavı yeri: Trafik Binası",
-      "spokenText": "Uygulama sınavınız Trafik Binası'nda gerçekleşecektir. Önünüzde gösterilen kodu tarayarak konuma ulaşabilirsiniz.",
-      "location": "trafficBuilding"
+      "spokenText": "Bir sonraki adım, uygulamalı sınavınız için randevu almaktır. Sınav Trafik Binası'nda yapılır ve randevunuzu aldıktan sonra önünüzde gösterilen kodu tarayarak konuma ulaşabilirsiniz.",
+      "location": "trafficBuilding",
+      "steps": [
+        "Uygulamalı sınav için randevu almak",
+        "Belirlenen saatte Trafik Binasına gitmek",
+        "Trafik Binasına ulaşmak için konum kodunu taramak"
+      ]
     }
   }
 };
@@ -1043,6 +1090,7 @@ style.textContent = `
   .page-title{font-size:24px; font-weight:800; color:#fff; margin-bottom:8px;}
   .page-sub{font-size:15px; color:${THEME.INK_SOFT}; margin-bottom:24px;}
   .steps-list{display:flex; flex-direction:column; gap:12px; max-width:880px;}
+  .narrative-text{font-size:17px; line-height:2; color:${THEME.INK}; max-width:640px; animation:fadeUp .6s ease both;}
   .step-item{display:flex; align-items:center; gap:18px; background:${THEME.SURFACE}; border:1px solid ${THEME.BORDER}; border-radius:10px; padding:18px 22px; animation:fadeUp .45s ease both;}
   .step-num{width:38px; height:38px; border-radius:8px; background:${THEME.PRIMARY}; color:#04211D; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; flex-shrink:0; box-shadow:0 0 12px rgba(0,200,180,0.3);}
   .step-text{font-size:16.5px; color:${THEME.INK};}
@@ -1152,16 +1200,20 @@ function renderLevelQuestion(){
 /* ============================================================================
    نتيجة تحديد المستوى: الساعات، الأيام، الخطوات، وخريطة + QR للميدان العملي
    ============================================================================ */
+/* ============================================================================
+   العرض السردي — فقرة واحدة متصلة تُقرأ كأنها موظف يشرح، بدل خطوات مرقّمة
+   منفصلة. نص العرض هو نفسه spokenText (مكتوب أصلاً بأسلوب طبيعي متدفق لكل لغة)
+   ضمانًا لتطابق تام بين ما يُعرض على الشاشة وما يُسمع بالصوت.
+   ============================================================================ */
 function renderLevelResult(){
   const lvl = t().levels[state.level];
   const lf = t().levelFlow;
-  let steps = lvl.steps.map((s,i)=>`<div class="step-item"><div class="step-num">${String(i+1).padStart(2,"0")}</div><div class="step-text">${s}</div></div>`).join("");
   const destKey = lvl.location;
   return `<div class="page-title">${lf.options[state.level]}</div>
     <div class="page-sub">${lvl.hours} — ${lvl.days}</div>
     <div class="nav-layout">
       <div>
-        <div class="steps-list">${steps}</div>
+        <p class="narrative-text">${lvl.spokenText}</p>
       </div>
       <div class="trip-panel">
         <div class="trip-dest"><span class="icon">${ICON.pin}</span>${locName(destKey)}</div>
@@ -1173,21 +1225,23 @@ function renderLevelResult(){
 
 function renderUnknownPage(){
   const u = t().unknown;
-  let steps = u.steps.map((s,i)=>`<div class="step-item"><div class="step-num">${String(i+1).padStart(2,"0")}</div><div class="step-text">${s}</div></div>`).join("");
-  return `<div class="page-title">${u.title}</div><div class="steps-list" style="max-width:640px;">${steps}</div>`;
+  return `<div class="page-title">${u.title}</div><p class="narrative-text" style="max-width:640px;">${u.spokenText}</p>`;
 }
 
 /* ============================================================================
-   مسار "هل انتهيت من التدريب العملي؟" → حجز الاختبار العملي + خريطة/QR مبنى المرور
+   مسار "هل انتهيت من التدريب العملي؟" → شرح سردي متصل، ثم خريطة/QR مبنى المرور
    ============================================================================ */
 function renderPracticalDone(){
   const pd = t().practicalDone;
   return `<div class="page-title">${pd.title}</div>
     <div class="page-sub">${pd.examLabel}</div>
     <div class="nav-layout">
-      <div id="map"></div>
+      <div>
+        <p class="narrative-text">${pd.spokenText}</p>
+      </div>
       <div class="trip-panel">
         <div class="trip-dest"><span class="icon">${ICON.pin}</span>${locName(pd.location)}</div>
+        <div id="map" style="min-height:220px;"></div>
         <div class="qr-box"><div id="qrcode-nav"></div><div class="qr-caption">${t().ui.scanCode}</div></div>
       </div>
     </div>`;
@@ -1369,6 +1423,14 @@ function openLevelQuestion(){
   state.prevPage = "home"; state.page = "levelQuestion"; render();
   const lf = t().levelFlow;
   if(lf.spokenText) speakContent("levelFlow.audio", lf.spokenText);
+  // Preload: نحضّر مسبقًا أصوات المسارات الأربعة المحتملة التالية (الفروع محدودة
+  // ومعروفة سلفًا هنا)، حتى تكون جاهزة فورًا لحظة ما يضغط المستفيد أي خيار.
+  if(!t()._untranslated){
+    const c = t();
+    [c.levels?.beginner?.spokenText, c.levels?.intermediate?.spokenText, c.levels?.advanced?.spokenText, c.unknown?.spokenText]
+      .filter(Boolean)
+      .forEach(txt => TTSManager.preload(state.lang, txt));
+  }
 }
 function selectHours(key){
   TTSManager.cancel();
