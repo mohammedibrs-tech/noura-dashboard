@@ -175,62 +175,198 @@ if(typeof speechSynthesis !== "undefined") speechSynthesis.onvoiceschanged = ()=
    CONTENT — displayText رسمي فصيح / spokenText طبيعي (نجدي للعربية)
    ============================================================================ */
 const CONTENT = {
-ar: {
-  ui:{ welcome:"مرحباً بك في شركة نورة لتعليم القيادة", chooseLang:"اختر اللغة", home:"الرئيسية", back:"رجوع", language:"اللغة", audioToggle:"إيقاف/تشغيل الصوت", scanCode:"امسح الرمز للوصول إلى الموقع", locationCode:"رمز الموقع" },
-  locationNames:{ mainBuilding:"المبنى الرئيسي النظري", practicalBuilding:"مبنى التدريب العملي", trafficBuilding:"مبنى المرور" },
-  services:{
-    goPractical:{title:"طريقة الذهاب إلى المبنى العملي", desc:"دليل الوصول إلى مبنى التدريب العملي"},
-    goMain:{title:"طريقة الذهاب إلى المبنى الرئيسي النظري", desc:"دليل الوصول إلى المبنى الرئيسي"},
-    goTraffic:{title:"طريقة الذهاب إلى مبنى المرور", desc:"دليل الوصول إلى مبنى المرور"},
-    payFees:{title:"طريقة دفع الرسوم", desc:"خطوات دفع الرسوم في مقر الشركة"},
-    afterEval:{title:"ماذا أفعل بعد التقييم؟", desc:"الإجراءات المطلوبة بعد التقييم"},
-    afterTheory:{title:"ماذا أفعل بعد الاختبار النظري؟", desc:"الإجراءات بعد اجتياز الاختبار النظري"},
-    afterPractical:{title:"ماذا أفعل بعد التدريب العملي؟", desc:"الإجراءات بعد التدريب العملي"},
-    changeInstructor:{title:"تغيير المدرب", desc:"طريقة تقديم طلب تغيير المدرب"},
-    changeAppointment:{title:"تغيير موعد التدريب", desc:"طريقة تغيير موعد التدريب"}
+  "ar": {
+    "ui": {
+      "welcome": "مرحباً بك في شركة نورة لتعليم القيادة",
+      "chooseLang": "اختر اللغة",
+      "home": "الرئيسية",
+      "back": "رجوع",
+      "language": "اللغة",
+      "audioToggle": "إيقاف/تشغيل الصوت",
+      "scanCode": "امسح الرمز للوصول إلى الموقع"
+    },
+    "locationNames": {
+      "mainBuilding": "المبنى الرئيسي",
+      "practicalBuilding": "مبنى التدريب العملي / الميدان العملي",
+      "trafficBuilding": "مبنى المرور"
+    },
+    "home": {
+      "levelQuestion": "هل انتهيت من تحديد المستوى؟",
+      "practicalQuestion": "هل انتهيت من التدريب العملي؟"
+    },
+    "levelFlow": {
+      "title": "ما هو عدد الساعات المحددة لك؟",
+      "spokenText": "عشان نعرف البرنامج المناسب لك، اختر عدد الساعات المحددة لك.",
+      "options": {
+        "beginner": "مبتدئ – 30 ساعة",
+        "intermediate": "متوسط – 15 ساعة",
+        "advanced": "متقدم – 6 ساعات",
+        "unknown": "لا أعلم، أريد التأكد"
+      }
+    },
+    "levels": {
+      "beginner": {
+        "hours": "عدد ساعات التدريب: 30 ساعة",
+        "days": "عدد أيام التدريب: 11 يومًا",
+        "steps": [
+          "تحديد المستوى: مبتدئ – 30 ساعة",
+          "التوجه إلى الاستقبال وأخذ رقم",
+          "انتظار خدمة العملاء",
+          "دفع الرسوم",
+          "حصة المحاكاة في المبنى الرئيسي",
+          "الاختبار النظري في المبنى الرئيسي",
+          "اجتياز الاختبار النظري",
+          "تحديد مواعيد التدريب العملي (عبر خدمة العملاء أو الموقع الإلكتروني)",
+          "التوجه إلى مقر الميدان العملي"
+        ],
+        "spokenText": "إذا كان تقييمك مبتدئ، بيكون تدريبك 30 ساعة على 11 يوم. بعد تحديد المستوى، تتوجه للاستقبال وتاخذ رقم، وبعدها تنتظر خدمة العملاء عشان تكمل دفع الرسوم. بعد الدفع، تاخذ حصة المحاكاة في المبنى الرئيسي، وبعدها الاختبار النظري. وإذا اجتزت الاختبار، تقدر تحدد مواعيد التدريب العملي عن طريق خدمة العملاء أو من الموقع، وتوصل لموقع الميدان العملي عن طريق مسح الرمز.",
+        "location": "practicalBuilding"
+      },
+      "intermediate": {
+        "hours": "عدد ساعات التدريب: 15 ساعة",
+        "days": "عدد أيام التدريب: 5 أيام",
+        "steps": [
+          "تحديد المستوى: متوسط – 15 ساعة",
+          "التوجه إلى الاستقبال وأخذ رقم",
+          "انتظار خدمة العملاء",
+          "دفع الرسوم",
+          "حصة المحاكاة في المبنى الرئيسي",
+          "الاختبار النظري في المبنى الرئيسي",
+          "اجتياز الاختبار النظري",
+          "تحديد مواعيد التدريب العملي (عبر خدمة العملاء أو الموقع الإلكتروني)",
+          "التوجه إلى مقر الميدان العملي"
+        ],
+        "spokenText": "إذا كان تقييمك متوسط، بيكون تدريبك 15 ساعة على 5 أيام. بعد تحديد المستوى، تتوجه للاستقبال وتاخذ رقم، وبعدها تنتظر خدمة العملاء عشان تكمل دفع الرسوم. بعد الدفع، تاخذ حصة المحاكاة في المبنى الرئيسي، وبعدها الاختبار النظري. وإذا اجتزت الاختبار، تقدر تحدد مواعيد التدريب العملي عن طريق خدمة العملاء أو من الموقع، وتوصل لموقع الميدان العملي عن طريق مسح الرمز.",
+        "location": "practicalBuilding"
+      },
+      "advanced": {
+        "hours": "عدد ساعات التدريب: 6 ساعات",
+        "days": "عدد أيام التدريب: يوم واحد",
+        "steps": [
+          "تحديد المستوى: متقدم – 6 ساعات",
+          "التوجه إلى الاستقبال وأخذ رقم",
+          "انتظار خدمة العملاء",
+          "دفع الرسوم",
+          "الاختبار النظري في المبنى الرئيسي",
+          "اجتياز الاختبار النظري",
+          "تحديد مواعيد التدريب العملي (عبر خدمة العملاء أو الموقع الإلكتروني)",
+          "التوجه إلى مقر الميدان العملي"
+        ],
+        "spokenText": "إذا كان تقييمك متقدم، بيكون تدريبك 6 ساعات في يوم واحد. بعد تحديد المستوى، تتوجه للاستقبال وتاخذ رقم، وبعدها تنتظر خدمة العملاء عشان تكمل دفع الرسوم. بعد الدفع، ما تحتاج حصة محاكاة، تتوجه مباشرة للاختبار النظري في المبنى الرئيسي. وإذا اجتزت الاختبار، تقدر تحدد مواعيد التدريب العملي عن طريق خدمة العملاء أو من الموقع، وتوصل لموقع الميدان العملي عن طريق مسح الرمز.",
+        "location": "practicalBuilding"
+      }
+    },
+    "unknown": {
+      "title": "تأكيد عدد الساعات",
+      "steps": [
+        "أخذ تذكرة انتظار من الاستقبال",
+        "التوجه إلى خدمة العملاء للاستفسار عن البرنامج المناسب"
+      ],
+      "spokenText": "إذا ما تعرف عدد الساعات المحددة لك، ما عليك. خذ تذكرة انتظار من الاستقبال وتوجّه لخدمة العملاء، والموظف بيساعدك ويتأكد لك من البرنامج المناسب."
+    },
+    "practicalDone": {
+      "title": "احجز موعد الاختبار العملي",
+      "examLabel": "مقر الاختبار العملي: مبنى المرور",
+      "spokenText": "موعد اختبارك العملي بيكون في مبنى المرور. تقدر توصل للموقع عن طريق مسح الرمز الظاهر أمامك.",
+      "location": "trafficBuilding"
+    }
   },
-  navPage:{
-    goPractical:{ displayText:"اتبع المسار الموضح للوصول إلى مبنى التدريب العملي.", spokenText:"عشان توصل لمبنى التدريب العملي، تابع المسار الموضّح قدامك لين توصل." },
-    goMain:{ displayText:"اتبع المسار الموضح للوصول إلى المبنى الرئيسي النظري.", spokenText:"عشان توصل للمبنى الرئيسي، تابع المسار الموضّح قدامك لين توصل." },
-    goTraffic:{ displayText:"اتبع المسار الموضح للوصول إلى مبنى المرور.", spokenText:"عشان توصل لمبنى المرور، تابع المسار الموضّح قدامك لين توصل." }
+  "en": {
+    "ui": {
+      "welcome": "Welcome to Noura For Driving",
+      "chooseLang": "Choose your language",
+      "home": "Home",
+      "back": "Back",
+      "language": "Language",
+      "audioToggle": "Toggle audio",
+      "scanCode": "Scan the code to reach the location"
+    },
+    "locationNames": {
+      "mainBuilding": "Main Building",
+      "practicalBuilding": "Practical Training Building",
+      "trafficBuilding": "Traffic Building"
+    },
+    "home": {
+      "levelQuestion": "Have you completed your level assessment?",
+      "practicalQuestion": "Have you completed your practical training?"
+    },
+    "levelFlow": {
+      "title": "How many training hours were you assigned?",
+      "spokenText": "To find the right program for you, please select your assigned number of hours.",
+      "options": {
+        "beginner": "Beginner – 30 hours",
+        "intermediate": "Intermediate – 15 hours",
+        "advanced": "Advanced – 6 hours",
+        "unknown": "I'm not sure, I'd like to check"
+      }
+    },
+    "levels": {
+      "beginner": {
+        "hours": "Training hours: 30 hours",
+        "days": "Training days: 11 days",
+        "steps": [
+          "Level determined: Beginner – 30 hours",
+          "Go to reception and take a number",
+          "Wait for customer service",
+          "Pay the fees",
+          "Simulation session at the main building",
+          "Theory test at the main building",
+          "Pass the theory test",
+          "Schedule practical training dates (via customer service or the website)",
+          "Head to the practical field location"
+        ],
+        "spokenText": "If your level is beginner, your training will be 30 hours over 11 days. After the level assessment, go to reception and take a number, then wait for customer service to complete the fee payment. After payment, you'll take the simulation session at the main building, then the theory test. Once you pass, you can schedule your practical training dates through customer service or the website, and reach the practical field location by scanning the code.",
+        "location": "practicalBuilding"
+      },
+      "intermediate": {
+        "hours": "Training hours: 15 hours",
+        "days": "Training days: 5 days",
+        "steps": [
+          "Level determined: Intermediate – 15 hours",
+          "Go to reception and take a number",
+          "Wait for customer service",
+          "Pay the fees",
+          "Simulation session at the main building",
+          "Theory test at the main building",
+          "Pass the theory test",
+          "Schedule practical training dates (via customer service or the website)",
+          "Head to the practical field location"
+        ],
+        "spokenText": "If your level is intermediate, your training will be 15 hours over 5 days. After the level assessment, go to reception and take a number, then wait for customer service to complete the fee payment. After payment, you'll take the simulation session at the main building, then the theory test. Once you pass, you can schedule your practical training dates through customer service or the website, and reach the practical field location by scanning the code.",
+        "location": "practicalBuilding"
+      },
+      "advanced": {
+        "hours": "Training hours: 6 hours",
+        "days": "Training days: 1 day",
+        "steps": [
+          "Level determined: Advanced – 6 hours",
+          "Go to reception and take a number",
+          "Wait for customer service",
+          "Pay the fees",
+          "Theory test at the main building",
+          "Pass the theory test",
+          "Schedule practical training dates (via customer service or the website)",
+          "Head to the practical field location"
+        ],
+        "spokenText": "If your level is advanced, your training will be 6 hours in a single day. After the level assessment, go to reception and take a number, then wait for customer service to complete the fee payment. After payment, no simulation session is needed — go directly to the theory test at the main building. Once you pass, you can schedule your practical training dates through customer service or the website, and reach the practical field location by scanning the code.",
+        "location": "practicalBuilding"
+      }
+    },
+    "unknown": {
+      "title": "Confirm your hours",
+      "steps": [
+        "Take a queue ticket from reception",
+        "Go to customer service to ask about your suitable program"
+      ],
+      "spokenText": "If you're not sure about your assigned hours, no problem. Take a queue ticket from reception and go to customer service — the staff will help confirm the right program for you."
+    },
+    "practicalDone": {
+      "title": "Book your practical exam",
+      "examLabel": "Practical exam location: Traffic Building",
+      "spokenText": "Your practical exam will take place at the Traffic Building. You can reach the location by scanning the code shown in front of you.",
+      "location": "trafficBuilding"
+    }
   },
-  payFeesPage:{ title:"طريقة دفع الرسوم", spokenText:"عشان تدفع الرسوم، توجّه للاستقبال وخذ رقم انتظار، وبعدها انتظر لين يُنادى على رقمك، ثم توجّه لخدمة العملاء وكمّل الدفع واستلم برنامجك التدريبي.", steps:["التوجه إلى الاستقبال","أخذ رقم انتظار","انتظار مناداة الرقم","التوجه إلى خدمة العملاء","إتمام دفع الرسوم","استلام البرنامج التدريبي"] },
-  afterEvalPage:{ title:"ماذا أفعل بعد التقييم؟", spokenText:"بعد ما تخلص التقييم، توجّه للمبنى الرئيسي، ومن هناك خذ رقم من الاستقبال، وبعدها توجّه لخدمة العملاء عشان تكمل إجراءاتك وتستلم برنامجك التدريبي.", steps:["التقييم","التوجه إلى المبنى الرئيسي","مسح رمز الموقع","الاستقبال","أخذ رقم انتظار","خدمة العملاء","دفع الرسوم","استلام البرنامج التدريبي"], location:"mainBuilding" },
-  afterTheoryPage:{ title:"ماذا أفعل بعد الاختبار النظري؟", spokenText:"بعد ما تخلص الاختبار النظري وتجتازه، توجّه لمبنى التدريب العملي. تقدر تستخدم رمز الموقع عشان توصل، وبعد ما توصل ادخل وانتظر موعد تدريبك.", steps:["الاختبار النظري","اجتياز الاختبار","التوجه إلى المبنى العملي","مسح رمز الموقع","الدخول إلى المبنى","انتظار الموعد"], location:"practicalBuilding" },
-  afterPracticalPage:{ title:"ماذا أفعل بعد التدريب العملي؟", spokenText:"", placeholder:"[سيتم إضافة الإجراء المعتمد هنا]" },
-  changeInstructorPage:{ title:"تغيير المدرب", subtitle:"طريقة طلب تغيير المدرب", spokenText:"", placeholder:"سيتم إضافة الإجراء المعتمد لتغيير المدرب هنا.", steps:["سيتم تحديد الخطوات لاحقًا"] },
-  changeAppointmentPage:{ title:"تغيير موعد التدريب", subtitle:"طريقة تغيير موعد التدريب", spokenText:"", placeholder:"سيتم إضافة إجراء تغيير الموعد هنا.", steps:["سيتم تحديد الخطوات لاحقًا"] }
-},
-en: {
-  ui:{ welcome:"Welcome to Noura For Driving", chooseLang:"Choose your language", home:"Home", back:"Back", language:"Language", audioToggle:"Toggle audio", scanCode:"Scan the code to reach the location", locationCode:"Location code" },
-  locationNames:{ mainBuilding:"Main Theory Building", practicalBuilding:"Practical Training Building", trafficBuilding:"Traffic Building" },
-  services:{
-    goPractical:{title:"How to reach the Practical Building", desc:"Directions to the practical training building"},
-    goMain:{title:"How to reach the Main Theory Building", desc:"Directions to the main building"},
-    goTraffic:{title:"How to reach the Traffic Building", desc:"Directions to the traffic building"},
-    payFees:{title:"How to pay the fees", desc:"Steps to pay fees at the office"},
-    afterEval:{title:"What to do after the evaluation?", desc:"Required steps after the evaluation"},
-    afterTheory:{title:"What to do after the theory test?", desc:"Steps after passing the theory test"},
-    afterPractical:{title:"What to do after practical training?", desc:"Steps after practical training"},
-    changeInstructor:{title:"Change instructor", desc:"How to request an instructor change"},
-    changeAppointment:{title:"Change appointment", desc:"How to change your training appointment"}
-  },
-  navPage:{
-    goPractical:{ displayText:"Follow the route shown to reach the practical training building.", spokenText:"To reach the practical training building, follow the route shown ahead until you arrive." },
-    goMain:{ displayText:"Follow the route shown to reach the main theory building.", spokenText:"To reach the main building, follow the route shown ahead until you arrive." },
-    goTraffic:{ displayText:"Follow the route shown to reach the traffic building.", spokenText:"To reach the traffic building, follow the route shown ahead until you arrive." }
-  },
-  payFeesPage:{ title:"How to pay the fees", spokenText:"To pay your fees, go to reception and take a queue ticket, wait until your number is called, then go to customer service to complete payment and receive your training program.", steps:["Go to reception","Take a queue ticket","Wait for your number","Go to customer service","Complete payment","Receive your training program"] },
-  afterEvalPage:{ title:"What to do after the evaluation?", spokenText:"After the evaluation, go to the main building, take a ticket at reception, then go to customer service to complete your procedures and receive your training program.", steps:["Evaluation","Go to main building","Scan location code","Reception","Take a ticket","Customer service","Pay fees","Receive training program"], location:"mainBuilding" },
-  afterTheoryPage:{ title:"What to do after the theory test?", spokenText:"After finishing and passing the theory test, go to the practical training building. Use the location code to get there, then go inside and wait for your appointment.", steps:["Theory test","Pass the test","Go to practical building","Scan location code","Enter the building","Wait for appointment"], location:"practicalBuilding" },
-  afterPracticalPage:{ title:"What to do after practical training?", spokenText:"", placeholder:"[The approved procedure will be added here]" },
-  changeInstructorPage:{ title:"Change instructor", subtitle:"How to request an instructor change", spokenText:"", placeholder:"The approved procedure will be added here.", steps:["To be defined later"] },
-  changeAppointmentPage:{ title:"Change appointment", subtitle:"How to change your appointment", spokenText:"", placeholder:"The approved procedure will be added here.", steps:["To be defined later"] }
-}
-};
-// ترجمات دقيقة كاملة (نص + صوت) للغات الأردية، الهندية، الفرنسية، الإيطالية، البنغالية، التركية.
-// الباكستانية (pa) = نفس محتوى الأردية Pakistani Urdu، حسب توصية Azure Voice Support.
-const CONTENT_TRANSLATIONS = {
   "ur": {
     "ui": {
       "welcome": "نورہ ڈرائیونگ سکول میں خوش آمدید",
@@ -239,128 +375,92 @@ const CONTENT_TRANSLATIONS = {
       "back": "واپس",
       "language": "زبان",
       "audioToggle": "آواز آن/آف کریں",
-      "scanCode": "مقام تک پہنچنے کے لیے کوڈ اسکین کریں",
-      "locationCode": "مقام کا کوڈ"
+      "scanCode": "مقام تک پہنچنے کے لیے کوڈ اسکین کریں"
     },
     "locationNames": {
-      "mainBuilding": "مرکزی تھیوری عمارت",
+      "mainBuilding": "مرکزی عمارت",
       "practicalBuilding": "عملی تربیت کی عمارت",
       "trafficBuilding": "ٹریفک عمارت"
     },
-    "services": {
-      "goPractical": {
-        "title": "عملی تربیت کی عمارت تک جانے کا طریقہ",
-        "desc": "عملی تربیت کی عمارت تک رہنمائی"
-      },
-      "goMain": {
-        "title": "مرکزی تھیوری عمارت تک جانے کا طریقہ",
-        "desc": "مرکزی عمارت تک رہنمائی"
-      },
-      "goTraffic": {
-        "title": "ٹریفک عمارت تک جانے کا طریقہ",
-        "desc": "ٹریفک عمارت تک رہنمائی"
-      },
-      "payFees": {
-        "title": "فیس ادا کرنے کا طریقہ",
-        "desc": "دفتر میں فیس ادا کرنے کے مراحل"
-      },
-      "afterEval": {
-        "title": "تشخیص کے بعد کیا کریں؟",
-        "desc": "تشخیص کے بعد ضروری مراحل"
-      },
-      "afterTheory": {
-        "title": "تھیوری ٹیسٹ کے بعد کیا کریں؟",
-        "desc": "تھیوری ٹیسٹ پاس کرنے کے بعد کے مراحل"
-      },
-      "afterPractical": {
-        "title": "عملی تربیت کے بعد کیا کریں؟",
-        "desc": "عملی تربیت کے بعد کے مراحل"
-      },
-      "changeInstructor": {
-        "title": "انسٹرکٹر تبدیل کرنا",
-        "desc": "انسٹرکٹر تبدیل کرنے کی درخواست کا طریقہ"
-      },
-      "changeAppointment": {
-        "title": "تربیت کا وقت تبدیل کرنا",
-        "desc": "اپائنٹمنٹ تبدیل کرنے کا طریقہ"
+    "home": {
+      "levelQuestion": "کیا آپ کا سطح کا تعین مکمل ہو چکا ہے؟",
+      "practicalQuestion": "کیا آپ کی عملی تربیت مکمل ہو چکی ہے؟"
+    },
+    "levelFlow": {
+      "title": "آپ کے لیے مقرر کردہ گھنٹے کتنے ہیں؟",
+      "spokenText": "آپ کے لیے صحیح پروگرام جاننے کے لیے، اپنے مقرر کردہ گھنٹے منتخب کریں۔",
+      "options": {
+        "beginner": "ابتدائی – 30 گھنٹے",
+        "intermediate": "درمیانہ – 15 گھنٹے",
+        "advanced": "اعلیٰ – 6 گھنٹے",
+        "unknown": "مجھے علم نہیں، تصدیق چاہیے"
       }
     },
-    "navPage": {
-      "goPractical": {
-        "displayText": "عملی تربیت کی عمارت تک پہنچنے کے لیے دکھایا گیا راستہ اختیار کریں۔",
-        "spokenText": "عملی تربیت کی عمارت تک پہنچنے کے لیے، سامنے دکھایا گیا راستہ اختیار کریں یہاں تک کہ آپ پہنچ جائیں۔"
+    "levels": {
+      "beginner": {
+        "hours": "تربیت کے گھنٹے: 30 گھنٹے",
+        "days": "تربیت کے دن: 11 دن",
+        "steps": [
+          "سطح کا تعین: ابتدائی – 30 گھنٹے",
+          "استقبالیہ پر جا کر نمبر لینا",
+          "کسٹمر سروس کا انتظار",
+          "فیس کی ادائیگی",
+          "مرکزی عمارت میں سمولیشن سیشن",
+          "مرکزی عمارت میں تھیوری ٹیسٹ",
+          "تھیوری ٹیسٹ پاس کرنا",
+          "عملی تربیت کی تاریخیں طے کرنا (کسٹمر سروس یا ویب سائٹ کے ذریعے)",
+          "عملی میدان کے مقام کی طرف جانا"
+        ],
+        "spokenText": "اگر آپ کی سطح ابتدائی ہے تو آپ کی تربیت 30 گھنٹے اور 11 دن پر مشتمل ہوگی۔ سطح کے تعین کے بعد استقبالیہ پر جا کر نمبر لیں، پھر فیس کی ادائیگی کے لیے کسٹمر سروس کا انتظار کریں۔ ادائیگی کے بعد مرکزی عمارت میں سمولیشن سیشن ہوگا، پھر تھیوری ٹیسٹ۔ پاس ہونے کے بعد آپ کسٹمر سروس یا ویب سائٹ کے ذریعے عملی تربیت کی تاریخیں طے کر سکتے ہیں، اور کوڈ اسکین کر کے عملی میدان کے مقام تک پہنچ سکتے ہیں۔",
+        "location": "practicalBuilding"
       },
-      "goMain": {
-        "displayText": "مرکزی تھیوری عمارت تک پہنچنے کے لیے دکھایا گیا راستہ اختیار کریں۔",
-        "spokenText": "مرکزی عمارت تک پہنچنے کے لیے، سامنے دکھایا گیا راستہ اختیار کریں یہاں تک کہ آپ پہنچ جائیں۔"
+      "intermediate": {
+        "hours": "تربیت کے گھنٹے: 15 گھنٹے",
+        "days": "تربیت کے دن: 5 دن",
+        "steps": [
+          "سطح کا تعین: درمیانہ – 15 گھنٹے",
+          "استقبالیہ پر جا کر نمبر لینا",
+          "کسٹمر سروس کا انتظار",
+          "فیس کی ادائیگی",
+          "مرکزی عمارت میں سمولیشن سیشن",
+          "مرکزی عمارت میں تھیوری ٹیسٹ",
+          "تھیوری ٹیسٹ پاس کرنا",
+          "عملی تربیت کی تاریخیں طے کرنا (کسٹمر سروس یا ویب سائٹ کے ذریعے)",
+          "عملی میدان کے مقام کی طرف جانا"
+        ],
+        "spokenText": "اگر آپ کی سطح درمیانہ ہے تو آپ کی تربیت 15 گھنٹے اور 5 دن پر مشتمل ہوگی۔ سطح کے تعین کے بعد استقبالیہ پر جا کر نمبر لیں، پھر فیس کی ادائیگی کے لیے کسٹمر سروس کا انتظار کریں۔ ادائیگی کے بعد مرکزی عمارت میں سمولیشن سیشن ہوگا، پھر تھیوری ٹیسٹ۔ پاس ہونے کے بعد آپ کسٹمر سروس یا ویب سائٹ کے ذریعے عملی تربیت کی تاریخیں طے کر سکتے ہیں، اور کوڈ اسکین کر کے عملی میدان کے مقام تک پہنچ سکتے ہیں۔",
+        "location": "practicalBuilding"
       },
-      "goTraffic": {
-        "displayText": "ٹریفک عمارت تک پہنچنے کے لیے دکھایا گیا راستہ اختیار کریں۔",
-        "spokenText": "ٹریفک عمارت تک پہنچنے کے لیے، سامنے دکھایا گیا راستہ اختیار کریں یہاں تک کہ آپ پہنچ جائیں۔"
+      "advanced": {
+        "hours": "تربیت کے گھنٹے: 6 گھنٹے",
+        "days": "تربیت کے دن: ایک دن",
+        "steps": [
+          "سطح کا تعین: اعلیٰ – 6 گھنٹے",
+          "استقبالیہ پر جا کر نمبر لینا",
+          "کسٹمر سروس کا انتظار",
+          "فیس کی ادائیگی",
+          "مرکزی عمارت میں تھیوری ٹیسٹ",
+          "تھیوری ٹیسٹ پاس کرنا",
+          "عملی تربیت کی تاریخیں طے کرنا (کسٹمر سروس یا ویب سائٹ کے ذریعے)",
+          "عملی میدان کے مقام کی طرف جانا"
+        ],
+        "spokenText": "اگر آپ کی سطح اعلیٰ ہے تو آپ کی تربیت صرف 6 گھنٹے اور ایک دن پر مشتمل ہوگی۔ سطح کے تعین کے بعد استقبالیہ پر جا کر نمبر لیں، پھر فیس کی ادائیگی کے لیے کسٹمر سروس کا انتظار کریں۔ ادائیگی کے بعد سمولیشن سیشن کی ضرورت نہیں، براہ راست مرکزی عمارت میں تھیوری ٹیسٹ دیں۔ پاس ہونے کے بعد آپ کسٹمر سروس یا ویب سائٹ کے ذریعے عملی تربیت کی تاریخیں طے کر سکتے ہیں، اور کوڈ اسکین کر کے عملی میدان کے مقام تک پہنچ سکتے ہیں۔",
+        "location": "practicalBuilding"
       }
     },
-    "payFeesPage": {
-      "title": "فیس ادا کرنے کا طریقہ",
-      "spokenText": "فیس ادا کرنے کے لیے استقبالیہ پر جائیں اور نمبر لیں، پھر اپنے نمبر کے اعلان کا انتظار کریں، اس کے بعد کسٹمر سروس پر جا کر ادائیگی مکمل کریں اور اپنا تربیتی پروگرام حاصل کریں۔",
+    "unknown": {
+      "title": "گھنٹوں کی تصدیق",
       "steps": [
-        "استقبالیہ پر جانا",
-        "نمبر لینا",
-        "نمبر کے اعلان کا انتظار",
-        "کسٹمر سروس پر جانا",
-        "فیس کی ادائیگی مکمل کرنا",
-        "تربیتی پروگرام حاصل کرنا"
-      ]
-    },
-    "afterEvalPage": {
-      "title": "تشخیص کے بعد کیا کریں؟",
-      "spokenText": "تشخیص کے بعد مرکزی عمارت جائیں، وہاں پہنچ کر استقبالیہ سے نمبر لیں، پھر کسٹمر سروس پر جا کر اپنے کام مکمل کریں اور اپنی تشخیص کے مطابق تربیتی پروگرام حاصل کریں۔",
-      "steps": [
-        "تشخیص",
-        "مرکزی عمارت جانا",
-        "مقام کا کوڈ اسکین کرنا",
-        "استقبالیہ",
-        "نمبر لینا",
-        "کسٹمر سروس",
-        "فیس کی ادائیگی",
-        "تربیتی پروگرام حاصل کرنا"
+        "استقبالیہ سے نمبر لینا",
+        "کسٹمر سروس پر جا کر مناسب پروگرام دریافت کرنا"
       ],
-      "location": "mainBuilding"
+      "spokenText": "اگر آپ کو اپنے مقرر کردہ گھنٹوں کا علم نہیں تو کوئی مسئلہ نہیں۔ استقبالیہ سے نمبر لیں اور کسٹمر سروس پر جائیں، عملہ آپ کے لیے مناسب پروگرام کی تصدیق کرے گا۔"
     },
-    "afterTheoryPage": {
-      "title": "تھیوری ٹیسٹ کے بعد کیا کریں؟",
-      "spokenText": "تھیوری ٹیسٹ مکمل کرنے اور پاس کرنے کے بعد، عملی تربیت کی عمارت جائیں۔ مقام تک پہنچنے کے لیے کوڈ استعمال کریں، پھر اندر جا کر اپنے تربیتی وقت کا انتظار کریں۔",
-      "steps": [
-        "تھیوری ٹیسٹ",
-        "ٹیسٹ پاس کرنا",
-        "عملی عمارت جانا",
-        "مقام کا کوڈ اسکین کرنا",
-        "عمارت میں داخل ہونا",
-        "وقت کا انتظار"
-      ],
-      "location": "practicalBuilding"
-    },
-    "afterPracticalPage": {
-      "title": "عملی تربیت کے بعد کیا کریں؟",
-      "spokenText": "",
-      "placeholder": "[منظور شدہ طریقہ کار یہاں شامل کیا جائے گا]"
-    },
-    "changeInstructorPage": {
-      "title": "انسٹرکٹر تبدیل کرنا",
-      "subtitle": "انسٹرکٹر تبدیل کرنے کی درخواست کا طریقہ",
-      "spokenText": "",
-      "placeholder": "انسٹرکٹر تبدیل کرنے کا منظور شدہ طریقہ کار یہاں شامل کیا جائے گا۔",
-      "steps": [
-        "مراحل بعد میں طے کیے جائیں گے"
-      ]
-    },
-    "changeAppointmentPage": {
-      "title": "تربیت کا وقت تبدیل کرنا",
-      "subtitle": "اپائنٹمنٹ تبدیل کرنے کا طریقہ",
-      "spokenText": "",
-      "placeholder": "اپائنٹمنٹ تبدیل کرنے کا طریقہ کار یہاں شامل کیا جائے گا۔",
-      "steps": [
-        "مراحل بعد میں طے کیے جائیں گے"
-      ]
+    "practicalDone": {
+      "title": "عملی امتحان کی بکنگ",
+      "examLabel": "عملی امتحان کا مقام: ٹریفک عمارت",
+      "spokenText": "آپ کا عملی امتحان ٹریفک عمارت میں ہوگا۔ آپ سامنے دکھائے گئے کوڈ کو اسکین کر کے مقام تک پہنچ سکتے ہیں۔",
+      "location": "trafficBuilding"
     }
   },
   "hi": {
@@ -371,128 +471,92 @@ const CONTENT_TRANSLATIONS = {
       "back": "वापस",
       "language": "भाषा",
       "audioToggle": "आवाज़ चालू/बंद करें",
-      "scanCode": "स्थान तक पहुँचने के लिए कोड स्कैन करें",
-      "locationCode": "स्थान कोड"
+      "scanCode": "स्थान तक पहुँचने के लिए कोड स्कैन करें"
     },
     "locationNames": {
-      "mainBuilding": "मुख्य थ्योरी भवन",
+      "mainBuilding": "मुख्य भवन",
       "practicalBuilding": "व्यावहारिक प्रशिक्षण भवन",
       "trafficBuilding": "यातायात भवन"
     },
-    "services": {
-      "goPractical": {
-        "title": "व्यावहारिक प्रशिक्षण भवन तक जाने का तरीका",
-        "desc": "व्यावहारिक प्रशिक्षण भवन तक मार्गदर्शन"
-      },
-      "goMain": {
-        "title": "मुख्य थ्योरी भवन तक जाने का तरीका",
-        "desc": "मुख्य भवन तक मार्गदर्शन"
-      },
-      "goTraffic": {
-        "title": "यातायात भवन तक जाने का तरीका",
-        "desc": "यातायात भवन तक मार्गदर्शन"
-      },
-      "payFees": {
-        "title": "शुल्क भुगतान का तरीका",
-        "desc": "कार्यालय में शुल्क भुगतान के चरण"
-      },
-      "afterEval": {
-        "title": "मूल्यांकन के बाद क्या करें?",
-        "desc": "मूल्यांकन के बाद आवश्यक चरण"
-      },
-      "afterTheory": {
-        "title": "थ्योरी परीक्षा के बाद क्या करें?",
-        "desc": "थ्योरी परीक्षा पास करने के बाद के चरण"
-      },
-      "afterPractical": {
-        "title": "व्यावहारिक प्रशिक्षण के बाद क्या करें?",
-        "desc": "व्यावहारिक प्रशिक्षण के बाद के चरण"
-      },
-      "changeInstructor": {
-        "title": "प्रशिक्षक बदलना",
-        "desc": "प्रशिक्षक बदलने के अनुरोध का तरीका"
-      },
-      "changeAppointment": {
-        "title": "प्रशिक्षण समय बदलना",
-        "desc": "अपॉइंटमेंट बदलने का तरीका"
+    "home": {
+      "levelQuestion": "क्या आपका स्तर निर्धारण पूरा हो गया है?",
+      "practicalQuestion": "क्या आपका व्यावहारिक प्रशिक्षण पूरा हो गया है?"
+    },
+    "levelFlow": {
+      "title": "आपके लिए निर्धारित घंटे कितने हैं?",
+      "spokenText": "आपके लिए सही कार्यक्रम जानने के लिए, अपने निर्धारित घंटे चुनें।",
+      "options": {
+        "beginner": "शुरुआती – 30 घंटे",
+        "intermediate": "मध्यम – 15 घंटे",
+        "advanced": "उन्नत – 6 घंटे",
+        "unknown": "मुझे नहीं पता, पुष्टि चाहिए"
       }
     },
-    "navPage": {
-      "goPractical": {
-        "displayText": "व्यावहारिक प्रशिक्षण भवन तक पहुँचने के लिए दिखाया गया मार्ग अपनाएँ।",
-        "spokenText": "व्यावहारिक प्रशिक्षण भवन तक पहुँचने के लिए, सामने दिखाए गए मार्ग का अनुसरण करें जब तक आप पहुँच न जाएँ।"
+    "levels": {
+      "beginner": {
+        "hours": "प्रशिक्षण घंटे: 30 घंटे",
+        "days": "प्रशिक्षण दिन: 11 दिन",
+        "steps": [
+          "स्तर निर्धारण: शुरुआती – 30 घंटे",
+          "रिसेप्शन जाकर नंबर लेना",
+          "ग्राहक सेवा का इंतज़ार",
+          "शुल्क भुगतान",
+          "मुख्य भवन में सिमुलेशन सत्र",
+          "मुख्य भवन में थ्योरी परीक्षा",
+          "थ्योरी परीक्षा पास करना",
+          "व्यावहारिक प्रशिक्षण की तारीखें तय करना (ग्राहक सेवा या वेबसाइट के माध्यम से)",
+          "व्यावहारिक मैदान की ओर जाना"
+        ],
+        "spokenText": "अगर आपका स्तर शुरुआती है, तो आपका प्रशिक्षण 30 घंटे और 11 दिन का होगा। स्तर निर्धारण के बाद रिसेप्शन जाकर नंबर लें, फिर शुल्क भुगतान के लिए ग्राहक सेवा का इंतज़ार करें। भुगतान के बाद मुख्य भवन में सिमुलेशन सत्र होगा, फिर थ्योरी परीक्षा। पास होने के बाद आप ग्राहक सेवा या वेबसाइट के माध्यम से व्यावहारिक प्रशिक्षण की तारीखें तय कर सकते हैं, और कोड स्कैन करके व्यावहारिक मैदान तक पहुँच सकते हैं।",
+        "location": "practicalBuilding"
       },
-      "goMain": {
-        "displayText": "मुख्य थ्योरी भवन तक पहुँचने के लिए दिखाया गया मार्ग अपनाएँ।",
-        "spokenText": "मुख्य भवन तक पहुँचने के लिए, सामने दिखाए गए मार्ग का अनुसरण करें जब तक आप पहुँच न जाएँ।"
+      "intermediate": {
+        "hours": "प्रशिक्षण घंटे: 15 घंटे",
+        "days": "प्रशिक्षण दिन: 5 दिन",
+        "steps": [
+          "स्तर निर्धारण: मध्यम – 15 घंटे",
+          "रिसेप्शन जाकर नंबर लेना",
+          "ग्राहक सेवा का इंतज़ार",
+          "शुल्क भुगतान",
+          "मुख्य भवन में सिमुलेशन सत्र",
+          "मुख्य भवन में थ्योरी परीक्षा",
+          "थ्योरी परीक्षा पास करना",
+          "व्यावहारिक प्रशिक्षण की तारीखें तय करना (ग्राहक सेवा या वेबसाइट के माध्यम से)",
+          "व्यावहारिक मैदान की ओर जाना"
+        ],
+        "spokenText": "अगर आपका स्तर मध्यम है, तो आपका प्रशिक्षण 15 घंटे और 5 दिन का होगा। स्तर निर्धारण के बाद रिसेप्शन जाकर नंबर लें, फिर शुल्क भुगतान के लिए ग्राहक सेवा का इंतज़ार करें। भुगतान के बाद मुख्य भवन में सिमुलेशन सत्र होगा, फिर थ्योरी परीक्षा। पास होने के बाद आप ग्राहक सेवा या वेबसाइट के माध्यम से व्यावहारिक प्रशिक्षण की तारीखें तय कर सकते हैं, और कोड स्कैन करके व्यावहारिक मैदान तक पहुँच सकते हैं।",
+        "location": "practicalBuilding"
       },
-      "goTraffic": {
-        "displayText": "यातायात भवन तक पहुँचने के लिए दिखाया गया मार्ग अपनाएँ।",
-        "spokenText": "यातायात भवन तक पहुँचने के लिए, सामने दिखाए गए मार्ग का अनुसरण करें जब तक आप पहुँच न जाएँ।"
+      "advanced": {
+        "hours": "प्रशिक्षण घंटे: 6 घंटे",
+        "days": "प्रशिक्षण दिन: एक दिन",
+        "steps": [
+          "स्तर निर्धारण: उन्नत – 6 घंटे",
+          "रिसेप्शन जाकर नंबर लेना",
+          "ग्राहक सेवा का इंतज़ार",
+          "शुल्क भुगतान",
+          "मुख्य भवन में थ्योरी परीक्षा",
+          "थ्योरी परीक्षा पास करना",
+          "व्यावहारिक प्रशिक्षण की तारीखें तय करना (ग्राहक सेवा या वेबसाइट के माध्यम से)",
+          "व्यावहारिक मैदान की ओर जाना"
+        ],
+        "spokenText": "अगर आपका स्तर उन्नत है, तो आपका प्रशिक्षण केवल 6 घंटे और एक दिन का होगा। स्तर निर्धारण के बाद रिसेप्शन जाकर नंबर लें, फिर शुल्क भुगतान के लिए ग्राहक सेवा का इंतज़ार करें। भुगतान के बाद सिमुलेशन सत्र की ज़रूरत नहीं, सीधे मुख्य भवन में थ्योरी परीक्षा दें। पास होने के बाद आप ग्राहक सेवा या वेबसाइट के माध्यम से व्यावहारिक प्रशिक्षण की तारीखें तय कर सकते हैं, और कोड स्कैन करके व्यावहारिक मैदान तक पहुँच सकते हैं।",
+        "location": "practicalBuilding"
       }
     },
-    "payFeesPage": {
-      "title": "शुल्क भुगतान का तरीका",
-      "spokenText": "शुल्क भुगतान के लिए रिसेप्शन पर जाएँ और टोकन लें, फिर अपने नंबर की घोषणा का इंतज़ार करें, उसके बाद ग्राहक सेवा पर जाकर भुगतान पूरा करें और अपना प्रशिक्षण कार्यक्रम प्राप्त करें।",
+    "unknown": {
+      "title": "घंटों की पुष्टि",
       "steps": [
-        "रिसेप्शन जाना",
-        "टोकन लेना",
-        "नंबर की घोषणा का इंतज़ार",
-        "ग्राहक सेवा जाना",
-        "शुल्क भुगतान पूरा करना",
-        "प्रशिक्षण कार्यक्रम प्राप्त करना"
-      ]
-    },
-    "afterEvalPage": {
-      "title": "मूल्यांकन के बाद क्या करें?",
-      "spokenText": "मूल्यांकन के बाद मुख्य भवन जाएँ, वहाँ पहुँचकर रिसेप्शन से टोकन लें, फिर ग्राहक सेवा पर जाकर अपनी प्रक्रिया पूरी करें और अपने मूल्यांकन के अनुसार प्रशिक्षण कार्यक्रम प्राप्त करें।",
-      "steps": [
-        "मूल्यांकन",
-        "मुख्य भवन जाना",
-        "स्थान कोड स्कैन करना",
-        "रिसेप्शन",
-        "टोकन लेना",
-        "ग्राहक सेवा",
-        "शुल्क भुगतान",
-        "प्रशिक्षण कार्यक्रम प्राप्त करना"
+        "रिसेप्शन से टोकन लेना",
+        "ग्राहक सेवा पर जाकर उपयुक्त कार्यक्रम पूछना"
       ],
-      "location": "mainBuilding"
+      "spokenText": "अगर आपको अपने निर्धारित घंटों की जानकारी नहीं है, तो कोई बात नहीं। रिसेप्शन से टोकन लें और ग्राहक सेवा पर जाएँ, कर्मचारी आपके लिए उपयुक्त कार्यक्रम की पुष्टि करेंगे।"
     },
-    "afterTheoryPage": {
-      "title": "थ्योरी परीक्षा के बाद क्या करें?",
-      "spokenText": "थ्योरी परीक्षा पूरी करने और पास करने के बाद, व्यावहारिक प्रशिक्षण भवन जाएँ। स्थान तक पहुँचने के लिए कोड का उपयोग करें, फिर अंदर जाकर अपने प्रशिक्षण समय का इंतज़ार करें।",
-      "steps": [
-        "थ्योरी परीक्षा",
-        "परीक्षा पास करना",
-        "व्यावहारिक भवन जाना",
-        "स्थान कोड स्कैन करना",
-        "भवन में प्रवेश",
-        "समय का इंतज़ार"
-      ],
-      "location": "practicalBuilding"
-    },
-    "afterPracticalPage": {
-      "title": "व्यावहारिक प्रशिक्षण के बाद क्या करें?",
-      "spokenText": "",
-      "placeholder": "[स्वीकृत प्रक्रिया यहाँ जोड़ी जाएगी]"
-    },
-    "changeInstructorPage": {
-      "title": "प्रशिक्षक बदलना",
-      "subtitle": "प्रशिक्षक बदलने के अनुरोध का तरीका",
-      "spokenText": "",
-      "placeholder": "प्रशिक्षक बदलने की स्वीकृत प्रक्रिया यहाँ जोड़ी जाएगी।",
-      "steps": [
-        "चरण बाद में निर्धारित किए जाएँगे"
-      ]
-    },
-    "changeAppointmentPage": {
-      "title": "प्रशिक्षण समय बदलना",
-      "subtitle": "अपॉइंटमेंट बदलने का तरीका",
-      "spokenText": "",
-      "placeholder": "अपॉइंटमेंट बदलने की प्रक्रिया यहाँ जोड़ी जाएगी।",
-      "steps": [
-        "चरण बाद में निर्धारित किए जाएँगे"
-      ]
+    "practicalDone": {
+      "title": "व्यावहारिक परीक्षा बुक करें",
+      "examLabel": "व्यावहारिक परीक्षा स्थान: यातायात भवन",
+      "spokenText": "आपकी व्यावहारिक परीक्षा यातायात भवन में होगी। आप सामने दिखाए गए कोड को स्कैन करके स्थान तक पहुँच सकते हैं।",
+      "location": "trafficBuilding"
     }
   },
   "fr": {
@@ -503,128 +567,92 @@ const CONTENT_TRANSLATIONS = {
       "back": "Retour",
       "language": "Langue",
       "audioToggle": "Activer/désactiver le son",
-      "scanCode": "Scannez le code pour accéder au lieu",
-      "locationCode": "Code du lieu"
+      "scanCode": "Scannez le code pour accéder au lieu"
     },
     "locationNames": {
-      "mainBuilding": "Bâtiment principal (théorie)",
+      "mainBuilding": "Bâtiment principal",
       "practicalBuilding": "Bâtiment de formation pratique",
       "trafficBuilding": "Bâtiment de la circulation"
     },
-    "services": {
-      "goPractical": {
-        "title": "Comment se rendre au bâtiment pratique",
-        "desc": "Itinéraire vers le bâtiment de formation pratique"
-      },
-      "goMain": {
-        "title": "Comment se rendre au bâtiment principal",
-        "desc": "Itinéraire vers le bâtiment principal"
-      },
-      "goTraffic": {
-        "title": "Comment se rendre au bâtiment de la circulation",
-        "desc": "Itinéraire vers le bâtiment de la circulation"
-      },
-      "payFees": {
-        "title": "Comment payer les frais",
-        "desc": "Étapes pour payer les frais au bureau"
-      },
-      "afterEval": {
-        "title": "Que faire après l'évaluation ?",
-        "desc": "Étapes requises après l'évaluation"
-      },
-      "afterTheory": {
-        "title": "Que faire après l'examen théorique ?",
-        "desc": "Étapes après avoir réussi l'examen théorique"
-      },
-      "afterPractical": {
-        "title": "Que faire après la formation pratique ?",
-        "desc": "Étapes après la formation pratique"
-      },
-      "changeInstructor": {
-        "title": "Changer d'instructeur",
-        "desc": "Comment demander un changement d'instructeur"
-      },
-      "changeAppointment": {
-        "title": "Changer le rendez-vous",
-        "desc": "Comment changer votre rendez-vous de formation"
+    "home": {
+      "levelQuestion": "Avez-vous terminé la détermination de votre niveau ?",
+      "practicalQuestion": "Avez-vous terminé votre formation pratique ?"
+    },
+    "levelFlow": {
+      "title": "Combien d'heures vous ont été attribuées ?",
+      "spokenText": "Pour trouver le programme adapté, veuillez sélectionner le nombre d'heures qui vous a été attribué.",
+      "options": {
+        "beginner": "Débutant – 30 heures",
+        "intermediate": "Intermédiaire – 15 heures",
+        "advanced": "Avancé – 6 heures",
+        "unknown": "Je ne sais pas, je veux vérifier"
       }
     },
-    "navPage": {
-      "goPractical": {
-        "displayText": "Suivez l'itinéraire indiqué pour atteindre le bâtiment de formation pratique.",
-        "spokenText": "Pour atteindre le bâtiment de formation pratique, suivez l'itinéraire indiqué devant vous jusqu'à votre arrivée."
+    "levels": {
+      "beginner": {
+        "hours": "Heures de formation : 30 heures",
+        "days": "Jours de formation : 11 jours",
+        "steps": [
+          "Niveau déterminé : Débutant – 30 heures",
+          "Se rendre à la réception et prendre un ticket",
+          "Attendre le service client",
+          "Payer les frais",
+          "Séance de simulation au bâtiment principal",
+          "Examen théorique au bâtiment principal",
+          "Réussir l'examen théorique",
+          "Planifier les dates de formation pratique (via le service client ou le site web)",
+          "Se rendre au terrain pratique"
+        ],
+        "spokenText": "Si votre niveau est débutant, votre formation durera 30 heures sur 11 jours. Après la détermination du niveau, rendez-vous à la réception pour prendre un ticket, puis attendez le service client pour finaliser le paiement. Après le paiement, vous ferez la séance de simulation au bâtiment principal, puis l'examen théorique. Une fois réussi, vous pourrez planifier vos dates de formation pratique via le service client ou le site web, et rejoindre le terrain pratique en scannant le code.",
+        "location": "practicalBuilding"
       },
-      "goMain": {
-        "displayText": "Suivez l'itinéraire indiqué pour atteindre le bâtiment principal.",
-        "spokenText": "Pour atteindre le bâtiment principal, suivez l'itinéraire indiqué devant vous jusqu'à votre arrivée."
+      "intermediate": {
+        "hours": "Heures de formation : 15 heures",
+        "days": "Jours de formation : 5 jours",
+        "steps": [
+          "Niveau déterminé : Intermédiaire – 15 heures",
+          "Se rendre à la réception et prendre un ticket",
+          "Attendre le service client",
+          "Payer les frais",
+          "Séance de simulation au bâtiment principal",
+          "Examen théorique au bâtiment principal",
+          "Réussir l'examen théorique",
+          "Planifier les dates de formation pratique (via le service client ou le site web)",
+          "Se rendre au terrain pratique"
+        ],
+        "spokenText": "Si votre niveau est intermédiaire, votre formation durera 15 heures sur 5 jours. Après la détermination du niveau, rendez-vous à la réception pour prendre un ticket, puis attendez le service client pour finaliser le paiement. Après le paiement, vous ferez la séance de simulation au bâtiment principal, puis l'examen théorique. Une fois réussi, vous pourrez planifier vos dates de formation pratique via le service client ou le site web, et rejoindre le terrain pratique en scannant le code.",
+        "location": "practicalBuilding"
       },
-      "goTraffic": {
-        "displayText": "Suivez l'itinéraire indiqué pour atteindre le bâtiment de la circulation.",
-        "spokenText": "Pour atteindre le bâtiment de la circulation, suivez l'itinéraire indiqué devant vous jusqu'à votre arrivée."
+      "advanced": {
+        "hours": "Heures de formation : 6 heures",
+        "days": "Jours de formation : 1 jour",
+        "steps": [
+          "Niveau déterminé : Avancé – 6 heures",
+          "Se rendre à la réception et prendre un ticket",
+          "Attendre le service client",
+          "Payer les frais",
+          "Examen théorique au bâtiment principal",
+          "Réussir l'examen théorique",
+          "Planifier les dates de formation pratique (via le service client ou le site web)",
+          "Se rendre au terrain pratique"
+        ],
+        "spokenText": "Si votre niveau est avancé, votre formation ne durera que 6 heures en une seule journée. Après la détermination du niveau, rendez-vous à la réception pour prendre un ticket, puis attendez le service client pour finaliser le paiement. Après le paiement, aucune séance de simulation n'est nécessaire — passez directement à l'examen théorique au bâtiment principal. Une fois réussi, vous pourrez planifier vos dates de formation pratique via le service client ou le site web, et rejoindre le terrain pratique en scannant le code.",
+        "location": "practicalBuilding"
       }
     },
-    "payFeesPage": {
-      "title": "Comment payer les frais",
-      "spokenText": "Pour payer vos frais, rendez-vous à la réception et prenez un ticket, attendez que votre numéro soit appelé, puis rendez-vous au service client pour finaliser le paiement et recevoir votre programme de formation.",
+    "unknown": {
+      "title": "Vérifier vos heures",
       "steps": [
-        "Se rendre à la réception",
-        "Prendre un ticket",
-        "Attendre l'appel du numéro",
-        "Se rendre au service client",
-        "Finaliser le paiement des frais",
-        "Recevoir le programme de formation"
-      ]
-    },
-    "afterEvalPage": {
-      "title": "Que faire après l'évaluation ?",
-      "spokenText": "Après l'évaluation, rendez-vous au bâtiment principal, prenez un ticket à la réception, puis allez au service client pour finaliser vos démarches et recevoir votre programme de formation selon votre évaluation.",
-      "steps": [
-        "Évaluation",
-        "Se rendre au bâtiment principal",
-        "Scanner le code du lieu",
-        "Réception",
-        "Prendre un ticket",
-        "Service client",
-        "Payer les frais",
-        "Recevoir le programme de formation"
+        "Prendre un ticket à la réception",
+        "Se rendre au service client pour connaître le programme adapté"
       ],
-      "location": "mainBuilding"
+      "spokenText": "Si vous ne connaissez pas votre nombre d'heures attribué, ce n'est pas un problème. Prenez un ticket à la réception et rendez-vous au service client — le personnel confirmera le programme qui vous convient."
     },
-    "afterTheoryPage": {
-      "title": "Que faire après l'examen théorique ?",
-      "spokenText": "Après avoir terminé et réussi l'examen théorique, rendez-vous au bâtiment de formation pratique. Utilisez le code du lieu pour vous y rendre, puis entrez et attendez votre rendez-vous de formation.",
-      "steps": [
-        "Examen théorique",
-        "Réussir l'examen",
-        "Se rendre au bâtiment pratique",
-        "Scanner le code du lieu",
-        "Entrer dans le bâtiment",
-        "Attendre le rendez-vous"
-      ],
-      "location": "practicalBuilding"
-    },
-    "afterPracticalPage": {
-      "title": "Que faire après la formation pratique ?",
-      "spokenText": "",
-      "placeholder": "[La procédure approuvée sera ajoutée ici]"
-    },
-    "changeInstructorPage": {
-      "title": "Changer d'instructeur",
-      "subtitle": "Comment demander un changement d'instructeur",
-      "spokenText": "",
-      "placeholder": "La procédure approuvée sera ajoutée ici.",
-      "steps": [
-        "Étapes à définir ultérieurement"
-      ]
-    },
-    "changeAppointmentPage": {
-      "title": "Changer le rendez-vous",
-      "subtitle": "Comment changer votre rendez-vous",
-      "spokenText": "",
-      "placeholder": "La procédure sera ajoutée ici.",
-      "steps": [
-        "Étapes à définir ultérieurement"
-      ]
+    "practicalDone": {
+      "title": "Réserver votre examen pratique",
+      "examLabel": "Lieu de l'examen pratique : Bâtiment de la circulation",
+      "spokenText": "Votre examen pratique aura lieu au bâtiment de la circulation. Vous pouvez y accéder en scannant le code affiché devant vous.",
+      "location": "trafficBuilding"
     }
   },
   "it": {
@@ -635,128 +663,92 @@ const CONTENT_TRANSLATIONS = {
       "back": "Indietro",
       "language": "Lingua",
       "audioToggle": "Attiva/disattiva audio",
-      "scanCode": "Scansiona il codice per raggiungere la posizione",
-      "locationCode": "Codice della posizione"
+      "scanCode": "Scansiona il codice per raggiungere la posizione"
     },
     "locationNames": {
-      "mainBuilding": "Edificio principale (teoria)",
+      "mainBuilding": "Edificio principale",
       "practicalBuilding": "Edificio di formazione pratica",
       "trafficBuilding": "Edificio del traffico"
     },
-    "services": {
-      "goPractical": {
-        "title": "Come raggiungere l'edificio pratico",
-        "desc": "Indicazioni per l'edificio di formazione pratica"
-      },
-      "goMain": {
-        "title": "Come raggiungere l'edificio principale",
-        "desc": "Indicazioni per l'edificio principale"
-      },
-      "goTraffic": {
-        "title": "Come raggiungere l'edificio del traffico",
-        "desc": "Indicazioni per l'edificio del traffico"
-      },
-      "payFees": {
-        "title": "Come pagare le tasse",
-        "desc": "Passaggi per pagare le tasse in ufficio"
-      },
-      "afterEval": {
-        "title": "Cosa fare dopo la valutazione?",
-        "desc": "Passaggi richiesti dopo la valutazione"
-      },
-      "afterTheory": {
-        "title": "Cosa fare dopo l'esame teorico?",
-        "desc": "Passaggi dopo aver superato l'esame teorico"
-      },
-      "afterPractical": {
-        "title": "Cosa fare dopo la formazione pratica?",
-        "desc": "Passaggi dopo la formazione pratica"
-      },
-      "changeInstructor": {
-        "title": "Cambiare istruttore",
-        "desc": "Come richiedere un cambio di istruttore"
-      },
-      "changeAppointment": {
-        "title": "Cambiare appuntamento",
-        "desc": "Come cambiare l'appuntamento di formazione"
+    "home": {
+      "levelQuestion": "Hai completato la valutazione del tuo livello?",
+      "practicalQuestion": "Hai completato la tua formazione pratica?"
+    },
+    "levelFlow": {
+      "title": "Quante ore ti sono state assegnate?",
+      "spokenText": "Per trovare il programma adatto a te, seleziona il numero di ore assegnate.",
+      "options": {
+        "beginner": "Principiante – 30 ore",
+        "intermediate": "Intermedio – 15 ore",
+        "advanced": "Avanzato – 6 ore",
+        "unknown": "Non lo so, voglio verificare"
       }
     },
-    "navPage": {
-      "goPractical": {
-        "displayText": "Segui il percorso indicato per raggiungere l'edificio di formazione pratica.",
-        "spokenText": "Per raggiungere l'edificio di formazione pratica, segui il percorso mostrato davanti a te fino ad arrivare."
+    "levels": {
+      "beginner": {
+        "hours": "Ore di formazione: 30 ore",
+        "days": "Giorni di formazione: 11 giorni",
+        "steps": [
+          "Livello determinato: Principiante – 30 ore",
+          "Andare alla reception e prendere un numero",
+          "Attendere il servizio clienti",
+          "Pagare le tasse",
+          "Sessione di simulazione presso l'edificio principale",
+          "Esame teorico presso l'edificio principale",
+          "Superare l'esame teorico",
+          "Pianificare le date di formazione pratica (tramite il servizio clienti o il sito web)",
+          "Recarsi al campo pratico"
+        ],
+        "spokenText": "Se il tuo livello è principiante, la tua formazione durerà 30 ore in 11 giorni. Dopo la valutazione del livello, vai alla reception per prendere un numero, poi attendi il servizio clienti per completare il pagamento. Dopo il pagamento, farai la sessione di simulazione presso l'edificio principale, poi l'esame teorico. Una volta superato, potrai pianificare le date della formazione pratica tramite il servizio clienti o il sito web, e raggiungere il campo pratico scansionando il codice.",
+        "location": "practicalBuilding"
       },
-      "goMain": {
-        "displayText": "Segui il percorso indicato per raggiungere l'edificio principale.",
-        "spokenText": "Per raggiungere l'edificio principale, segui il percorso mostrato davanti a te fino ad arrivare."
+      "intermediate": {
+        "hours": "Ore di formazione: 15 ore",
+        "days": "Giorni di formazione: 5 giorni",
+        "steps": [
+          "Livello determinato: Intermedio – 15 ore",
+          "Andare alla reception e prendere un numero",
+          "Attendere il servizio clienti",
+          "Pagare le tasse",
+          "Sessione di simulazione presso l'edificio principale",
+          "Esame teorico presso l'edificio principale",
+          "Superare l'esame teorico",
+          "Pianificare le date di formazione pratica (tramite il servizio clienti o il sito web)",
+          "Recarsi al campo pratico"
+        ],
+        "spokenText": "Se il tuo livello è intermedio, la tua formazione durerà 15 ore in 5 giorni. Dopo la valutazione del livello, vai alla reception per prendere un numero, poi attendi il servizio clienti per completare il pagamento. Dopo il pagamento, farai la sessione di simulazione presso l'edificio principale, poi l'esame teorico. Una volta superato, potrai pianificare le date della formazione pratica tramite il servizio clienti o il sito web, e raggiungere il campo pratico scansionando il codice.",
+        "location": "practicalBuilding"
       },
-      "goTraffic": {
-        "displayText": "Segui il percorso indicato per raggiungere l'edificio del traffico.",
-        "spokenText": "Per raggiungere l'edificio del traffico, segui il percorso mostrato davanti a te fino ad arrivare."
+      "advanced": {
+        "hours": "Ore di formazione: 6 ore",
+        "days": "Giorni di formazione: 1 giorno",
+        "steps": [
+          "Livello determinato: Avanzato – 6 ore",
+          "Andare alla reception e prendere un numero",
+          "Attendere il servizio clienti",
+          "Pagare le tasse",
+          "Esame teorico presso l'edificio principale",
+          "Superare l'esame teorico",
+          "Pianificare le date di formazione pratica (tramite il servizio clienti o il sito web)",
+          "Recarsi al campo pratico"
+        ],
+        "spokenText": "Se il tuo livello è avanzato, la tua formazione durerà solo 6 ore in un giorno. Dopo la valutazione del livello, vai alla reception per prendere un numero, poi attendi il servizio clienti per completare il pagamento. Dopo il pagamento, non è necessaria alcuna sessione di simulazione — vai direttamente all'esame teorico presso l'edificio principale. Una volta superato, potrai pianificare le date della formazione pratica tramite il servizio clienti o il sito web, e raggiungere il campo pratico scansionando il codice.",
+        "location": "practicalBuilding"
       }
     },
-    "payFeesPage": {
-      "title": "Come pagare le tasse",
-      "spokenText": "Per pagare le tasse, recati alla reception e prendi un numero, attendi che venga chiamato, poi vai al servizio clienti per completare il pagamento e ricevere il tuo programma di formazione.",
+    "unknown": {
+      "title": "Verifica le tue ore",
       "steps": [
-        "Andare alla reception",
-        "Prendere un numero",
-        "Attendere la chiamata del numero",
-        "Andare al servizio clienti",
-        "Completare il pagamento",
-        "Ricevere il programma di formazione"
-      ]
-    },
-    "afterEvalPage": {
-      "title": "Cosa fare dopo la valutazione?",
-      "spokenText": "Dopo la valutazione, recati all'edificio principale, prendi un numero alla reception, poi vai al servizio clienti per completare le pratiche e ricevere il tuo programma di formazione in base alla valutazione.",
-      "steps": [
-        "Valutazione",
-        "Andare all'edificio principale",
-        "Scansionare il codice della posizione",
-        "Reception",
-        "Prendere un numero",
-        "Servizio clienti",
-        "Pagare le tasse",
-        "Ricevere il programma di formazione"
+        "Prendere un numero alla reception",
+        "Andare al servizio clienti per chiedere il programma adatto"
       ],
-      "location": "mainBuilding"
+      "spokenText": "Se non conosci il numero di ore assegnate, non preoccuparti. Prendi un numero alla reception e vai al servizio clienti — il personale confermerà il programma più adatto a te."
     },
-    "afterTheoryPage": {
-      "title": "Cosa fare dopo l'esame teorico?",
-      "spokenText": "Dopo aver completato e superato l'esame teorico, recati all'edificio di formazione pratica. Usa il codice per raggiungere la posizione, poi entra e attendi il tuo appuntamento di formazione.",
-      "steps": [
-        "Esame teorico",
-        "Superare l'esame",
-        "Andare all'edificio pratico",
-        "Scansionare il codice della posizione",
-        "Entrare nell'edificio",
-        "Attendere l'appuntamento"
-      ],
-      "location": "practicalBuilding"
-    },
-    "afterPracticalPage": {
-      "title": "Cosa fare dopo la formazione pratica?",
-      "spokenText": "",
-      "placeholder": "[La procedura approvata sarà aggiunta qui]"
-    },
-    "changeInstructorPage": {
-      "title": "Cambiare istruttore",
-      "subtitle": "Come richiedere un cambio di istruttore",
-      "spokenText": "",
-      "placeholder": "La procedura approvata sarà aggiunta qui.",
-      "steps": [
-        "Passaggi da definire in seguito"
-      ]
-    },
-    "changeAppointmentPage": {
-      "title": "Cambiare appuntamento",
-      "subtitle": "Come cambiare l'appuntamento",
-      "spokenText": "",
-      "placeholder": "La procedura sarà aggiunta qui.",
-      "steps": [
-        "Passaggi da definire in seguito"
-      ]
+    "practicalDone": {
+      "title": "Prenota il tuo esame pratico",
+      "examLabel": "Luogo dell'esame pratico: Edificio del traffico",
+      "spokenText": "Il tuo esame pratico si svolgerà presso l'edificio del traffico. Puoi raggiungere la posizione scansionando il codice mostrato davanti a te.",
+      "location": "trafficBuilding"
     }
   },
   "bn": {
@@ -767,128 +759,92 @@ const CONTENT_TRANSLATIONS = {
       "back": "ফিরে যান",
       "language": "ভাষা",
       "audioToggle": "অডিও চালু/বন্ধ করুন",
-      "scanCode": "অবস্থানে পৌঁছাতে কোড স্ক্যান করুন",
-      "locationCode": "অবস্থান কোড"
+      "scanCode": "অবস্থানে পৌঁছাতে কোড স্ক্যান করুন"
     },
     "locationNames": {
-      "mainBuilding": "প্রধান তত্ত্ব ভবন",
+      "mainBuilding": "প্রধান ভবন",
       "practicalBuilding": "ব্যবহারিক প্রশিক্ষণ ভবন",
       "trafficBuilding": "ট্রাফিক ভবন"
     },
-    "services": {
-      "goPractical": {
-        "title": "ব্যবহারিক ভবনে যাওয়ার উপায়",
-        "desc": "ব্যবহারিক প্রশিক্ষণ ভবনের দিকনির্দেশনা"
-      },
-      "goMain": {
-        "title": "প্রধান ভবনে যাওয়ার উপায়",
-        "desc": "প্রধান ভবনের দিকনির্দেশনা"
-      },
-      "goTraffic": {
-        "title": "ট্রাফিক ভবনে যাওয়ার উপায়",
-        "desc": "ট্রাফিক ভবনের দিকনির্দেশনা"
-      },
-      "payFees": {
-        "title": "ফি প্রদানের উপায়",
-        "desc": "অফিসে ফি প্রদানের ধাপসমূহ"
-      },
-      "afterEval": {
-        "title": "মূল্যায়নের পরে কী করবেন?",
-        "desc": "মূল্যায়নের পরে প্রয়োজনীয় ধাপ"
-      },
-      "afterTheory": {
-        "title": "তত্ত্বীয় পরীক্ষার পরে কী করবেন?",
-        "desc": "তত্ত্বীয় পরীক্ষা পাসের পরের ধাপ"
-      },
-      "afterPractical": {
-        "title": "ব্যবহারিক প্রশিক্ষণের পরে কী করবেন?",
-        "desc": "ব্যবহারিক প্রশিক্ষণের পরের ধাপ"
-      },
-      "changeInstructor": {
-        "title": "প্রশিক্ষক পরিবর্তন",
-        "desc": "প্রশিক্ষক পরিবর্তনের অনুরোধের উপায়"
-      },
-      "changeAppointment": {
-        "title": "প্রশিক্ষণের সময় পরিবর্তন",
-        "desc": "অ্যাপয়েন্টমেন্ট পরিবর্তনের উপায়"
+    "home": {
+      "levelQuestion": "আপনার স্তর নির্ধারণ কি সম্পন্ন হয়েছে?",
+      "practicalQuestion": "আপনার ব্যবহারিক প্রশিক্ষণ কি সম্পন্ন হয়েছে?"
+    },
+    "levelFlow": {
+      "title": "আপনার জন্য নির্ধারিত ঘণ্টা কত?",
+      "spokenText": "আপনার জন্য সঠিক প্রোগ্রাম জানতে, আপনার নির্ধারিত ঘণ্টা নির্বাচন করুন।",
+      "options": {
+        "beginner": "শিক্ষানবিশ – ৩০ ঘণ্টা",
+        "intermediate": "মধ্যম – ১৫ ঘণ্টা",
+        "advanced": "উন্নত – ৬ ঘণ্টা",
+        "unknown": "আমি জানি না, নিশ্চিত হতে চাই"
       }
     },
-    "navPage": {
-      "goPractical": {
-        "displayText": "ব্যবহারিক প্রশিক্ষণ ভবনে পৌঁছাতে প্রদর্শিত পথ অনুসরণ করুন।",
-        "spokenText": "ব্যবহারিক প্রশিক্ষণ ভবনে পৌঁছাতে, সামনে দেখানো পথ অনুসরণ করুন যতক্ষণ না আপনি পৌঁছান।"
+    "levels": {
+      "beginner": {
+        "hours": "প্রশিক্ষণ ঘণ্টা: ৩০ ঘণ্টা",
+        "days": "প্রশিক্ষণ দিন: ১১ দিন",
+        "steps": [
+          "স্তর নির্ধারণ: শিক্ষানবিশ – ৩০ ঘণ্টা",
+          "রিসেপশনে গিয়ে নম্বর নেওয়া",
+          "কাস্টমার সার্ভিসের অপেক্ষা",
+          "ফি প্রদান",
+          "প্রধান ভবনে সিমুলেশন সেশন",
+          "প্রধান ভবনে তত্ত্বীয় পরীক্ষা",
+          "তত্ত্বীয় পরীক্ষা পাস করা",
+          "ব্যবহারিক প্রশিক্ষণের তারিখ নির্ধারণ (কাস্টমার সার্ভিস বা ওয়েবসাইটের মাধ্যমে)",
+          "ব্যবহারিক মাঠের দিকে যাওয়া"
+        ],
+        "spokenText": "আপনার স্তর যদি শিক্ষানবিশ হয়, তাহলে আপনার প্রশিক্ষণ হবে ৩০ ঘণ্টা এবং ১১ দিন। স্তর নির্ধারণের পর রিসেপশনে গিয়ে নম্বর নিন, তারপর ফি প্রদানের জন্য কাস্টমার সার্ভিসের অপেক্ষা করুন। প্রদানের পর প্রধান ভবনে সিমুলেশন সেশন হবে, তারপর তত্ত্বীয় পরীক্ষা। পাস করার পর আপনি কাস্টমার সার্ভিস বা ওয়েবসাইটের মাধ্যমে ব্যবহারিক প্রশিক্ষণের তারিখ নির্ধারণ করতে পারবেন, এবং কোড স্ক্যান করে ব্যবহারিক মাঠে পৌঁছাতে পারবেন।",
+        "location": "practicalBuilding"
       },
-      "goMain": {
-        "displayText": "প্রধান ভবনে পৌঁছাতে প্রদর্শিত পথ অনুসরণ করুন।",
-        "spokenText": "প্রধান ভবনে পৌঁছাতে, সামনে দেখানো পথ অনুসরণ করুন যতক্ষণ না আপনি পৌঁছান।"
+      "intermediate": {
+        "hours": "প্রশিক্ষণ ঘণ্টা: ১৫ ঘণ্টা",
+        "days": "প্রশিক্ষণ দিন: ৫ দিন",
+        "steps": [
+          "স্তর নির্ধারণ: মধ্যম – ১৫ ঘণ্টা",
+          "রিসেপশনে গিয়ে নম্বর নেওয়া",
+          "কাস্টমার সার্ভিসের অপেক্ষা",
+          "ফি প্রদান",
+          "প্রধান ভবনে সিমুলেশন সেশন",
+          "প্রধান ভবনে তত্ত্বীয় পরীক্ষা",
+          "তত্ত্বীয় পরীক্ষা পাস করা",
+          "ব্যবহারিক প্রশিক্ষণের তারিখ নির্ধারণ (কাস্টমার সার্ভিস বা ওয়েবসাইটের মাধ্যমে)",
+          "ব্যবহারিক মাঠের দিকে যাওয়া"
+        ],
+        "spokenText": "আপনার স্তর যদি মধ্যম হয়, তাহলে আপনার প্রশিক্ষণ হবে ১৫ ঘণ্টা এবং ৫ দিন। স্তর নির্ধারণের পর রিসেপশনে গিয়ে নম্বর নিন, তারপর ফি প্রদানের জন্য কাস্টমার সার্ভিসের অপেক্ষা করুন। প্রদানের পর প্রধান ভবনে সিমুলেশন সেশন হবে, তারপর তত্ত্বীয় পরীক্ষা। পাস করার পর আপনি কাস্টমার সার্ভিস বা ওয়েবসাইটের মাধ্যমে ব্যবহারিক প্রশিক্ষণের তারিখ নির্ধারণ করতে পারবেন, এবং কোড স্ক্যান করে ব্যবহারিক মাঠে পৌঁছাতে পারবেন।",
+        "location": "practicalBuilding"
       },
-      "goTraffic": {
-        "displayText": "ট্রাফিক ভবনে পৌঁছাতে প্রদর্শিত পথ অনুসরণ করুন।",
-        "spokenText": "ট্রাফিক ভবনে পৌঁছাতে, সামনে দেখানো পথ অনুসরণ করুন যতক্ষণ না আপনি পৌঁছান।"
+      "advanced": {
+        "hours": "প্রশিক্ষণ ঘণ্টা: ৬ ঘণ্টা",
+        "days": "প্রশিক্ষণ দিন: এক দিন",
+        "steps": [
+          "স্তর নির্ধারণ: উন্নত – ৬ ঘণ্টা",
+          "রিসেপশনে গিয়ে নম্বর নেওয়া",
+          "কাস্টমার সার্ভিসের অপেক্ষা",
+          "ফি প্রদান",
+          "প্রধান ভবনে তত্ত্বীয় পরীক্ষা",
+          "তত্ত্বীয় পরীক্ষা পাস করা",
+          "ব্যবহারিক প্রশিক্ষণের তারিখ নির্ধারণ (কাস্টমার সার্ভিস বা ওয়েবসাইটের মাধ্যমে)",
+          "ব্যবহারিক মাঠের দিকে যাওয়া"
+        ],
+        "spokenText": "আপনার স্তর যদি উন্নত হয়, তাহলে আপনার প্রশিক্ষণ হবে মাত্র ৬ ঘণ্টা এবং এক দিন। স্তর নির্ধারণের পর রিসেপশনে গিয়ে নম্বর নিন, তারপর ফি প্রদানের জন্য কাস্টমার সার্ভিসের অপেক্ষা করুন। প্রদানের পর সিমুলেশন সেশনের প্রয়োজন নেই, সরাসরি প্রধান ভবনে তত্ত্বীয় পরীক্ষা দিন। পাস করার পর আপনি কাস্টমার সার্ভিস বা ওয়েবসাইটের মাধ্যমে ব্যবহারিক প্রশিক্ষণের তারিখ নির্ধারণ করতে পারবেন, এবং কোড স্ক্যান করে ব্যবহারিক মাঠে পৌঁছাতে পারবেন।",
+        "location": "practicalBuilding"
       }
     },
-    "payFeesPage": {
-      "title": "ফি প্রদানের উপায়",
-      "spokenText": "ফি প্রদানের জন্য রিসেপশনে যান এবং একটি টোকেন নিন, তারপর আপনার নম্বর ডাকার অপেক্ষা করুন, এরপর কাস্টমার সার্ভিসে গিয়ে পেমেন্ট সম্পন্ন করুন এবং আপনার প্রশিক্ষণ প্রোগ্রাম গ্রহণ করুন।",
+    "unknown": {
+      "title": "ঘণ্টা নিশ্চিতকরণ",
       "steps": [
-        "রিসেপশনে যাওয়া",
-        "টোকেন নেওয়া",
-        "নম্বর ডাকার অপেক্ষা",
-        "কাস্টমার সার্ভিসে যাওয়া",
-        "ফি প্রদান সম্পন্ন করা",
-        "প্রশিক্ষণ প্রোগ্রাম গ্রহণ করা"
-      ]
-    },
-    "afterEvalPage": {
-      "title": "মূল্যায়নের পরে কী করবেন?",
-      "spokenText": "মূল্যায়নের পরে প্রধান ভবনে যান, সেখানে পৌঁছে রিসেপশন থেকে একটি টোকেন নিন, তারপর কাস্টমার সার্ভিসে গিয়ে আপনার প্রক্রিয়া সম্পন্ন করুন এবং আপনার মূল্যায়ন অনুযায়ী প্রশিক্ষণ প্রোগ্রাম গ্রহণ করুন।",
-      "steps": [
-        "মূল্যায়ন",
-        "প্রধান ভবনে যাওয়া",
-        "অবস্থান কোড স্ক্যান করা",
-        "রিসেপশন",
-        "টোকেন নেওয়া",
-        "কাস্টমার সার্ভিস",
-        "ফি প্রদান",
-        "প্রশিক্ষণ প্রোগ্রাম গ্রহণ করা"
+        "রিসেপশন থেকে টোকেন নেওয়া",
+        "কাস্টমার সার্ভিসে গিয়ে উপযুক্ত প্রোগ্রাম জিজ্ঞাসা করা"
       ],
-      "location": "mainBuilding"
+      "spokenText": "আপনার নির্ধারিত ঘণ্টা সম্পর্কে না জানলে, কোনো সমস্যা নেই। রিসেপশন থেকে টোকেন নিন এবং কাস্টমার সার্ভিসে যান, কর্মী আপনার জন্য উপযুক্ত প্রোগ্রাম নিশ্চিত করবেন।"
     },
-    "afterTheoryPage": {
-      "title": "তত্ত্বীয় পরীক্ষার পরে কী করবেন?",
-      "spokenText": "তত্ত্বীয় পরীক্ষা সম্পন্ন ও পাস করার পরে, ব্যবহারিক প্রশিক্ষণ ভবনে যান। অবস্থানে পৌঁছাতে কোড ব্যবহার করুন, তারপর ভিতরে গিয়ে আপনার প্রশিক্ষণের সময়ের অপেক্ষা করুন।",
-      "steps": [
-        "তত্ত্বীয় পরীক্ষা",
-        "পরীক্ষা পাস করা",
-        "ব্যবহারিক ভবনে যাওয়া",
-        "অবস্থান কোড স্ক্যান করা",
-        "ভবনে প্রবেশ",
-        "সময়ের অপেক্ষা"
-      ],
-      "location": "practicalBuilding"
-    },
-    "afterPracticalPage": {
-      "title": "ব্যবহারিক প্রশিক্ষণের পরে কী করবেন?",
-      "spokenText": "",
-      "placeholder": "[অনুমোদিত পদ্ধতি এখানে যোগ করা হবে]"
-    },
-    "changeInstructorPage": {
-      "title": "প্রশিক্ষক পরিবর্তন",
-      "subtitle": "প্রশিক্ষক পরিবর্তনের অনুরোধের উপায়",
-      "spokenText": "",
-      "placeholder": "প্রশিক্ষক পরিবর্তনের অনুমোদিত পদ্ধতি এখানে যোগ করা হবে।",
-      "steps": [
-        "ধাপগুলো পরে নির্ধারণ করা হবে"
-      ]
-    },
-    "changeAppointmentPage": {
-      "title": "প্রশিক্ষণের সময় পরিবর্তন",
-      "subtitle": "অ্যাপয়েন্টমেন্ট পরিবর্তনের উপায়",
-      "spokenText": "",
-      "placeholder": "পদ্ধতি এখানে যোগ করা হবে।",
-      "steps": [
-        "ধাপগুলো পরে নির্ধারণ করা হবে"
-      ]
+    "practicalDone": {
+      "title": "ব্যবহারিক পরীক্ষা বুক করুন",
+      "examLabel": "ব্যবহারিক পরীক্ষার স্থান: ট্রাফিক ভবন",
+      "spokenText": "আপনার ব্যবহারিক পরীক্ষা ট্রাফিক ভবনে হবে। আপনি সামনে দেখানো কোড স্ক্যান করে স্থানে পৌঁছাতে পারবেন।",
+      "location": "trafficBuilding"
     }
   },
   "tr": {
@@ -899,150 +855,108 @@ const CONTENT_TRANSLATIONS = {
       "back": "Geri",
       "language": "Dil",
       "audioToggle": "Sesi aç/kapat",
-      "scanCode": "Konuma ulaşmak için kodu tarayın",
-      "locationCode": "Konum kodu"
+      "scanCode": "Konuma ulaşmak için kodu tarayın"
     },
     "locationNames": {
-      "mainBuilding": "Ana Teori Binası",
+      "mainBuilding": "Ana Bina",
       "practicalBuilding": "Uygulamalı Eğitim Binası",
       "trafficBuilding": "Trafik Binası"
     },
-    "services": {
-      "goPractical": {
-        "title": "Uygulama binasına nasıl gidilir",
-        "desc": "Uygulamalı eğitim binasına yol tarifi"
-      },
-      "goMain": {
-        "title": "Ana binaya nasıl gidilir",
-        "desc": "Ana binaya yol tarifi"
-      },
-      "goTraffic": {
-        "title": "Trafik binasına nasıl gidilir",
-        "desc": "Trafik binasına yol tarifi"
-      },
-      "payFees": {
-        "title": "Ücret nasıl ödenir",
-        "desc": "Ofiste ücret ödeme adımları"
-      },
-      "afterEval": {
-        "title": "Değerlendirmeden sonra ne yapmalıyım?",
-        "desc": "Değerlendirmeden sonra gerekli adımlar"
-      },
-      "afterTheory": {
-        "title": "Teori sınavından sonra ne yapmalıyım?",
-        "desc": "Teori sınavını geçtikten sonraki adımlar"
-      },
-      "afterPractical": {
-        "title": "Uygulamalı eğitimden sonra ne yapmalıyım?",
-        "desc": "Uygulamalı eğitimden sonraki adımlar"
-      },
-      "changeInstructor": {
-        "title": "Eğitmen değişikliği",
-        "desc": "Eğitmen değişikliği talebinde bulunma yöntemi"
-      },
-      "changeAppointment": {
-        "title": "Randevu değişikliği",
-        "desc": "Eğitim randevunuzu değiştirme yöntemi"
+    "home": {
+      "levelQuestion": "Seviye belirleme işleminizi tamamladınız mı?",
+      "practicalQuestion": "Uygulamalı eğitiminizi tamamladınız mı?"
+    },
+    "levelFlow": {
+      "title": "Size kaç saat atandı?",
+      "spokenText": "Size uygun programı belirlemek için, atanan saat sayısını seçin.",
+      "options": {
+        "beginner": "Başlangıç – 30 saat",
+        "intermediate": "Orta – 15 saat",
+        "advanced": "İleri – 6 saat",
+        "unknown": "Bilmiyorum, kontrol etmek istiyorum"
       }
     },
-    "navPage": {
-      "goPractical": {
-        "displayText": "Uygulamalı eğitim binasına ulaşmak için gösterilen rotayı izleyin.",
-        "spokenText": "Uygulamalı eğitim binasına ulaşmak için önünüzde gösterilen rotayı varana kadar takip edin."
+    "levels": {
+      "beginner": {
+        "hours": "Eğitim saatleri: 30 saat",
+        "days": "Eğitim günleri: 11 gün",
+        "steps": [
+          "Seviye belirlendi: Başlangıç – 30 saat",
+          "Resepsiyona gidip numara almak",
+          "Müşteri hizmetlerini beklemek",
+          "Ücreti ödemek",
+          "Ana binada simülasyon seansı",
+          "Ana binada teori sınavı",
+          "Teori sınavını geçmek",
+          "Uygulamalı eğitim tarihlerini belirlemek (müşteri hizmetleri veya web sitesi üzerinden)",
+          "Uygulama sahasına gitmek"
+        ],
+        "spokenText": "Seviyeniz başlangıç ise, eğitiminiz 11 gün boyunca 30 saat sürecektir. Seviye belirlemeden sonra resepsiyona gidip numara alın, ardından ödemeyi tamamlamak için müşteri hizmetlerini bekleyin. Ödemeden sonra ana binada simülasyon seansına, ardından teori sınavına gireceksiniz. Geçtikten sonra müşteri hizmetleri veya web sitesi üzerinden uygulamalı eğitim tarihlerinizi belirleyebilir, kodu tarayarak uygulama sahasına ulaşabilirsiniz.",
+        "location": "practicalBuilding"
       },
-      "goMain": {
-        "displayText": "Ana binaya ulaşmak için gösterilen rotayı izleyin.",
-        "spokenText": "Ana binaya ulaşmak için önünüzde gösterilen rotayı varana kadar takip edin."
+      "intermediate": {
+        "hours": "Eğitim saatleri: 15 saat",
+        "days": "Eğitim günleri: 5 gün",
+        "steps": [
+          "Seviye belirlendi: Orta – 15 saat",
+          "Resepsiyona gidip numara almak",
+          "Müşteri hizmetlerini beklemek",
+          "Ücreti ödemek",
+          "Ana binada simülasyon seansı",
+          "Ana binada teori sınavı",
+          "Teori sınavını geçmek",
+          "Uygulamalı eğitim tarihlerini belirlemek (müşteri hizmetleri veya web sitesi üzerinden)",
+          "Uygulama sahasına gitmek"
+        ],
+        "spokenText": "Seviyeniz orta ise, eğitiminiz 5 gün boyunca 15 saat sürecektir. Seviye belirlemeden sonra resepsiyona gidip numara alın, ardından ödemeyi tamamlamak için müşteri hizmetlerini bekleyin. Ödemeden sonra ana binada simülasyon seansına, ardından teori sınavına gireceksiniz. Geçtikten sonra müşteri hizmetleri veya web sitesi üzerinden uygulamalı eğitim tarihlerinizi belirleyebilir, kodu tarayarak uygulama sahasına ulaşabilirsiniz.",
+        "location": "practicalBuilding"
       },
-      "goTraffic": {
-        "displayText": "Trafik binasına ulaşmak için gösterilen rotayı izleyin.",
-        "spokenText": "Trafik binasına ulaşmak için önünüzde gösterilen rotayı varana kadar takip edin."
+      "advanced": {
+        "hours": "Eğitim saatleri: 6 saat",
+        "days": "Eğitim günleri: 1 gün",
+        "steps": [
+          "Seviye belirlendi: İleri – 6 saat",
+          "Resepsiyona gidip numara almak",
+          "Müşteri hizmetlerini beklemek",
+          "Ücreti ödemek",
+          "Ana binada teori sınavı",
+          "Teori sınavını geçmek",
+          "Uygulamalı eğitim tarihlerini belirlemek (müşteri hizmetleri veya web sitesi üzerinden)",
+          "Uygulama sahasına gitmek"
+        ],
+        "spokenText": "Seviyeniz ileri ise, eğitiminiz sadece tek günde 6 saat sürecektir. Seviye belirlemeden sonra resepsiyona gidip numara alın, ardından ödemeyi tamamlamak için müşteri hizmetlerini bekleyin. Ödemeden sonra simülasyon seansına gerek yoktur — doğrudan ana binada teori sınavına girin. Geçtikten sonra müşteri hizmetleri veya web sitesi üzerinden uygulamalı eğitim tarihlerinizi belirleyebilir, kodu tarayarak uygulama sahasına ulaşabilirsiniz.",
+        "location": "practicalBuilding"
       }
     },
-    "payFeesPage": {
-      "title": "Ücret nasıl ödenir",
-      "spokenText": "Ücretinizi ödemek için resepsiyona gidin ve bir sıra numarası alın, numaranız çağrılana kadar bekleyin, ardından müşteri hizmetlerine giderek ödemeyi tamamlayın ve eğitim programınızı alın.",
+    "unknown": {
+      "title": "Saatlerinizi doğrulayın",
       "steps": [
-        "Resepsiyona gitmek",
-        "Sıra numarası almak",
-        "Numaranın çağrılmasını beklemek",
-        "Müşteri hizmetlerine gitmek",
-        "Ücret ödemesini tamamlamak",
-        "Eğitim programını almak"
-      ]
-    },
-    "afterEvalPage": {
-      "title": "Değerlendirmeden sonra ne yapmalıyım?",
-      "spokenText": "Değerlendirmeden sonra ana binaya gidin, resepsiyondan bir numara alın, ardından müşteri hizmetlerine giderek işlemlerinizi tamamlayın ve değerlendirmenize göre eğitim programınızı alın.",
-      "steps": [
-        "Değerlendirme",
-        "Ana binaya gitmek",
-        "Konum kodunu taramak",
-        "Resepsiyon",
-        "Numara almak",
-        "Müşteri hizmetleri",
-        "Ücret ödemek",
-        "Eğitim programını almak"
+        "Resepsiyondan sıra numarası almak",
+        "Uygun program için müşteri hizmetlerine gitmek"
       ],
-      "location": "mainBuilding"
+      "spokenText": "Atanan saat sayınızı bilmiyorsanız sorun değil. Resepsiyondan bir sıra numarası alın ve müşteri hizmetlerine gidin — personel sizin için uygun programı doğrulayacaktır."
     },
-    "afterTheoryPage": {
-      "title": "Teori sınavından sonra ne yapmalıyım?",
-      "spokenText": "Teori sınavını tamamlayıp geçtikten sonra, uygulamalı eğitim binasına gidin. Konuma ulaşmak için kodu kullanın, ardından içeri girip eğitim randevunuzu bekleyin.",
-      "steps": [
-        "Teori sınavı",
-        "Sınavı geçmek",
-        "Uygulama binasına gitmek",
-        "Konum kodunu taramak",
-        "Binaya girmek",
-        "Randevuyu beklemek"
-      ],
-      "location": "practicalBuilding"
-    },
-    "afterPracticalPage": {
-      "title": "Uygulamalı eğitimden sonra ne yapmalıyım?",
-      "spokenText": "",
-      "placeholder": "[Onaylanan prosedür buraya eklenecektir]"
-    },
-    "changeInstructorPage": {
-      "title": "Eğitmen değişikliği",
-      "subtitle": "Eğitmen değişikliği talebinde bulunma yöntemi",
-      "spokenText": "",
-      "placeholder": "Onaylanan prosedür buraya eklenecektir.",
-      "steps": [
-        "Adımlar daha sonra belirlenecektir"
-      ]
-    },
-    "changeAppointmentPage": {
-      "title": "Randevu değişikliği",
-      "subtitle": "Randevunuzu değiştirme yöntemi",
-      "spokenText": "",
-      "placeholder": "Prosedür buraya eklenecektir.",
-      "steps": [
-        "Adımlar daha sonra belirlenecektir"
-      ]
+    "practicalDone": {
+      "title": "Uygulama sınavınızı ayırtın",
+      "examLabel": "Uygulama sınavı yeri: Trafik Binası",
+      "spokenText": "Uygulama sınavınız Trafik Binası'nda gerçekleşecektir. Önünüzde gösterilen kodu tarayarak konuma ulaşabilirsiniz.",
+      "location": "trafficBuilding"
     }
   }
 };
-
-Object.assign(CONTENT, CONTENT_TRANSLATIONS);
 CONTENT.pa = JSON.parse(JSON.stringify(CONTENT.ur));
-// شبكة أمان: أي لغة معرّفة في LANGS لكن ما زالت بلا محتوى فعلي تُعطى نسخة إنجليزية مؤقتة
-// مع تعطيل الصوت (بدل خلط لغة بأخرى) — لن يحدث هذا لأي من التسع لغات الحالية بعد الترجمة أعلاه.
-Object.keys(TTS_CONFIG.languageConfig).forEach(c=>{
-  if(!CONTENT[c]){ CONTENT[c] = JSON.parse(JSON.stringify(CONTENT.en)); CONTENT[c]._untranslated = true; }
-});
+
 
 /* ============================================================================
    STATE
    ============================================================================ */
-let state = { lang:"ar", page:"welcome", currentService:null };
+let state = { lang:"ar", page:"welcome", level:null, prevPage:null };
 let idleTimer = null;
 function t(){ return CONTENT[state.lang]; }
 function langMeta(){ return LANGS.find(l=>l.code===state.lang); }
 function resetIdle(){
   if(idleTimer) clearTimeout(idleTimer);
-  idleTimer = setTimeout(()=>{ TTSManager.cancel(); state={lang:"ar",page:"welcome",currentService:null}; render(); }, SETTINGS.IDLE_TIMEOUT);
+  idleTimer = setTimeout(()=>{ TTSManager.cancel(); state={lang:"ar",page:"welcome",level:null,prevPage:null}; render(); }, SETTINGS.IDLE_TIMEOUT);
 }
 document.addEventListener("click", resetIdle);
 document.addEventListener("touchstart", resetIdle);
@@ -1071,9 +985,11 @@ const ICON = {
   flag:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3.5v17M6 4.5h11l-2.3 3.3L17 11H6"/></svg>`,
   userChange:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>`,
   calendar:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5.5" width="16" height="14.5" rx="1.5"/><path d="M4 9.5h16M8 3.5v3M16 3.5v3"/></svg>`,
-  pin:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/></svg>`
+  pin:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/></svg>`,
+  checkCircle:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>`
 };
-const SERVICE_ICON = { goPractical:ICON.route, goMain:ICON.building, goTraffic:ICON.signpost, payFees:ICON.card, afterEval:ICON.clipboard, afterTheory:ICON.document, afterPractical:ICON.flag, changeInstructor:ICON.userChange, changeAppointment:ICON.calendar };
+// أيقونات الشاشة الرئيسية (سؤالان فقط) وأيقونة نتيجة الميدان العملي — لا Emoji إطلاقًا
+const HOME_ICON = { level:ICON.clipboard, practical:ICON.checkCircle };
 
 /* ============================================================================
    STYLES
@@ -1163,7 +1079,7 @@ function render(){
         <div class="brand-name">${state.lang==="ar"?"نورة لتعليم القيادة":"Noura For Driving"}</div>
       </div>
       <div class="nav-controls">
-        ${state.page!=="home" ? `<button class="icon-btn" onclick="goHome()" title="${t().ui.back}"><span class="icon">${meta.dir==="rtl"?ICON.forward:ICON.back}</span></button>`:""}
+        ${state.page!=="home" ? `<button class="icon-btn" onclick="goBack()" title="${t().ui.back}"><span class="icon">${meta.dir==="rtl"?ICON.forward:ICON.back}</span></button>`:""}
         <button class="icon-btn" onclick="goHome()" title="${t().ui.home}"><span class="icon">${ICON.home}</span></button>
         <button class="icon-btn" onclick="goLangSelect()" title="${t().ui.language}"><span class="icon">${ICON.globe}</span></button>
         <button class="icon-btn" onclick="TTSManager.pauseResume()" title="${t().ui.audioToggle}"><span class="icon">${ICON.volume}</span></button>
@@ -1174,22 +1090,15 @@ function render(){
   html += `<div class="content">`;
   if(state.page === "welcome") html += renderWelcome();
   else if(state.page === "home") html += renderHome();
-  else if(state.page === "nav") html += renderNavPage();
-  else if(state.page === "payFees") html += renderStepsPage(t().payFeesPage);
-  else if(state.page === "afterEval") html += renderStepsPage(t().afterEvalPage, true);
-  else if(state.page === "afterTheory") html += renderStepsPage(t().afterTheoryPage, true);
-  else if(state.page === "afterPractical") html += renderPlaceholderPage(t().afterPracticalPage);
-  else if(state.page === "changeInstructor") html += renderStepsPage(t().changeInstructorPage);
-  else if(state.page === "changeAppointment") html += renderStepsPage(t().changeAppointmentPage);
+  else if(state.page === "levelQuestion") html += renderLevelQuestion();
+  else if(state.page === "levelResult") html += renderLevelResult();
+  else if(state.page === "unknown") html += renderUnknownPage();
+  else if(state.page === "practicalDone") html += renderPracticalDone();
   html += `</div>`;
 
   app.innerHTML = html;
 
-  if(state.page === "nav") setTimeout(initMap, 50);
-  if(state.page === "afterEval" || state.page === "afterTheory"){
-    const loc = LOCATIONS[t()[state.page+"Page"].location];
-    setTimeout(()=>renderQR("qrcode-inline", loc.googleMapsUrl), 50);
-  }
+  if(state.page === "levelResult" || state.page === "practicalDone") setTimeout(initMap, 50);
   resetIdle();
 }
 
@@ -1203,46 +1112,85 @@ function renderWelcome(){
   </div>`;
 }
 
+/* ============================================================================
+   الصفحة الرئيسية — سؤالان فقط كما هو مطلوب بالإجراء التشغيلي الفعلي:
+   "هل انتهيت من تحديد المستوى؟" و"هل انتهيت من التدريب العملي؟"
+   لا تُعرض أي خدمات أخرى هنا (تم حذف تغيير المدرب نهائيًا، ولم تُضَف أي خدمة غير مذكورة
+   في الإجراء التشغيلي الجديد).
+   ============================================================================ */
 function renderHome(){
-  const s = t().services;
-  const order = ["goPractical","goMain","goTraffic","payFees","afterEval","afterTheory","afterPractical","changeInstructor","changeAppointment"];
-  let cards = order.map(key=>{
-    const svc = s[key];
-    return `<div class="service-card" onclick="openService('${key}')">
-      <div class="service-icon-box"><span class="icon" style="width:24px;height:24px;">${SERVICE_ICON[key]}</span></div>
-      <div class="service-title">${svc.title}</div>
-      <div class="service-desc">${svc.desc}</div>
-    </div>`;
-  }).join("");
+  const h = t().home;
   let note = t()._untranslated ? `<div class="lang-note">هذه اللغة قيد إضافة الترجمة والصوت الأصلي الكامل. المحتوى المعروض حاليًا مؤقت والصوت معطّل لهذه اللغة.</div>` : "";
-  return `<div class="section-title">${t().ui.welcome}</div><div class="services-grid">${cards}</div>${note}`;
-}
-
-const NAV_DEST = { goPractical:"practicalBuilding", goMain:"mainBuilding", goTraffic:"trafficBuilding" };
-
-function renderNavPage(){
-  const key = state.currentService;
-  const p = t().navPage[key];
-  const destKey = NAV_DEST[key];
-  const dest = LOCATIONS[destKey];
-  return `<div class="page-title">${locName(destKey)}</div><div class="page-sub">${p.displayText}</div>
-  <div class="nav-layout">
-    <div id="map"></div>
-    <div class="trip-panel">
-      <div class="trip-dest"><span class="icon">${ICON.pin}</span>${locName(destKey)}</div>
-      <div class="qr-box"><div id="qrcode-nav"></div><div class="qr-caption">${t().ui.scanCode}</div></div>
+  return `<div class="center-screen">
+    <div class="lang-grid" style="grid-template-columns:repeat(2,1fr); max-width:760px;">
+      <div class="service-card" style="text-align:center;" onclick="openLevelQuestion()">
+        <div class="service-icon-box" style="margin:0 auto 16px;"><span class="icon" style="width:26px;height:26px;">${HOME_ICON.level}</span></div>
+        <div class="service-title" style="font-size:21px;">${h.levelQuestion}</div>
+      </div>
+      <div class="service-card" style="text-align:center;" onclick="openPracticalDone()">
+        <div class="service-icon-box" style="margin:0 auto 16px;"><span class="icon" style="width:26px;height:26px;">${HOME_ICON.practical}</span></div>
+        <div class="service-title" style="font-size:21px;">${h.practicalQuestion}</div>
+      </div>
     </div>
+    ${note}
   </div>`;
 }
 
-function renderStepsPage(p, withQR){
-  let steps = (p.steps||[]).map((s,i)=>`<div class="step-item"><div class="step-num">${String(i+1).padStart(2,"0")}</div><div class="step-text">${s}</div></div>`).join("");
-  let qr = withQR ? `<div class="qr-box" style="max-width:280px;"><div id="qrcode-inline"></div><div class="qr-caption">${t().ui.scanCode}</div></div>` : "";
-  return `<div class="page-title">${p.title}</div>${p.subtitle?`<div class="page-sub">${p.subtitle}</div>`:""}<div class="steps-list">${steps}</div>${qr}`;
+/* ============================================================================
+   مسار "هل انتهيت من تحديد المستوى؟" → اختيار عدد الساعات
+   ============================================================================ */
+function renderLevelQuestion(){
+  const lf = t().levelFlow;
+  const order = ["beginner","intermediate","advanced","unknown"];
+  let opts = order.map(key=>`<div class="service-card" onclick="selectHours('${key}')">
+      <div class="service-title" style="font-size:19px;">${lf.options[key]}</div>
+    </div>`).join("");
+  return `<div class="page-title">${lf.title}</div>
+    <div class="steps-list" style="max-width:640px;">${opts}</div>`;
 }
 
-function renderPlaceholderPage(p){
-  return `<div class="page-title">${p.title}</div><div class="placeholder-box">${p.placeholder}</div>`;
+/* ============================================================================
+   نتيجة تحديد المستوى: الساعات، الأيام، الخطوات، وخريطة + QR للميدان العملي
+   ============================================================================ */
+function renderLevelResult(){
+  const lvl = t().levels[state.level];
+  const lf = t().levelFlow;
+  let steps = lvl.steps.map((s,i)=>`<div class="step-item"><div class="step-num">${String(i+1).padStart(2,"0")}</div><div class="step-text">${s}</div></div>`).join("");
+  const destKey = lvl.location;
+  return `<div class="page-title">${lf.options[state.level]}</div>
+    <div class="page-sub">${lvl.hours} — ${lvl.days}</div>
+    <div class="nav-layout">
+      <div>
+        <div class="steps-list">${steps}</div>
+      </div>
+      <div class="trip-panel">
+        <div class="trip-dest"><span class="icon">${ICON.pin}</span>${locName(destKey)}</div>
+        <div id="map" style="min-height:220px;"></div>
+        <div class="qr-box"><div id="qrcode-nav"></div><div class="qr-caption">${t().ui.scanCode}</div></div>
+      </div>
+    </div>`;
+}
+
+function renderUnknownPage(){
+  const u = t().unknown;
+  let steps = u.steps.map((s,i)=>`<div class="step-item"><div class="step-num">${String(i+1).padStart(2,"0")}</div><div class="step-text">${s}</div></div>`).join("");
+  return `<div class="page-title">${u.title}</div><div class="steps-list" style="max-width:640px;">${steps}</div>`;
+}
+
+/* ============================================================================
+   مسار "هل انتهيت من التدريب العملي؟" → حجز الاختبار العملي + خريطة/QR مبنى المرور
+   ============================================================================ */
+function renderPracticalDone(){
+  const pd = t().practicalDone;
+  return `<div class="page-title">${pd.title}</div>
+    <div class="page-sub">${pd.examLabel}</div>
+    <div class="nav-layout">
+      <div id="map"></div>
+      <div class="trip-panel">
+        <div class="trip-dest"><span class="icon">${ICON.pin}</span>${locName(pd.location)}</div>
+        <div class="qr-box"><div id="qrcode-nav"></div><div class="qr-caption">${t().ui.scanCode}</div></div>
+      </div>
+    </div>`;
 }
 
 function renderQR(elId, url){
@@ -1286,8 +1234,17 @@ function droneIcon(){
 function initMap(){
   if(flightAnimId) cancelAnimationFrame(flightAnimId);
   if(mapInstance){ mapInstance.remove(); mapInstance=null; }
-  const key = state.currentService;
-  const destKey = NAV_DEST[key];
+  // الوجهة تُحدَّد الآن حسب الحالة الحالية: نتيجة تحديد المستوى (مبنى الميدان العملي)
+  // أو صفحة حجز الاختبار العملي (مبنى المرور) — بدل الخدمات الثابتة القديمة.
+  let destKey, audioKey, spokenText;
+  if(state.page === "levelResult"){
+    const lvl = t().levels[state.level];
+    destKey = lvl.location; audioKey = `level.${state.level}.audio`; spokenText = lvl.spokenText;
+  } else if(state.page === "practicalDone"){
+    const pd = t().practicalDone;
+    destKey = pd.location; audioKey = "practicalDone.audio"; spokenText = pd.spokenText;
+  } else { return; }
+
   const dest = LOCATIONS[destKey];
   const start = LOCATIONS.defaultStart;
 
@@ -1323,7 +1280,7 @@ function initMap(){
     }
   );
 
-  speakContent(`${key}.audio`, t().navPage[key].spokenText);
+  speakContent(audioKey, spokenText);
 }
 
 // تبسيط بسيط لنقاط المسار (يحافظ على كل تغييرات الاتجاه الفعلية، يقلل فقط النقاط شبه المستقيمة المتلاصقة)
@@ -1396,19 +1353,38 @@ function flyRoute(rawCoords){
 /* ============================================================================
    NAVIGATION HANDLERS
    ============================================================================ */
-function selectLang(code){ state.lang = code; state.page = "home"; render(); }
-function goHome(){ TTSManager.cancel(); state.page="home"; state.currentService=null; render(); }
+/* ============================================================================
+   NAVIGATION HANDLERS — شجرة القرار الجديدة (سؤالان رئيسيان فقط)
+   ============================================================================ */
+function selectLang(code){ state.lang = code; state.page = "home"; state.prevPage = null; render(); }
+function goHome(){ TTSManager.cancel(); state.page="home"; state.level=null; state.prevPage=null; render(); }
 function goLangSelect(){ TTSManager.cancel(); state.page="welcome"; render(); }
-function openService(key){
-  state.currentService = key;
-  const map = { goPractical:"nav", goMain:"nav", goTraffic:"nav", payFees:"payFees", afterEval:"afterEval", afterTheory:"afterTheory", afterPractical:"afterPractical", changeInstructor:"changeInstructor", changeAppointment:"changeAppointment" };
-  state.page = map[key];
+function goBack(){
+  TTSManager.cancel();
+  state.page = state.prevPage || "home";
   render();
-  if(state.page !== "nav"){
-    const pageContentMap = { payFees:t().payFeesPage, afterEval:t().afterEvalPage, afterTheory:t().afterTheoryPage, afterPractical:t().afterPracticalPage, changeInstructor:t().changeInstructorPage, changeAppointment:t().changeAppointmentPage };
-    const pc = pageContentMap[state.page];
-    if(pc && pc.spokenText) speakContent(`${state.page}.audio`, pc.spokenText);
+}
+function openLevelQuestion(){
+  TTSManager.cancel();
+  state.prevPage = "home"; state.page = "levelQuestion"; render();
+  const lf = t().levelFlow;
+  if(lf.spokenText) speakContent("levelFlow.audio", lf.spokenText);
+}
+function selectHours(key){
+  TTSManager.cancel();
+  if(key === "unknown"){
+    state.prevPage = "levelQuestion"; state.page = "unknown"; render();
+    const u = t().unknown;
+    if(u.spokenText) speakContent("unknown.audio", u.spokenText);
+  } else {
+    state.level = key; state.prevPage = "levelQuestion"; state.page = "levelResult"; render();
+    // الصوت يُشغَّل من داخل initMap بعد جهوزية الخريطة لضمان التزامن
   }
+}
+function openPracticalDone(){
+  TTSManager.cancel();
+  state.prevPage = "home"; state.page = "practicalDone"; render();
+  // الصوت يُشغَّل من داخل initMap بعد جهوزية الخريطة لضمان التزامن
 }
 
 render();
