@@ -1,131 +1,181 @@
 // api/tts.js
-// Vercel Serverless Function — Azure Speech Text-to-Speech
-// Required Vercel Environment Variables:
-//   AZURE_SPEECH_KEY
-//   AZURE_SPEECH_REGION   مثال: westeurope أو uaenorth
-// Optional:
-//   AZURE_SPEECH_VOICE    مثال: ar-SA-HamedNeural
+// المسار الكامل: Client → Check Supabase Cache → (Hit: رابط جاهز) أو
+// (Miss: استدعاء ElevenLabs → رفع لـ Supabase Storage → حفظ Metadata → إرجاع الرابط)
+//
+// المفتاح لا يظهر في المتصفح أبدًا — كل شيء هنا يعمل على السيرفر فقط.
 
-const VOICES = {
-  ar: "ar-SA-HamedNeural",   // صوت عربي سعودي
-  en: "en-US-JennyNeural",    // صوت إنجليزي
-  ur: "ur-PK-UzmaNeural",     // صوت أردو
-  hi: "hi-IN-SwaraNeural"     // صوت هندي
-};
-
-function escapeXml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
-}
-
-function getVoice(lang) {
-  // إذا وضعت AZURE_SPEECH_VOICE في Vercel فسيُستخدم لكل اللغات.
-  // اتركه فارغًا لاستخدام صوت مناسب تلقائيًا لكل لغة.
-  return process.env.AZURE_SPEECH_VOICE || VOICES[lang] || VOICES.ar;
-}
-
-function getLocale(lang, voice) {
-  const voiceLocale = String(voice).split("-").slice(0, 2).join("-");
-  return voiceLocale || ({ ar: "ar-SA", en: "en-US", ur: "ur-PK", hi: "hi-IN" }[lang] || "ar-SA");
-}
-
-function rateToAzurePercent(rate) {
-  const numericRate = Number(rate);
-  if (!Number.isFinite(numericRate) || numericRate <= 0) return "0%";
-
-  // الواجهة الحالية ترسل 0.97؛ Azure يستخدم نسبة مئوية، لذلك تصبح -3%.
-  const percent = Math.round((numericRate - 1) * 100);
-  return `${percent >= 0 ? "+" : ""}${percent}%`;
-}
+import { getSupabaseAdmin, TTS_TABLE, TTS_BUCKET } from "../lib/supabaseAdmin.js";
+import { buildCacheKey, storagePath } from "../lib/ttsCache.js";
+import { getVoiceConfig } from "../config/elevenlabs.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Method not allowed" });
+    res.status(405).json({ ok: false });
+    return;
   }
 
-  const key = process.env.AZURE_SPEECH_KEY;
-  const region = process.env.AZURE_SPEECH_REGION;
-
-  if (!key || !region) {
-    return res.status(500).json({
-      error: "متغيرات Azure غير مضبوطة في Vercel.",
-      required: ["AZURE_SPEECH_KEY", "AZURE_SPEECH_REGION"]
-    });
+  const { lang, text } = req.body || {};
+  if (!lang || !text) {
+    res.status(400).json({ ok: false });
+    return;
   }
 
-  let body = req.body || {};
-  if (typeof body === "string") {
-    try {
-      body = JSON.parse(body);
-    } catch {
-      return res.status(400).json({ error: "صيغة JSON غير صحيحة" });
-    }
+  const voiceCfg = getVoiceConfig(lang);
+  if (!voiceCfg) {
+    // لا نكسر واجهة العميل أبدًا برسالة تقنية — فقط نرفض بهدوء والواجهة تتراجع
+    // تلقائيًا لصوت المتصفح.
+    res.status(204).end();
+    return;
   }
 
-  const text = String(body.text || "").trim();
-  const lang = String(body.lang || "ar").toLowerCase();
-  const rate = body.rate;
+  const { voiceId, modelId, outputFormat, voiceSettings } = voiceCfg;
+  const characterCount = text.length; // العدد الفعلي للنص النهائي المُرسَل، وليس أي نص آخر بالواجهة
 
-  if (!text) {
-    return res.status(400).json({ error: "الحقل المطلوب: text" });
+  const cacheKey = buildCacheKey({ text, voiceId, modelId, outputFormat, voiceSettings, language: lang });
+  const textHash = buildCacheKey({ text, voiceId: "", modelId: "", outputFormat: "", voiceSettings: {}, language: "" });
+
+  let supabase;
+  try {
+    supabase = getSupabaseAdmin();
+  } catch (e) {
+    console.error("Supabase غير مضبوط:", e.message);
+    res.status(204).end(); // نفس مبدأ عدم كسر الواجهة — الفشل هنا يعني عدم توفر Cache وليس خطأ للعميل
+    return;
   }
-
-  // حماية بسيطة من الطلبات الضخمة غير المقصودة.
-  if (text.length > 5000) {
-    return res.status(413).json({ error: "النص طويل جدًا. الحد الأقصى 5000 حرف." });
-  }
-
-  const voice = getVoice(lang);
-  const locale = getLocale(lang, voice);
-  const ssml = `<?xml version="1.0" encoding="UTF-8"?>
-<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${locale}">
-  <voice name="${escapeXml(voice)}">
-    <prosody rate="${rateToAzurePercent(rate)}">${escapeXml(text)}</prosody>
-  </voice>
-</speak>`;
-
-  const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 25000);
 
   try {
-    const azureResponse = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Ocp-Apim-Subscription-Key": key,
-        "Content-Type": "application/ssml+xml",
-        "X-Microsoft-OutputFormat": "audio-24khz-48kbitrate-mono-mp3",
-        "User-Agent": "noura-driving-dashboard"
-      },
-      body: ssml,
-      signal: controller.signal
-    });
+    // 1) فحص الـ Cache أولاً
+    const { data: existing } = await supabase
+      .from(TTS_TABLE)
+      .select("*")
+      .eq("cache_key", cacheKey)
+      .maybeSingle();
 
-    if (!azureResponse.ok) {
-      const details = await azureResponse.text().catch(() => "");
-      console.error(`Azure Speech رفض الطلب — HTTP ${azureResponse.status}: ${details}`);
-      return res.status(azureResponse.status).json({
-        error: "Azure Speech رفض الطلب",
-        status: azureResponse.status,
-        voice,
-        details
-      });
+    if (existing && existing.status === "ready" && existing.audio_url) {
+      // Cache Hit — لا يوجد أي استدعاء لـ ElevenLabs هنا إطلاقًا
+      supabase.from(TTS_TABLE)
+        .update({ last_used_at: new Date().toISOString(), play_count: (existing.play_count || 0) + 1 })
+        .eq("id", existing.id)
+        .then(() => {}); // Fire-and-forget — لا نُبطئ الاستجابة لأجل هذا التحديث
+      res.status(200).json({ ok: true, url: existing.audio_url, cacheHit: true });
+      return;
     }
 
-    const audioBuffer = Buffer.from(await azureResponse.arrayBuffer());
-    res.setHeader("Content-Type", "audio/mpeg");
-    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-    return res.status(200).send(audioBuffer);
-  } catch (error) {
-    const message = error?.name === "AbortError" ? "انتهت مهلة الاتصال بـ Azure Speech" : String(error);
-    console.error(message);
-    return res.status(502).json({ error: "فشل الاتصال بـ Azure Speech", details: message });
-  } finally {
-    clearTimeout(timeout);
+    if (existing && existing.status === "generating") {
+      // طلب آخر (لنفس النص/الصوت/الإعدادات بالضبط) قيد التوليد الآن — ننتظر قليلاً
+      // بدل ما نولّد نسخة مكرّرة، هذا هو منع Duplicate Generation المطلوب.
+      const ready = await waitForReady(supabase, cacheKey, 5, 700);
+      if (ready) { res.status(200).json({ ok: true, url: ready.audio_url, cacheHit: true }); return; }
+      // إذا ما جهز بعد عدة محاولات (احتمال ضعيف)، نكمل ونحاول التوليد بأنفسنا كحل أخير
+    }
+
+    // 2) Cache Miss — نحجز الصف أولاً (Unique Constraint على cache_key هو آلية منع
+    // التكرار الحقيقية بين عدة Invocations متزامنة على Vercel)
+    const { error: insertErr } = await supabase.from(TTS_TABLE).insert({
+      cache_key: cacheKey, language: lang, text_hash: textHash, text,
+      voice_id: voiceId, model_id: modelId, output_format: outputFormat,
+      voice_settings: voiceSettings, status: "generating", character_count: characterCount
+    });
+
+    if (insertErr) {
+      // كود 23505 = Unique Violation → عميل آخر سبقنا بجزء من الثانية بالضبط
+      if (insertErr.code === "23505") {
+        const ready = await waitForReady(supabase, cacheKey, 5, 700);
+        if (ready) { res.status(200).json({ ok: true, url: ready.audio_url, cacheHit: true }); return; }
+      } else {
+        console.error("فشل حجز صف Cache:", insertErr);
+      }
+    }
+
+    // 3) توليد فعلي من ElevenLabs (مع إعادة محاولة عند 429/5xx فقط)
+    const generated = await generateFromElevenLabs({ text, voiceId, modelId, outputFormat, voiceSettings });
+    if (!generated) {
+      await supabase.from(TTS_TABLE).update({ status: "failed", updated_at: new Date().toISOString() }).eq("cache_key", cacheKey);
+      res.status(204).end(); // فشل صامت — الواجهة تتراجع لصوت المتصفح دون أي رسالة تقنية للعميل
+      return;
+    }
+
+    // 4) رفع الملف لـ Supabase Storage
+    const path = storagePath(lang, cacheKey);
+    const { error: uploadErr } = await supabase.storage.from(TTS_BUCKET).upload(path, generated.buffer, {
+      contentType: "audio/mpeg", upsert: true
+    });
+    if (uploadErr) {
+      console.error("فشل رفع الصوت إلى Supabase Storage:", uploadErr);
+      await supabase.from(TTS_TABLE).update({ status: "failed", updated_at: new Date().toISOString() }).eq("cache_key", cacheKey);
+      res.status(204).end();
+      return;
+    }
+
+    const { data: publicUrlData } = supabase.storage.from(TTS_BUCKET).getPublicUrl(path);
+    const audioUrl = publicUrlData.publicUrl;
+
+    // 5) حفظ الـ Metadata النهائية
+    await supabase.from(TTS_TABLE).update({
+      status: "ready", audio_url: audioUrl,
+      character_cost: generated.characterCost ?? characterCount,
+      request_id: generated.requestId || null,
+      last_used_at: new Date().toISOString(), play_count: 1,
+      updated_at: new Date().toISOString()
+    }).eq("cache_key", cacheKey);
+
+    res.status(200).json({ ok: true, url: audioUrl, cacheHit: false });
+  } catch (err) {
+    console.error("خطأ عام في /api/tts:", err);
+    res.status(204).end(); // لا تُكسر الواجهة أبدًا — فشل صامت فقط
+  }
+}
+
+async function waitForReady(supabase, cacheKey, attempts, delayMs) {
+  for (let i = 0; i < attempts; i++) {
+    await new Promise(r => setTimeout(r, delayMs));
+    const { data } = await supabase.from(TTS_TABLE).select("*").eq("cache_key", cacheKey).maybeSingle();
+    if (data && data.status === "ready" && data.audio_url) return data;
+    if (data && data.status === "failed") return null;
+  }
+  return null;
+}
+
+async function generateFromElevenLabs({ text, voiceId, modelId, outputFormat, voiceSettings }, retriesLeft = 2) {
+  const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
+  if (!ELEVENLABS_API_KEY) { console.error("ELEVENLABS_API_KEY غير مضبوطة."); return null; }
+
+  try {
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=${outputFormat}`, {
+      method: "POST",
+      headers: { "xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json", "Accept": "audio/mpeg" },
+      body: JSON.stringify({ text, model_id: modelId, voice_settings: voiceSettings })
+    });
+
+    if (res.status === 429 || res.status >= 500) {
+      if (retriesLeft > 0) {
+        await new Promise(r => setTimeout(r, (3 - retriesLeft) * 1200)); // Exponential backoff بسيط
+        return generateFromElevenLabs({ text, voiceId, modelId, outputFormat, voiceSettings }, retriesLeft - 1);
+      }
+      console.error(`ElevenLabs رفض الطلب بعد إعادة المحاولة — HTTP ${res.status}`);
+      return null;
+    }
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      console.error(`ElevenLabs رفض الطلب — HTTP ${res.status}: ${errText}`);
+      return null;
+    }
+
+    const buffer = Buffer.from(await res.arrayBuffer());
+    // ملاحظة أمانة: لم أستطع التحقق حيًا من الاسم الدقيق لأي Header ترجعه ElevenLabs
+    // فعليًا لتكلفة الأحرف الحقيقية (character-cost) لأني بلا اتصال إنترنت هنا لأختبر
+    // استجابة API مباشرة. أحاول قراءة أكثر من اسم محتمل، وإن لم يوجد أي منها،
+    // نرجع لعدّ طول النص كتقدير (وهو نفس المعيار المستخدم في المرسلة).
+    const characterCost = res.headers.get("character-cost") || res.headers.get("xi-character-cost") || null;
+    const requestId = res.headers.get("request-id") || res.headers.get("xi-request-id") || null;
+
+    return { buffer, characterCost: characterCost ? Number(characterCost) : null, requestId };
+  } catch (err) {
+    if (retriesLeft > 0) {
+      await new Promise(r => setTimeout(r, (3 - retriesLeft) * 1200));
+      return generateFromElevenLabs({ text, voiceId, modelId, outputFormat, voiceSettings }, retriesLeft - 1);
+    }
+    console.error("فشل الاتصال بـ ElevenLabs:", err);
+    return null;
   }
 }
