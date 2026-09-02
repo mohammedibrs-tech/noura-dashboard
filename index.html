@@ -91,6 +91,25 @@ const SETTINGS = { IDLE_TIMEOUT: 60000, LOGO_URL: "data:image/png;base64,iVBORw0
 /* ============================================================================
    TTS MANAGER
    ============================================================================ */
+// ربط مفاتيح الصوت الداخلية بالواجهة (audioKey) بمعرّفات الكتالوج المركزي الثابتة
+// (src/data/ttsCatalog.js) — هذا هو "الجسر" بين الواجهة والمصدر الواحد للحقيقة.
+const AUDIO_KEY_TO_TTS_ID = {
+  "levelFlow.audio": "TTS_LEVEL_SELECTION_INTRO",
+  "level.beginner.audio": "TTS_LEVEL_BEGINNER",
+  "level.intermediate.audio": "TTS_LEVEL_INTERMEDIATE",
+  "level.advanced.audio": "TTS_LEVEL_ADVANCED",
+  "unknown.audio": "TTS_LEVEL_UNKNOWN",
+  "practicalDone.audio": "TTS_PRACTICAL_EXAM_BOOKING",
+  "goPractical.audio": "TTS_NAV_PRACTICAL_BUILDING",
+  "goMain.audio": "TTS_NAV_MAIN_BUILDING",
+  "goTraffic.audio": "TTS_NAV_TRAFFIC_BUILDING",
+  "payFees.audio": "TTS_PAYMENT_INSTRUCTIONS",
+  "afterEval.audio": "TTS_AFTER_ASSESSMENT",
+  "afterTheory.audio": "TTS_AFTER_THEORY_EXAM",
+  "afterPractical.audio": "TTS_AFTER_PRACTICAL_TRAINING",
+  "changeAppointment.audio": "TTS_CHANGE_APPOINTMENT"
+};
+
 const TTSManager = {
   currentAudio: null,
   cancel(){ speechSynthesis.cancel(); if(this.currentAudio){ this.currentAudio.pause(); this.currentAudio=null; } },
@@ -102,13 +121,13 @@ const TTSManager = {
   // Cache على مستوى المتصفح لروابط الصوت المُرجَعة من /api/tts (Supabase Storage) —
   // يمنع طلب نفس /api/tts مرتين لنفس الجملة على نفس الجهاز خلال نفس الجلسة.
   _urlCache: new Map(),
-  async _fetchAudioUrl(lang, text){
-    const memKey = lang + "::" + text;
+  async _fetchAudioUrl(lang, text, ttsId){
+    const memKey = lang + "::" + (ttsId || text);
     if(this._urlCache.has(memKey)) return this._urlCache.get(memKey);
     try{
       const res = await fetch(TTS_CONFIG.professionalProvider.endpoint, {
         method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ lang, text })
+        body: JSON.stringify({ lang, text, ttsId })
       });
       if(res.status === 204){
         console.warn("لا يوجد صوت متاح من /api/tts لهذا الطلب (Supabase/ElevenLabs غير مضبوطة أو فشل التوليد).");
@@ -129,10 +148,10 @@ const TTSManager = {
   },
   // Preload بدون تشغيل — يُستخدم لتحضير صوت الخطوة التالية المحتملة سلفًا
   // (مثال: في صفحة اختيار عدد الساعات، نجهّز الأصوات الأربعة المحتملة كلها).
-  async preload(lang, text){
+  async preload(lang, text, ttsId){
     if(!text) return;
     if(t()._untranslated) return;
-    await this._fetchAudioUrl(lang, text);
+    await this._fetchAudioUrl(lang, text, ttsId);
   },
   async speak(lang, key, spokenText){
     this.cancel();
@@ -143,9 +162,12 @@ const TTSManager = {
     const localAudioUrl = `${TTS_CONFIG.audioBasePath}/${lang}/${key}.mp3`;
     if(await this._tryPlayFile(localAudioUrl)) return;
 
-    // 2) ElevenLabs عبر Backend + Supabase Cache (Cache Hit/Miss تُدار بالكامل بالسيرفر)
+    // 2) ElevenLabs عبر Backend + Supabase Cache — نمرّر ttsId ليسحب السيرفر النص
+    // من الكتالوج المركزي (src/data/ttsCatalog.js) كمصدر حقيقة وحيد، بدل الاعتماد
+    // فقط على النص المرسَل من الواجهة.
     if(TTS_CONFIG.professionalProvider.enabled){
-      const url = await this._fetchAudioUrl(lang, spokenText);
+      const ttsId = AUDIO_KEY_TO_TTS_ID[key] || null;
+      const url = await this._fetchAudioUrl(lang, spokenText, ttsId);
       if(url){
         const audio = new Audio(url);
         this.currentAudio = audio;
@@ -2293,9 +2315,13 @@ function openLevelQuestion(){
   // ومعروفة سلفًا هنا)، حتى تكون جاهزة فورًا لحظة ما يضغط المستفيد أي خيار.
   if(!t()._untranslated){
     const c = t();
-    [c.levels?.beginner?.spokenText, c.levels?.intermediate?.spokenText, c.levels?.advanced?.spokenText, c.unknown?.spokenText]
-      .filter(Boolean)
-      .forEach(txt => TTSManager.preload(state.lang, txt));
+    const preloadList = [
+      [c.levels?.beginner?.spokenText, "TTS_LEVEL_BEGINNER"],
+      [c.levels?.intermediate?.spokenText, "TTS_LEVEL_INTERMEDIATE"],
+      [c.levels?.advanced?.spokenText, "TTS_LEVEL_ADVANCED"],
+      [c.unknown?.spokenText, "TTS_LEVEL_UNKNOWN"]
+    ];
+    preloadList.filter(([txt]) => Boolean(txt)).forEach(([txt, id]) => TTSManager.preload(state.lang, txt, id));
   }
 }
 function selectHours(key){
