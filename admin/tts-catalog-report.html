@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>TTS Catalog Report — نورة (داخلي فقط)</title>
+<style>
+  body{font-family:sans-serif; background:#0d1520; color:#e0f0f5; padding:32px; max-width:1000px; margin:0 auto;}
+  h1{font-size:22px;} h2{font-size:17px; margin-top:32px; color:#00C8B4;}
+  table{width:100%; border-collapse:collapse; margin-top:12px; font-size:13px;}
+  th,td{border:1px solid #2a3d4a; padding:8px; text-align:right;}
+  th{background:#152230;}
+  .stat{display:inline-block; background:#152230; padding:12px 16px; border-radius:8px; margin:6px 10px 6px 0; min-width:140px;}
+  .stat b{display:block; font-size:22px; color:#00C8B4;}
+  .ok{color:#00C8B4;} .warn{color:#e0b84c;}
+  pre{background:#152230; padding:12px; border-radius:8px; overflow:auto; font-size:12px;}
+</style>
+</head>
+<body>
+<h1>تقرير كتالوج TTS — نورة لتعليم القيادة (داخلي فقط، لا يظهر للعملاء)</h1>
+
+<h2>ملخص عام</h2>
+<div class="stat">إجمالي الجمل<b>126</b></div>
+<div class="stat">عدد اللغات<b>9</b></div>
+<div class="stat">جمل تحتاج مراجعة<b>9</b></div>
+<div class="stat">ترجمات ناقصة<b>0</b></div>
+<div class="stat">جمل مكررة تم دمجها<b>0</b></div>
+<div class="stat">فحص "تغيير المدرب"<b class="ok">لا يوجد أي ذكر — مؤكَّد</b></div>
+
+<h2>عدد الجمل والأحرف لكل لغة</h2>
+<table>
+<tr><th>اللغة</th><th>عدد الجمل</th><th>إجمالي الأحرف</th></tr>
+<tr><td>ar</td><td>14</td><td>2056</td></tr><tr><td>en</td><td>14</td><td>2632</td></tr><tr><td>ur</td><td>14</td><td>2403</td></tr><tr><td>hi</td><td>14</td><td>2453</td></tr><tr><td>pa</td><td>14</td><td>2403</td></tr><tr><td>fr</td><td>14</td><td>3018</td></tr><tr><td>it</td><td>14</td><td>2899</td></tr><tr><td>bn</td><td>14</td><td>2424</td></tr><tr><td>tr</td><td>14</td><td>2528</td></tr>
+</table>
+
+<h2>عدد الجمل لكل فئة</h2>
+<table>
+<tr><th>الفئة</th><th>عدد الإدخالات</th></tr>
+<tr><td>level_selection</td><td>9</td></tr><tr><td>level</td><td>36</td></tr><tr><td>practical_exam</td><td>9</td></tr><tr><td>navigation</td><td>27</td></tr><tr><td>payment</td><td>9</td></tr><tr><td>after_step</td><td>27</td></tr><tr><td>appointment</td><td>9</td></tr>
+</table>
+
+<h2>جمل تحتاج مراجعة (Missing Spoken Text)</h2>
+<table>
+<tr><th>المعرّف</th><th>اللغة</th><th>السبب</th></tr>
+<tr><td>TTS_AFTER_PRACTICAL_TRAINING</td><td>ar</td><td class='warn'>TODO_SPOKEN_TEXT — لا يوجد نص منطوق (placeholder فقط بالواجهة)</td></tr><tr><td>TTS_AFTER_PRACTICAL_TRAINING</td><td>en</td><td class='warn'>TODO_SPOKEN_TEXT — لا يوجد نص منطوق (placeholder فقط بالواجهة)</td></tr><tr><td>TTS_AFTER_PRACTICAL_TRAINING</td><td>ur</td><td class='warn'>TODO_SPOKEN_TEXT — لا يوجد نص منطوق (placeholder فقط بالواجهة)</td></tr><tr><td>TTS_AFTER_PRACTICAL_TRAINING</td><td>hi</td><td class='warn'>TODO_SPOKEN_TEXT — لا يوجد نص منطوق (placeholder فقط بالواجهة)</td></tr><tr><td>TTS_AFTER_PRACTICAL_TRAINING</td><td>pa</td><td class='warn'>TODO_SPOKEN_TEXT — لا يوجد نص منطوق (placeholder فقط بالواجهة)</td></tr><tr><td>TTS_AFTER_PRACTICAL_TRAINING</td><td>fr</td><td class='warn'>TODO_SPOKEN_TEXT — لا يوجد نص منطوق (placeholder فقط بالواجهة)</td></tr><tr><td>TTS_AFTER_PRACTICAL_TRAINING</td><td>it</td><td class='warn'>TODO_SPOKEN_TEXT — لا يوجد نص منطوق (placeholder فقط بالواجهة)</td></tr><tr><td>TTS_AFTER_PRACTICAL_TRAINING</td><td>bn</td><td class='warn'>TODO_SPOKEN_TEXT — لا يوجد نص منطوق (placeholder فقط بالواجهة)</td></tr><tr><td>TTS_AFTER_PRACTICAL_TRAINING</td><td>tr</td><td class='warn'>TODO_SPOKEN_TEXT — لا يوجد نص منطوق (placeholder فقط بالواجهة)</td></tr>
+</table>
+
+<h2>ترجمات ناقصة (Missing Translation)</h2>
+<table>
+<tr><th>المعرّف</th><th>اللغة</th><th>السبب</th></tr>
+<tr><td colspan="3">لا يوجد — كل اللغات مكتملة</td></tr>
+</table>
+
+<h2>جمل مكررة تم دمجها تحت نفس الـID</h2>
+<table>
+<tr><th>اللغة</th><th>النص</th><th>الـID الأساسي</th><th>دُمج من</th></tr>
+<tr><td colspan="4">لا يوجد تكرار حاليًا — كل جملة فريدة</td></tr>
+</table>
+
+<h2>كل الإدخالات (أول 20 فقط للعرض السريع — الكامل في ttsManifest.json)</h2>
+<table>
+<tr><th>ID</th><th>الفئة</th><th>اللغة</th><th>عدد الأحرف</th><th>الحالة</th></tr>
+<tr><td>TTS_LEVEL_SELECTION_INTRO</td><td>level_selection</td><td>ar</td><td>59</td><td>pending</td></tr><tr><td>TTS_LEVEL_SELECTION_INTRO</td><td>level_selection</td><td>en</td><td>79</td><td>pending</td></tr><tr><td>TTS_LEVEL_SELECTION_INTRO</td><td>level_selection</td><td>ur</td><td>69</td><td>pending</td></tr><tr><td>TTS_LEVEL_SELECTION_INTRO</td><td>level_selection</td><td>hi</td><td>63</td><td>pending</td></tr><tr><td>TTS_LEVEL_SELECTION_INTRO</td><td>level_selection</td><td>pa</td><td>69</td><td>pending</td></tr><tr><td>TTS_LEVEL_SELECTION_INTRO</td><td>level_selection</td><td>fr</td><td>99</td><td>pending</td></tr><tr><td>TTS_LEVEL_SELECTION_INTRO</td><td>level_selection</td><td>it</td><td>75</td><td>pending</td></tr><tr><td>TTS_LEVEL_SELECTION_INTRO</td><td>level_selection</td><td>bn</td><td>69</td><td>pending</td></tr><tr><td>TTS_LEVEL_SELECTION_INTRO</td><td>level_selection</td><td>tr</td><td>64</td><td>pending</td></tr><tr><td>TTS_LEVEL_BEGINNER</td><td>level</td><td>ar</td><td>354</td><td>pending</td></tr><tr><td>TTS_LEVEL_BEGINNER</td><td>level</td><td>en</td><td>452</td><td>pending</td></tr><tr><td>TTS_LEVEL_BEGINNER</td><td>level</td><td>ur</td><td>387</td><td>pending</td></tr><tr><td>TTS_LEVEL_BEGINNER</td><td>level</td><td>hi</td><td>393</td><td>pending</td></tr><tr><td>TTS_LEVEL_BEGINNER</td><td>level</td><td>pa</td><td>387</td><td>pending</td></tr><tr><td>TTS_LEVEL_BEGINNER</td><td>level</td><td>fr</td><td>487</td><td>pending</td></tr><tr><td>TTS_LEVEL_BEGINNER</td><td>level</td><td>it</td><td>489</td><td>pending</td></tr><tr><td>TTS_LEVEL_BEGINNER</td><td>level</td><td>bn</td><td>404</td><td>pending</td></tr><tr><td>TTS_LEVEL_BEGINNER</td><td>level</td><td>tr</td><td>435</td><td>pending</td></tr><tr><td>TTS_LEVEL_INTERMEDIATE</td><td>level</td><td>ar</td><td>354</td><td>pending</td></tr><tr><td>TTS_LEVEL_INTERMEDIATE</td><td>level</td><td>en</td><td>455</td><td>pending</td></tr>
+</table>
+
+</body>
+</html>
