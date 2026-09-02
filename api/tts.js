@@ -7,6 +7,7 @@
 import { getSupabaseAdmin, TTS_TABLE, TTS_BUCKET } from "../lib/supabaseAdmin.js";
 import { buildCacheKey, storagePath } from "../lib/ttsCache.js";
 import { getVoiceConfig } from "../config/elevenlabs.js";
+import { getTTSEntry } from "../src/data/ttsCatalog.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -14,8 +15,26 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { lang, text } = req.body || {};
-  if (!lang || !text) {
+  const { lang, text: rawText, ttsId } = req.body || {};
+  if (!lang) {
+    res.status(400).json({ ok: false });
+    return;
+  }
+
+  // مصدر الحقيقة الوحيد للنص: الكتالوج المركزي (src/data/ttsCatalog.js) عبر ttsId.
+  // نحافظ على "text" كخيار احتياطي متوافق مع الإصدار السابق فقط في حال عدم تمرير
+  // ttsId (مثلاً أثناء اختبار صوت جديد من لوحة الإدارة قبل إضافته للكتالوج).
+  let text = rawText;
+  if (ttsId) {
+    const entry = getTTSEntry(ttsId, lang);
+    if (entry && entry.spokenText) {
+      text = entry.spokenText;
+    } else if (!text) {
+      res.status(204).end(); // لا يوجد نص لا بالكتالوج ولا مُرسَل مباشرة
+      return;
+    }
+  }
+  if (!text) {
     res.status(400).json({ ok: false });
     return;
   }
